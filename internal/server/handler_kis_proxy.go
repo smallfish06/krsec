@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"maps"
 	"net/http"
 	"strings"
@@ -98,7 +99,15 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 	)
 	result, err := impl.CallEndpoint(c.Context(), method, rawPath, trID, request)
 	if err != nil {
-		return respond(c, statusFromBrokerError(err, http.StatusInternalServerError), Response{
+		status := statusFromBrokerError(err, http.StatusInternalServerError)
+		slog.Error("KIS proxy endpoint error",
+			"path", rawPath,
+			"method", method,
+			"tr_id", trID,
+			"status", status,
+			"error", err,
+		)
+		return respond(c, status, Response{
 			OK:     false,
 			Error:  err.Error(),
 			Broker: brk.Name(),
