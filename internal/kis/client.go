@@ -177,7 +177,13 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 
 	if resp.StatusCode >= 400 {
 		bodyBytes, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("HTTP %d: %s", resp.StatusCode, string(bodyBytes))
+		if resp.StatusCode >= 500 {
+			return fmt.Errorf("%w: HTTP %d: %s", broker.ErrServerError, resp.StatusCode, string(bodyBytes))
+		}
+		if resp.StatusCode == 429 {
+			return fmt.Errorf("%w: HTTP %d: %s", broker.ErrRateLimitExceeded, resp.StatusCode, string(bodyBytes))
+		}
+		return fmt.Errorf("%w: HTTP %d: %s", broker.ErrUpstreamBadRequest, resp.StatusCode, string(bodyBytes))
 	}
 
 	if result != nil {
