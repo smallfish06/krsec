@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/smallfish06/krsec/internal/server"
@@ -28,11 +28,13 @@ func main() {
 
 	cfg, err := config.Load(*configFile)
 	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
+		slog.Error("failed to load config", "error", err)
+		os.Exit(1)
 	}
 
 	srv := server.New(cfg)
 	if err := srv.Run(); err != nil {
-		log.Fatalf("Server failed: %v", err)
+		slog.Error("server failed", "error", err)
+		os.Exit(1)
 	}
 }

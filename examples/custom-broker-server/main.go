@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
+	"log/slog"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -300,17 +301,16 @@ func main() {
 		},
 	})
 
-	log.Printf("Custom broker server listening on http://%s:%d", *host, *port)
-	log.Printf("OpenAPI JSON: http://%s:%d/swagger/openapi.json", *host, *port)
-	log.Printf("Swagger UI  : http://%s:%d/swagger/", *host, *port)
-	log.Printf("Try: curl http://%s:%d/quotes/KRX/005930", *host, *port)
-	log.Printf("Try: curl http://%s:%d/accounts/%s/balance", *host, *port, *accountID)
-	log.Printf("Try: curl -X POST http://%s:%d/accounts/%s/orders -H 'Content-Type: application/json' -d '%s'",
-		*host, *port, *accountID, sampleOrder(),
-	)
+	slog.Info("custom broker server listening", "url", "http://"+*host+":"+strconv.Itoa(*port))
+	slog.Info("OpenAPI JSON", "url", "http://"+*host+":"+strconv.Itoa(*port)+"/swagger/openapi.json")
+	slog.Info("Swagger UI", "url", "http://"+*host+":"+strconv.Itoa(*port)+"/swagger/")
+	slog.Info("try", "cmd", "curl http://"+*host+":"+strconv.Itoa(*port)+"/quotes/KRX/005930")
+	slog.Info("try", "cmd", "curl http://"+*host+":"+strconv.Itoa(*port)+"/accounts/"+*accountID+"/balance")
+	slog.Info("try", "cmd", "curl -X POST http://"+*host+":"+strconv.Itoa(*port)+"/accounts/"+*accountID+"/orders -H 'Content-Type: application/json' -d '"+sampleOrder()+"'")
 
 	if err := srv.Run(); err != nil {
-		log.Fatal(err)
+		slog.Error("server failed", "error", err)
+		os.Exit(1)
 	}
 }
 

@@ -185,7 +185,7 @@ func TestOrderContextPersistence(t *testing.T) {
 	tmpDir := t.TempDir()
 	orderDir := filepath.Join(tmpDir, "orders")
 
-	a := NewAdapterWithOptions(false, "12345678-01", nil, orderDir)
+	a := NewAdapterWithOptions(false, "12345678-01", nil, orderDir, nil)
 	now := time.Now().Truncate(time.Second)
 	a.storeOrderContext("000001", orderContext{
 		CANO:         "12345678",
@@ -201,7 +201,7 @@ func TestOrderContextPersistence(t *testing.T) {
 		UpdatedAt:    now,
 	})
 
-	b := NewAdapterWithOptions(false, "12345678-01", nil, orderDir)
+	b := NewAdapterWithOptions(false, "12345678-01", nil, orderDir, nil)
 	got, ok := b.getOrderContext("000001")
 	if !ok {
 		t.Fatalf("persisted order context not loaded")

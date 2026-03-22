@@ -17,5 +17,5 @@ type Adapter interface {
 
 // NewAdapterWithOptions creates a KIS adapter with injectable options.
 func NewAdapterWithOptions(sandbox bool, accountID string, opts adapter.Options) Adapter {
-	return internaladapter.NewAdapterWithOptions(sandbox, accountID, opts.TokenManager, opts.OrderContextDir)
+	return internaladapter.NewAdapterWithOptions(sandbox, accountID, opts.TokenManager, opts.OrderContextDir, opts.Logger)
 }

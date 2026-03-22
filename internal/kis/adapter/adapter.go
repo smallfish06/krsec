@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"sort"
 	"strconv"
@@ -28,6 +28,7 @@ type Adapter struct {
 	sandbox       bool
 	orderDir      string
 	dispatcher    *endpointDispatcher
+	logger        *slog.Logger
 
 	mu     sync.RWMutex
 	orders map[string]orderContext // key: order id
@@ -54,6 +55,7 @@ func NewAdapterWithOptions(
 	accountID string,
 	tokenManager tokencache.Manager,
 	orderContextDir string,
+	logger *slog.Logger,
 ) *Adapter {
 	// accountID 형식: "12345678-01" 또는 "12345678"
 	// 분리: CANO = "12345678", ACNT_PRDT_CD = "01"
@@ -66,17 +68,23 @@ func NewAdapterWithOptions(
 		acntPrdtCD = accountID[len(accountID)-2:]
 	}
 
+	if logger == nil {
+		logger = slog.Default()
+	}
+	client := kis.NewClientWithTokenManager(sandbox, tokenManager)
+	client.SetLogger(logger)
 	a := &Adapter{
-		client:        kis.NewClientWithTokenManager(sandbox, tokenManager),
+		client:        client,
 		accountID:     cano,
 		accountPrdtCD: acntPrdtCD,
 		sandbox:       sandbox,
 		orderDir:      strings.TrimSpace(orderContextDir),
 		orders:        make(map[string]orderContext),
+		logger:        logger,
 	}
 	a.dispatcher = newEndpointDispatcher(a)
 	if err := a.loadOrderContexts(); err != nil {
-		log.Printf("Warning: failed to load persisted orders for %s-%s: %v", cano, acntPrdtCD, err)
+		logger.Warn("failed to load persisted orders", "account", cano+"-"+acntPrdtCD, "error", err)
 	}
 	return a
 }
@@ -393,7 +401,7 @@ func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.
 		},
 	)
 	if err != nil {
-		log.Printf("bond balance query failed (non-fatal): %v", err)
+		a.logger.Warn("bond balance query failed (non-fatal)", "error", err)
 	}
 	if err == nil {
 		bondItems := bondResp.Output
@@ -1167,7 +1175,7 @@ func (a *Adapter) storeOrderContext(orderID string, meta orderContext) {
 	a.mu.Unlock()
 
 	if err := a.persistOrderContexts(); err != nil {
-		log.Printf("Warning: failed to persist order contexts for %s-%s: %v", a.accountID, a.accountPrdtCD, err)
+		a.logger.Warn("failed to persist order contexts", "account", a.accountID+"-"+a.accountPrdtCD, "error", err)
 	}
 }
 
@@ -1184,7 +1192,7 @@ func (a *Adapter) removeOrderContext(orderID string) {
 	a.mu.Unlock()
 
 	if err := a.persistOrderContexts(); err != nil {
-		log.Printf("Warning: failed to persist order contexts for %s-%s: %v", a.accountID, a.accountPrdtCD, err)
+		a.logger.Warn("failed to persist order contexts", "account", a.accountID+"-"+a.accountPrdtCD, "error", err)
 	}
 }
 

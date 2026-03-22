@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"sort"
@@ -40,6 +40,7 @@ type Client struct {
 
 	apiLimiter   *ratelimit.Limiter
 	tokenManager tokencache.Manager
+	logger       *slog.Logger
 }
 
 // NewClientWithTokenManager creates a new KIS client with an injected token manager.
@@ -60,6 +61,14 @@ func NewClientWithTokenManager(sandbox bool, tokenManager tokencache.Manager) *C
 		},
 		apiLimiter:   ratelimit.New(broker.CodeKIS, 15, 3), // 15 req/s, burst 3
 		tokenManager: tokenManager,
+		logger:       slog.Default(),
+	}
+}
+
+// SetLogger sets the logger for the client.
+func (c *Client) SetLogger(l *slog.Logger) {
+	if l != nil {
+		c.logger = l
 	}
 }
 
@@ -151,7 +160,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 		reqBody = bytes.NewReader(data)
 	}
 
-	log.Printf("DEBUG: %s %s (tr_id: %s)", method, url, trID)
+	c.logger.Debug("KIS API request", "method", method, "url", url, "tr_id", trID)
 	req, err := http.NewRequestWithContext(ctx, method, url, reqBody)
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
@@ -297,7 +306,7 @@ func checkEndpointResult(result interface{}) error {
 		return nil
 	case kisspecs.DocumentedEndpointResponse:
 		if !v.IsSuccess() {
-			return fmt.Errorf("KIS API error: %s (%s)", v.GetMsg1(), v.GetMsgCode())
+			return fmt.Errorf("%w: %s (%s)", broker.ErrUpstreamBadRequest, v.GetMsg1(), v.GetMsgCode())
 		}
 		return nil
 	default:

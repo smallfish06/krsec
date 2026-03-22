@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"log/slog"
 	"math"
 	"reflect"
 	"sort"
@@ -28,6 +28,7 @@ type Adapter struct {
 	sandbox    bool
 	orderDir   string
 	dispatcher *endpointDispatcher
+	logger     *slog.Logger
 
 	mu     sync.RWMutex
 	orders map[string]orderContext
@@ -51,17 +52,24 @@ func NewAdapterWithOptions(
 	accountID string,
 	tokenManager tokencache.Manager,
 	orderContextDir string,
+	logger *slog.Logger,
 ) *Adapter {
+	if logger == nil {
+		logger = slog.Default()
+	}
+	client := kiwoom.NewClientWithTokenManager(sandbox, tokenManager)
+	client.SetLogger(logger)
 	a := &Adapter{
-		client:    kiwoom.NewClientWithTokenManager(sandbox, tokenManager),
+		client:    client,
 		accountID: strings.TrimSpace(accountID),
 		sandbox:   sandbox,
 		orderDir:  strings.TrimSpace(orderContextDir),
 		orders:    make(map[string]orderContext),
+		logger:    logger,
 	}
 	a.dispatcher = newEndpointDispatcher(a)
 	if err := a.loadOrderContexts(); err != nil {
-		log.Printf("Warning: failed to load persisted orders for %s: %v", a.accountID, err)
+		logger.Warn("failed to load persisted orders", "account", a.accountID, "error", err)
 	}
 	return a
 }

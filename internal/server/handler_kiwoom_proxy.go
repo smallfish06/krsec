@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strings"
 
@@ -44,7 +43,7 @@ func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) 
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: "invalid request body"})
 	}
 	if err := validateKiwoomProxyRequest(&req); err != nil {
-		log.Printf("Warning: Kiwoom proxy validation failed path=%s account_id=%s err=%v", rawPath, req.AccountID, err)
+		s.logger.Warn("Kiwoom proxy validation failed", "path", rawPath, "account_id", req.AccountID, "error", err)
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
 

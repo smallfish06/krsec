@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"sort"
 	"strings"
@@ -28,6 +28,7 @@ type Server struct {
 	router   *fuego.Server
 	brokers  map[string]broker.Broker // account_id -> broker adapter
 	accounts []config.AccountConfig
+	logger   *slog.Logger
 }
 
 func newBaseServer(cfg *config.Config) *Server {
@@ -60,16 +61,30 @@ func newBaseServer(cfg *config.Config) *Server {
 		router:   r,
 		brokers:  make(map[string]broker.Broker),
 		accounts: cfg.Accounts,
+		logger:   slog.Default(),
 	}
 
 	s.routes()
 	return s
 }
 
+// NewWithLogger creates a new server instance with a custom logger.
+func NewWithLogger(cfg *config.Config, logger *slog.Logger) *Server {
+	s := newBaseServer(cfg)
+	if logger != nil {
+		s.logger = logger
+	}
+	return s.init(cfg)
+}
+
 // New creates a new server instance.
 // This constructor wires built-in brokers from config (currently KIS, Kiwoom).
 func New(cfg *config.Config) *Server {
 	s := newBaseServer(cfg)
+	return s.init(cfg)
+}
+
+func (s *Server) init(cfg *config.Config) *Server {
 
 	kisTokenManager := kis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	kiwoomTokenManager := kiwoom.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
@@ -84,29 +99,30 @@ func New(cfg *config.Config) *Server {
 				account.AccountID,
 				kisTokenManager,
 				cfg.Storage.OrderContextDir,
+				s.logger,
 			)
 			creds := broker.Credentials{
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
 			// Authenticate in background (don't block server start)
-			go func(name string, a *kisadapter.Adapter, c broker.Credentials) {
+			go func(name string, a *kisadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
 				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					log.Printf("Warning: failed to authenticate account %s: %v", name, err)
+					logger.Warn("failed to authenticate account", "account", name, "error", err)
 				} else {
-					log.Printf("Authenticated account %s", name)
+					logger.Info("authenticated account", "account", name)
 				}
-			}(account.Name, adapter, creds)
+			}(account.Name, adapter, creds, s.logger)
 
 			// Bootstrap symbol master files in background.
-			go func(name string, a *kisadapter.Adapter) {
+			go func(name string, a *kisadapter.Adapter, logger *slog.Logger) {
 				ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 				defer cancel()
 				count, err := a.BootstrapSymbols(ctx)
 				if err != nil {
-					log.Printf("Warning: symbol bootstrap failed for account %s: %v", name, err)
+					logger.Warn("symbol bootstrap failed", "account", name, "error", err)
 				} else {
-					log.Printf("Bootstrapped %d symbol records for account %s", count, name)
+					logger.Info("bootstrapped symbol records", "account", name, "count", count)
 				}
 
 				// Keep symbol master cache fresh (KIS master files change over time).
@@ -117,12 +133,12 @@ func New(cfg *config.Config) *Server {
 					count, err := a.ReloadSymbols(reloadCtx)
 					reloadCancel()
 					if err != nil {
-						log.Printf("Warning: symbol reload failed for account %s: %v", name, err)
+						logger.Warn("symbol reload failed", "account", name, "error", err)
 						continue
 					}
-					log.Printf("Reloaded %d symbol records for account %s", count, name)
+					logger.Info("reloaded symbol records", "account", name, "count", count)
 				}
-			}(account.Name, adapter)
+			}(account.Name, adapter, s.logger)
 			brk = adapter
 		case broker.CodeKiwoom:
 			adapter := kiwoomadapter.NewAdapterWithOptions(
@@ -130,21 +146,22 @@ func New(cfg *config.Config) *Server {
 				account.AccountID,
 				kiwoomTokenManager,
 				cfg.Storage.OrderContextDir,
+				s.logger,
 			)
 			creds := broker.Credentials{
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
-			go func(name string, a *kiwoomadapter.Adapter, c broker.Credentials) {
+			go func(name string, a *kiwoomadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
 				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					log.Printf("Warning: failed to authenticate account %s: %v", name, err)
+					logger.Warn("failed to authenticate account", "account", name, "error", err)
 				} else {
-					log.Printf("Authenticated account %s", name)
+					logger.Info("authenticated account", "account", name)
 				}
-			}(account.Name, adapter, creds)
+			}(account.Name, adapter, creds, s.logger)
 			brk = adapter
 		default:
-			log.Printf("Warning: unknown broker type: %s", account.Broker)
+			s.logger.Warn("unknown broker type", "broker", account.Broker)
 			continue
 		}
 		s.brokers[account.AccountID] = brk
@@ -431,7 +448,7 @@ func toKiwoomStaticProxyPath(path, apiID string) string {
 
 // Run starts the HTTP server
 func (s *Server) Run() error {
-	log.Printf("Server listening on %s", s.router.Addr)
+	s.logger.Info("server listening", "addr", s.router.Addr)
 	return s.router.Run()
 }
 
