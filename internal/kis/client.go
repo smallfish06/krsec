@@ -297,7 +297,7 @@ func checkEndpointResult(result interface{}) error {
 		return nil
 	case kisspecs.DocumentedEndpointResponse:
 		if !v.IsSuccess() {
-			return fmt.Errorf("KIS API error: %s (%s)", v.GetMsg1(), v.GetMsgCode())
+			return fmt.Errorf("%w: %s (%s)", broker.ErrUpstreamBadRequest, v.GetMsg1(), v.GetMsgCode())
 		}
 		return nil
 	default:
