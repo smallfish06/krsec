@@ -31,6 +31,8 @@ func statusFromBrokerError(err error, fallback int) int {
 		return http.StatusNotFound
 	case errors.Is(err, broker.ErrRateLimitExceeded):
 		return http.StatusTooManyRequests
+	case errors.Is(err, broker.ErrUpstreamBadRequest):
+		return http.StatusBadRequest
 	case errors.Is(err, broker.ErrServerError):
 		return http.StatusBadGateway
 	default:

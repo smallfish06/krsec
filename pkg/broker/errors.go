@@ -35,4 +35,7 @@ var (
 
 	// ErrServerError indicates a server error
 	ErrServerError = errors.New("server error")
+
+	// ErrUpstreamBadRequest indicates the upstream API rejected the request
+	ErrUpstreamBadRequest = errors.New("upstream bad request")
 )
