@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"maps"
 	"net/http"
 	"strings"
@@ -76,7 +75,7 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: "invalid request body"})
 	}
 	if err := validateKISProxyRequest(&req); err != nil {
-		log.Printf("Warning: KIS proxy validation failed path=%s account_id=%s err=%v", rawPath, req.AccountID, err)
+		s.logger.Warn("KIS proxy validation failed", "path", rawPath, "account_id", req.AccountID, "error", err)
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
 

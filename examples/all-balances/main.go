@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 	"strings"
 	"time"
 
@@ -49,12 +50,14 @@ func main() {
 
 	cfg, err := config.Load(*configPath)
 	if err != nil {
-		log.Fatalf("load config: %v", err)
+		slog.Error("load config", "error", err)
+		os.Exit(1)
 	}
 
 	filter := strings.ToLower(strings.TrimSpace(*brokerFilter))
 	if filter != "" && filter != "kis" && filter != "kiwoom" {
-		log.Fatalf("invalid broker filter: %s (expected: kis|kiwoom)", *brokerFilter)
+		slog.Error("invalid broker filter", "filter", *brokerFilter, "expected", "kis|kiwoom")
+		os.Exit(1)
 	}
 
 	kisTokenManager := kis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
@@ -137,7 +140,8 @@ func main() {
 
 	data, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {
-		log.Fatalf("marshal output: %v", err)
+		slog.Error("marshal output", "error", err)
+		os.Exit(1)
 	}
 	fmt.Println(string(data))
 }

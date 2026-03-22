@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"maps"
 	"net/http"
 	neturl "net/url"
@@ -41,6 +42,7 @@ type Client struct {
 
 	apiLimiter   *ratelimit.Limiter
 	tokenManager tokencache.Manager
+	logger       *slog.Logger
 }
 
 // callOptions controls optional Kiwoom continuation headers.
@@ -73,6 +75,14 @@ func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 		},
 		apiLimiter:   ratelimit.New(broker.CodeKiwoom, 8, 2), // 8 req/s, burst 2
 		tokenManager: tm,
+		logger:       slog.Default(),
+	}
+}
+
+// SetLogger sets the logger for the client.
+func (c *Client) SetLogger(l *slog.Logger) {
+	if l != nil {
+		c.logger = l
 	}
 }
 

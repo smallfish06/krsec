@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 	"time"
 
 	pkgadapter "github.com/smallfish06/krsec/pkg/adapter"
@@ -32,12 +33,14 @@ func main() {
 
 	cfg, err := config.Load(*configPath)
 	if err != nil {
-		log.Fatalf("load config: %v", err)
+		slog.Error("load config", "error", err)
+		os.Exit(1)
 	}
 
 	account, err := selectAccount(cfg, *accountSelector)
 	if err != nil {
-		log.Fatalf("select account: %v", err)
+		slog.Error("select account", "error", err)
+		os.Exit(1)
 	}
 
 	tokenManager := kis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
@@ -54,13 +57,15 @@ func main() {
 
 	if _, err := adapter.Authenticate(ctx, creds); err != nil {
 		cancel()
-		log.Fatalf("authenticate: %v", err)
+		slog.Error("authenticate", "error", err)
+		os.Exit(1)
 	}
 
 	bal, err := adapter.GetBalance(ctx, account.AccountID)
 	if err != nil {
 		cancel()
-		log.Fatalf("get balance: %v", err)
+		slog.Error("get balance", "error", err)
+		os.Exit(1)
 	}
 
 	out := result{
@@ -75,7 +80,8 @@ func main() {
 		pos, err := adapter.GetPositions(ctx, account.AccountID)
 		if err != nil {
 			cancel()
-			log.Fatalf("get positions: %v", err)
+			slog.Error("get positions", "error", err)
+			os.Exit(1)
 		}
 		out.Positions = pos
 	}
@@ -83,7 +89,8 @@ func main() {
 
 	data, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {
-		log.Fatalf("marshal output: %v", err)
+		slog.Error("marshal output", "error", err)
+		os.Exit(1)
 	}
 	fmt.Println(string(data))
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log/slog"
 	"strings"
 
 	"github.com/go-fuego/fuego"
@@ -26,6 +27,7 @@ type Options struct {
 	Port     int
 	Accounts []Account
 	Brokers  map[string]broker.Broker // account_id -> broker implementation
+	Logger   *slog.Logger             // optional structured logger; nil uses slog.Default()
 }
 
 // Server wraps the internal HTTP server and exposes a stable public API.
@@ -81,5 +83,15 @@ func RunFromConfigFile(path string) error {
 		return err
 	}
 	srv := internalserver.New(cfg)
+	return srv.Run()
+}
+
+// RunFromConfigFileWithLogger loads a config.yaml and starts the server with a custom logger.
+func RunFromConfigFileWithLogger(path string, logger *slog.Logger) error {
+	cfg, err := config.Load(path)
+	if err != nil {
+		return err
+	}
+	srv := internalserver.NewWithLogger(cfg, logger)
 	return srv.Run()
 }

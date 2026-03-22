@@ -94,7 +94,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	c.setToken(tr.Token, expiresAt)
 	if err := tm.SetToken(appKey, tr.Token, expiresAt); err != nil {
 		// cache write failure should not fail auth flow
-		fmt.Printf("Warning: failed to persist kiwoom token: %v\n", err)
+		c.logger.Warn("failed to persist kiwoom token", "error", err)
 	}
 
 	typeVal := strings.TrimSpace(tr.TokenType)

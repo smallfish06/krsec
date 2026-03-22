@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/smallfish06/krsec/pkg/broker"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
@@ -11,6 +12,7 @@ import (
 type Options struct {
 	TokenManager    tokencache.Manager
 	OrderContextDir string
+	Logger          *slog.Logger
 }
 
 // Adapter captures the common broker adapter surface.
