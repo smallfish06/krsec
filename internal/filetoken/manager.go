@@ -105,6 +105,28 @@ func (m *Manager) SetToken(appKey, token string, expiresAt time.Time) error {
 	return m.save(appKey, entry)
 }
 
+// DeleteToken removes the cached token for appKey from memory and disk.
+func (m *Manager) DeleteToken(appKey string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	delete(m.tokens, appKey)
+
+	dir, err := m.TokenDir()
+	if err != nil {
+		return nil // memory cleared, disk is best-effort
+	}
+	filename := strings.TrimSpace(m.buildFileName(appKey))
+	if filename == "" {
+		filename = DefaultHashedFileName(appKey)
+	}
+	path := filepath.Join(dir, filename)
+	if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("remove token file: %w", err)
+	}
+	return nil
+}
+
 // WaitForAuth enforces per-appKey token issuance throttling.
 func (m *Manager) WaitForAuth(appKey string) {
 	m.authMu.Lock()

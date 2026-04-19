@@ -32,6 +32,13 @@ func (m *testTokenManager) SetToken(_ string, token string, expiresAt time.Time)
 	return nil
 }
 
+func (m *testTokenManager) DeleteToken(string) error {
+	m.token = ""
+	m.expiresAt = time.Time{}
+	m.hasToken = false
+	return nil
+}
+
 func (m *testTokenManager) WaitForAuth(string) {}
 
 func TestAdapter_IntegratedCoreFlows(t *testing.T) {

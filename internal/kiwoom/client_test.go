@@ -38,6 +38,13 @@ func (m *memoryTokenManager) SetToken(_ string, token string, expiresAt time.Tim
 	return nil
 }
 
+func (m *memoryTokenManager) DeleteToken(string) error {
+	m.token = ""
+	m.expiresAt = time.Time{}
+	m.hasToken = false
+	return nil
+}
+
 func (m *memoryTokenManager) WaitForAuth(string) {
 	m.waitCalls++
 }
