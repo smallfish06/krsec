@@ -24,7 +24,9 @@ type stubTokenManager struct {
 	lastSetToken  string
 	lastSetExpiry time.Time
 
-	setErr error
+	setErr    error
+	delCalls  int
+	delAppKey string
 }
 
 func (m *stubTokenManager) GetToken(appKey string) (string, time.Time, bool) {
@@ -39,6 +41,14 @@ func (m *stubTokenManager) SetToken(appKey, token string, expiresAt time.Time) e
 	m.lastSetToken = token
 	m.lastSetExpiry = expiresAt
 	return m.setErr
+}
+
+func (m *stubTokenManager) DeleteToken(appKey string) error {
+	m.delCalls++
+	m.delAppKey = appKey
+	m.hasCached = false
+	m.cachedToken = ""
+	return nil
 }
 
 func (m *stubTokenManager) WaitForAuth(string) {

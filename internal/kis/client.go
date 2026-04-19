@@ -59,11 +59,22 @@ func NewClientWithTokenManager(sandbox bool, tokenManager tokencache.Manager) *C
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
-		apiLimiter:   ratelimit.New(broker.CodeKIS, 15, 3), // 15 req/s, burst 3
+		// Fallback limiter used until SetCredentials supplies an app-key;
+		// once the key is known the client switches to a shared limiter
+		// so that every Client addressing the same KIS app-key serializes
+		// against one token bucket.
+		apiLimiter:   ratelimit.New(broker.CodeKIS, kisRequestsPerSecond, kisBurst),
 		tokenManager: tokenManager,
 		logger:       slog.Default(),
 	}
 }
+
+// KIS enforces per-app-key TPS quotas. These values cap each shared
+// limiter — conservative defaults that leave headroom for auth calls.
+const (
+	kisRequestsPerSecond = 15
+	kisBurst             = 3
+)
 
 // SetLogger sets the logger for the client.
 func (c *Client) SetLogger(l *slog.Logger) {
@@ -77,12 +88,17 @@ func (c *Client) Name() string {
 	return broker.NameKIS
 }
 
-// SetCredentials sets the app key and secret
+// SetCredentials sets the app key and secret, and binds the client to
+// the shared per-app-key limiter so sibling Clients don't collectively
+// exceed KIS's TPS quota.
 func (c *Client) SetCredentials(appKey, appSecret string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.appKey = appKey
 	c.appSecret = appSecret
+	if appKey != "" {
+		c.apiLimiter = ratelimit.Shared(broker.CodeKIS, kisRequestsPerSecond, kisBurst, appKey)
+	}
 }
 
 // SetToken sets the access token
@@ -129,41 +145,77 @@ func (c *Client) isTokenValid() bool {
 	return time.Now().Before(expiresAt.Add(-5 * time.Minute)) // 5분 여유
 }
 
-// doRequest performs an HTTP request with authentication headers
+// doRequest performs an HTTP request with authentication headers.
+// On 401 responses, it invalidates the cached token, re-authenticates, and retries once.
 func (c *Client) doRequest(ctx context.Context, method, path string, trID string, body interface{}, result interface{}) error {
-	// Apply rate limiting
-	if err := c.apiLimiter.Wait(ctx); err != nil {
+	resp, err := c.doRequestOnce(ctx, method, path, trID, body)
+	if err != nil {
 		return err
 	}
+	defer func() { _ = resp.Body.Close() }()
 
-	// Check token validity
-	if !c.isTokenValid() {
-		c.mu.RLock()
-		creds := broker.Credentials{
-			AppKey:    c.appKey,
-			AppSecret: c.appSecret,
+	// On 401, invalidate token and retry once with a fresh token
+	if resp.StatusCode == http.StatusUnauthorized {
+		_ = resp.Body.Close()
+
+		c.logger.Warn("KIS returned 401, refreshing token and retrying",
+			"method", method, "path", path)
+
+		if err := c.invalidateAndRefresh(ctx); err != nil {
+			return fmt.Errorf("token refresh after 401 failed: %w", err)
 		}
-		c.mu.RUnlock()
 
-		if _, err := c.Authenticate(ctx, creds); err != nil {
-			return fmt.Errorf("token refresh failed: %w", err)
+		resp, err = c.doRequestOnce(ctx, method, path, trID, body)
+		if err != nil {
+			return err
+		}
+		defer func() { _ = resp.Body.Close() }()
+	}
+
+	if resp.StatusCode >= 400 {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return mapUpstreamError(resp.StatusCode, bodyBytes)
+	}
+
+	if result != nil {
+		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+			return fmt.Errorf("decode response: %w", err)
 		}
 	}
 
-	url := c.baseURL + path
+	return nil
+}
+
+// doRequestOnce sends a single HTTP request, refreshing the token beforehand if needed.
+func (c *Client) doRequestOnce(ctx context.Context, method, path string, trID string, body interface{}) (*http.Response, error) {
+	if !c.isTokenValid() {
+		if err := c.refreshToken(ctx); err != nil {
+			return nil, fmt.Errorf("token refresh failed: %w", err)
+		}
+	}
+
+	// Gate every attempt (including 401 retries) on the shared limiter.
+	c.mu.RLock()
+	limiter := c.apiLimiter
+	c.mu.RUnlock()
+	if err := limiter.Wait(ctx); err != nil {
+		return nil, err
+	}
+
+	reqURL := c.baseURL + path
 	var reqBody io.Reader
 	if body != nil {
 		data, err := json.Marshal(body)
 		if err != nil {
-			return fmt.Errorf("marshal request body: %w", err)
+			return nil, fmt.Errorf("marshal request body: %w", err)
 		}
 		reqBody = bytes.NewReader(data)
 	}
 
-	c.logger.Debug("KIS API request", "method", method, "url", url, "tr_id", trID)
-	req, err := http.NewRequestWithContext(ctx, method, url, reqBody)
+	c.logger.Debug("KIS API request", "method", method, "url", reqURL, "tr_id", trID)
+	req, err := http.NewRequestWithContext(ctx, method, reqURL, reqBody)
 	if err != nil {
-		return fmt.Errorf("create request: %w", err)
+		return nil, fmt.Errorf("create request: %w", err)
 	}
 
 	token, _ := c.getToken()
@@ -180,28 +232,43 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("do request: %w", err)
+		return nil, fmt.Errorf("do request: %w", err)
 	}
-	defer func() { _ = resp.Body.Close() }()
+	return resp, nil
+}
 
-	if resp.StatusCode >= 400 {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode >= 500 {
-			return fmt.Errorf("%w: HTTP %d: %s", broker.ErrServerError, resp.StatusCode, string(bodyBytes))
-		}
-		if resp.StatusCode == 429 {
-			return fmt.Errorf("%w: HTTP %d: %s", broker.ErrRateLimitExceeded, resp.StatusCode, string(bodyBytes))
-		}
-		return fmt.Errorf("%w: HTTP %d: %s", broker.ErrUpstreamBadRequest, resp.StatusCode, string(bodyBytes))
+// refreshToken authenticates with current credentials to obtain a fresh token.
+func (c *Client) refreshToken(ctx context.Context) error {
+	c.mu.RLock()
+	creds := broker.Credentials{
+		AppKey:    c.appKey,
+		AppSecret: c.appSecret,
+	}
+	c.mu.RUnlock()
+
+	_, err := c.Authenticate(ctx, creds)
+	return err
+}
+
+// invalidateAndRefresh clears the cached token and forces a fresh authentication.
+func (c *Client) invalidateAndRefresh(ctx context.Context) error {
+	c.mu.RLock()
+	appKey := c.appKey
+	c.mu.RUnlock()
+
+	// Clear local token
+	c.setToken("", time.Time{})
+
+	// Clear token from shared manager
+	tm := c.tokenManager
+	if tm == nil {
+		tm = GetTokenManager()
+	}
+	if appKey != "" {
+		_ = tm.DeleteToken(appKey)
 	}
 
-	if result != nil {
-		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
-			return fmt.Errorf("decode response: %w", err)
-		}
-	}
-
-	return nil
+	return c.refreshToken(ctx)
 }
 
 func encodeQuery(basePath string, values url.Values) string {
