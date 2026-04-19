@@ -78,6 +78,49 @@ func TestWait_cancelledContext(t *testing.T) {
 	}
 }
 
+func TestShared_sameKeyReturnsSameLimiter(t *testing.T) {
+	a := Shared("test-shared", 5, 1, "key-alpha")
+	b := Shared("test-shared", 5, 1, "key-alpha")
+	c := Shared("test-shared", 5, 1, "key-beta")
+
+	if a != b {
+		t.Fatal("Shared with identical (name, key) must return the same *Limiter")
+	}
+	if a == c {
+		t.Fatal("Shared with different keys must return distinct *Limiter")
+	}
+}
+
+func TestShared_serializesIndependentCallers(t *testing.T) {
+	// Two callers that look up the shared limiter independently must
+	// collectively stay under the configured rate (this is the bug
+	// that lets per-client limiters overshoot the upstream quota).
+	a := Shared("test-coop", 10, 1, "shared-key")
+	b := Shared("test-coop", 10, 1, "shared-key")
+
+	ctx := context.Background()
+	if err := a.Wait(ctx); err != nil { // drain burst
+		t.Fatal(err)
+	}
+
+	start := time.Now()
+	for i := 0; i < 4; i++ {
+		lim := a
+		if i%2 == 1 {
+			lim = b
+		}
+		if err := lim.Wait(ctx); err != nil {
+			t.Fatal(err)
+		}
+	}
+	elapsed := time.Since(start)
+
+	// 4 req at 10/s across two handles = ~400ms of waiting.
+	if elapsed < 300*time.Millisecond {
+		t.Errorf("independent callers bypassed shared rate: %v (expected >= 300ms)", elapsed)
+	}
+}
+
 func TestAllow(t *testing.T) {
 	lim := New("test-allow", 1, 1)
 

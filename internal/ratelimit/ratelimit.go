@@ -8,6 +8,7 @@ package ratelimit
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"golang.org/x/time/rate"
 )
@@ -47,4 +48,29 @@ func (l *Limiter) Name() string {
 // Allow reports whether a request can proceed right now without waiting.
 func (l *Limiter) Allow() bool {
 	return l.limiter.Allow()
+}
+
+// sharedLimiters holds one Limiter per (name, key) pair so independent
+// callers that address the same upstream quota (e.g. all Clients using
+// the same broker app-key) serialize against a single token bucket.
+var (
+	sharedMu       sync.Mutex
+	sharedLimiters = map[string]*Limiter{}
+)
+
+// Shared returns the Limiter registered for (name, key), creating it on
+// first access. Subsequent calls with the same (name, key) return the
+// same *Limiter regardless of the rps/burst arguments — the values from
+// the first caller win. Use when multiple clients must cooperatively
+// stay under a shared upstream quota.
+func Shared(name string, rps float64, burst int, key string) *Limiter {
+	sharedMu.Lock()
+	defer sharedMu.Unlock()
+	id := name + "|" + key
+	if l, ok := sharedLimiters[id]; ok {
+		return l
+	}
+	l := New(name+"["+key+"]", rps, burst)
+	sharedLimiters[id] = l
+	return l
 }
