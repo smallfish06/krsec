@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -51,6 +52,7 @@ func (b *proxyStubBroker) ModifyOrder(context.Context, string, broker.ModifyOrde
 type proxyKISBroker struct {
 	proxyStubBroker
 	called    bool
+	calls     int
 	gotMethod string
 	gotPath   string
 	gotTRID   string
@@ -67,6 +69,7 @@ func (b *proxyKISBroker) CallEndpoint(
 	request interface{},
 ) (interface{}, error) {
 	b.called = true
+	b.calls++
 	b.gotMethod = method
 	b.gotPath = path
 	b.gotTRID = trID
@@ -78,6 +81,112 @@ func (b *proxyKISBroker) CallEndpoint(
 		b.gotFields = map[string]string{}
 	}
 	return b.resp, b.err
+}
+
+func TestHandleKISProxy_CachesPublicQuoteResponse(t *testing.T) {
+	t.Parallel()
+
+	kisBroker := &proxyKISBroker{
+		proxyStubBroker: proxyStubBroker{name: "KIS"},
+		resp:            map[string]interface{}{"rt_cd": "0", "price": "70000"},
+	}
+	s := newOrderTestServer(
+		map[string]broker.Broker{"kis-acc": kisBroker},
+		[]config.AccountConfig{{AccountID: "kis-acc", Broker: "kis"}},
+	)
+
+	body := []byte(`{"tr_id":"FHKST01010100","params":{"FID_COND_MRKT_DIV_CODE":"J","FID_INPUT_ISCD":"005930"}}`)
+	req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected first 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+
+	kisBroker.resp = map[string]interface{}{"rt_cd": "0", "price": "1"}
+	req = httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
+	rr = performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected second 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+	if kisBroker.calls != 1 {
+		t.Fatalf("broker calls = %d, want 1", kisBroker.calls)
+	}
+	resp := decodeResponse(t, rr)
+	data, ok := resp.Data.(map[string]interface{})
+	if !ok {
+		t.Fatalf("response data = %T, want map", resp.Data)
+	}
+	if got := data["price"]; got != "70000" {
+		t.Fatalf("cached price = %v, want 70000", got)
+	}
+}
+
+func TestHandleKISProxy_DoesNotCacheTradingEndpoints(t *testing.T) {
+	t.Parallel()
+
+	kisBroker := &proxyKISBroker{
+		proxyStubBroker: proxyStubBroker{name: "KIS"},
+		resp:            map[string]interface{}{"rt_cd": "0"},
+	}
+	s := newOrderTestServer(
+		map[string]broker.Broker{"kis-acc": kisBroker},
+		[]config.AccountConfig{{AccountID: "kis-acc", Broker: "kis"}},
+	)
+
+	body := []byte(`{"tr_id":"TTTC8434R","params":{"CANO":"12345678","ACNT_PRDT_CD":"01"}}`)
+	for i := 0; i < 2; i++ {
+		req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/trading/inquire-balance", bytes.NewReader(body))
+		rr := performFiberRequest(t, s, req)
+		if rr.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+		}
+	}
+	if kisBroker.calls != 2 {
+		t.Fatalf("broker calls = %d, want 2", kisBroker.calls)
+	}
+}
+
+func TestHandleKISProxy_ServesStaleCacheOnEndpointError(t *testing.T) {
+	t.Parallel()
+
+	kisBroker := &proxyKISBroker{
+		proxyStubBroker: proxyStubBroker{name: "KIS"},
+		resp:            map[string]interface{}{"rt_cd": "0", "price": "70000"},
+	}
+	s := newOrderTestServer(
+		map[string]broker.Broker{"kis-acc": kisBroker},
+		[]config.AccountConfig{{AccountID: "kis-acc", Broker: "kis"}},
+	)
+	now := time.Date(2026, 5, 1, 9, 0, 0, 0, time.UTC)
+	s.kisCache.now = func() time.Time { return now }
+
+	body := []byte(`{"tr_id":"FHKST01010100","params":{"FID_COND_MRKT_DIV_CODE":"J","FID_INPUT_ISCD":"005930"}}`)
+	req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected first 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+
+	now = now.Add(10 * time.Minute)
+	kisBroker.resp = nil
+	kisBroker.err = errors.New("upstream unavailable")
+
+	req = httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
+	rr = performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected stale 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+	if kisBroker.calls != 2 {
+		t.Fatalf("broker calls = %d, want 2", kisBroker.calls)
+	}
+	resp := decodeResponse(t, rr)
+	data, ok := resp.Data.(map[string]interface{})
+	if !ok {
+		t.Fatalf("response data = %T, want map", resp.Data)
+	}
+	if got := data["price"]; got != "70000" {
+		t.Fatalf("stale price = %v, want 70000", got)
+	}
 }
 
 func TestHandleKISProxy_DefaultRouteAndFirstKISAccount(t *testing.T) {

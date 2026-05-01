@@ -3,6 +3,7 @@ package server
 import (
 	"log/slog"
 	"strings"
+	"time"
 
 	"github.com/go-fuego/fuego"
 
@@ -20,14 +21,36 @@ type Account struct {
 	Credentials broker.Credentials
 }
 
+// KISProxyCacheRequest describes a normalized KIS proxy request for cache policy
+// decisions. Params is a copy and can be inspected or modified by policy code.
+type KISProxyCacheRequest struct {
+	Method    string
+	Path      string
+	TRID      string
+	AccountID string
+	Params    map[string]string
+}
+
+// KISProxyCachePolicy decides whether a KIS proxy request should be cached and
+// returns its soft TTL when cacheable.
+type KISProxyCachePolicy func(KISProxyCacheRequest) (time.Duration, bool)
+
+// KISProxyCacheOptions configures the in-process KIS proxy cache.
+type KISProxyCacheOptions struct {
+	Policy         KISProxyCachePolicy
+	MaxEntries     int
+	StaleRetention time.Duration
+}
+
 // Options configures the public API server.
 // External users can provide their own broker implementations through Brokers.
 type Options struct {
-	Host     string
-	Port     int
-	Accounts []Account
-	Brokers  map[string]broker.Broker // account_id -> broker implementation
-	Logger   *slog.Logger             // optional structured logger; nil uses slog.Default()
+	Host          string
+	Port          int
+	Accounts      []Account
+	Brokers       map[string]broker.Broker // account_id -> broker implementation
+	Logger        *slog.Logger             // optional structured logger; nil uses slog.Default()
+	KISProxyCache KISProxyCacheOptions
 }
 
 // Server wraps the internal HTTP server and exposes a stable public API.
@@ -37,11 +60,12 @@ type Server struct {
 
 // New creates a server with externally supplied broker implementations.
 func New(opts Options) *Server {
-	inner := internalserver.NewWithBrokers(
+	inner := internalserver.NewWithBrokersOptions(
 		opts.Host,
 		opts.Port,
 		toInternalAccounts(opts.Accounts),
 		opts.Brokers,
+		toInternalOptions(opts),
 	)
 	return &Server{inner: inner}
 }
@@ -54,6 +78,49 @@ func (s *Server) Run() error {
 // App returns the underlying Fuego server for embedding or custom route composition.
 func (s *Server) App() *fuego.Server {
 	return s.inner.App()
+}
+
+// DefaultKISProxyCachePolicy caches public KIS quotation/reference endpoints
+// and excludes trading, order, and auth-style endpoints.
+func DefaultKISProxyCachePolicy(req KISProxyCacheRequest) (time.Duration, bool) {
+	return internalserver.DefaultKISProxyCachePolicy(toInternalCacheRequest(req))
+}
+
+func toInternalOptions(opts Options) internalserver.ServerOptions {
+	var policy internalserver.KISProxyCachePolicy
+	if opts.KISProxyCache.Policy != nil {
+		policy = func(req internalserver.KISProxyCacheRequest) (time.Duration, bool) {
+			return opts.KISProxyCache.Policy(toPublicCacheRequest(req))
+		}
+	}
+	return internalserver.ServerOptions{
+		Logger: opts.Logger,
+		KISProxyCache: internalserver.KISProxyCacheOptions{
+			Policy:         policy,
+			MaxEntries:     opts.KISProxyCache.MaxEntries,
+			StaleRetention: opts.KISProxyCache.StaleRetention,
+		},
+	}
+}
+
+func toInternalCacheRequest(req KISProxyCacheRequest) internalserver.KISProxyCacheRequest {
+	return internalserver.KISProxyCacheRequest{
+		Method:    req.Method,
+		Path:      req.Path,
+		TRID:      req.TRID,
+		AccountID: req.AccountID,
+		Params:    req.Params,
+	}
+}
+
+func toPublicCacheRequest(req internalserver.KISProxyCacheRequest) KISProxyCacheRequest {
+	return KISProxyCacheRequest{
+		Method:    req.Method,
+		Path:      req.Path,
+		TRID:      req.TRID,
+		AccountID: req.AccountID,
+		Params:    req.Params,
+	}
 }
 
 func toInternalAccounts(accounts []Account) []config.AccountConfig {

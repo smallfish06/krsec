@@ -6,8 +6,10 @@ require (
 	github.com/getkin/kin-openapi v0.135.0
 	github.com/go-fuego/fuego v0.19.0
 	github.com/go-playground/validator/v10 v10.30.2
+	github.com/jellydator/ttlcache/v3 v3.4.0
 	github.com/samber/lo v1.53.0
 	github.com/stretchr/testify v1.11.1
+	golang.org/x/sync v0.20.0
 	golang.org/x/text v0.35.0
 	golang.org/x/time v0.14.0
 	gopkg.in/yaml.v3 v3.0.1

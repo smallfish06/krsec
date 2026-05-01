@@ -83,7 +83,7 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 	trID := req.TRID
 	method := req.Method
 
-	brk, status, reason := s.resolveKISProxyBroker(req.AccountID)
+	brk, resolvedAccountID, status, reason := s.resolveKISProxyBroker(req.AccountID)
 	if brk == nil {
 		return respond(c, status, Response{OK: false, Error: reason})
 	}
@@ -97,21 +97,76 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 		mergeStringMaps(toStringMap(req.Query), toStringMap(req.Params)),
 		toStringMap(req.Body),
 	)
-	result, err := impl.CallEndpoint(c.Context(), method, rawPath, trID, request)
-	if err != nil {
-		status := statusFromBrokerError(err, http.StatusInternalServerError)
+
+	cacheReq := KISProxyCacheRequest{
+		Method:    method,
+		Path:      rawPath,
+		TRID:      trID,
+		AccountID: resolvedAccountID,
+		Params:    maps.Clone(request),
+	}
+	cacheTTL, cacheable := s.kisCachePolicy(cacheReq)
+	if cacheTTL <= 0 {
+		cacheable = false
+	}
+	cacheKey := ""
+	if cacheable {
+		cacheKey = buildKISProxyCacheKey(resolvedAccountID, method, rawPath, trID, request)
+		if cached, ok := s.kisCache.getFresh(cacheKey); ok {
+			s.logger.Debug("KIS proxy cache hit", "path", rawPath, "tr_id", trID, "account_id", resolvedAccountID)
+			return respond(c, http.StatusOK, Response{
+				OK:     true,
+				Data:   cached,
+				Broker: brk.Name(),
+			})
+		}
+	}
+
+	callEndpoint := func() (interface{}, error) {
+		return impl.CallEndpoint(c.Context(), method, rawPath, trID, request)
+	}
+
+	var result interface{}
+	var endpointErr error
+	if cacheable {
+		result, endpointErr, _ = s.kisCache.do(cacheKey, callEndpoint)
+	} else {
+		result, endpointErr = callEndpoint()
+	}
+	if endpointErr != nil {
+		if cacheable {
+			if stale, ok := s.kisCache.getStale(cacheKey); ok {
+				s.logger.Warn("KIS proxy serving stale cache after endpoint error",
+					"path", rawPath,
+					"method", method,
+					"tr_id", trID,
+					"account_id", resolvedAccountID,
+					"error", endpointErr,
+				)
+				return respond(c, http.StatusOK, Response{
+					OK:     true,
+					Data:   stale,
+					Broker: brk.Name(),
+				})
+			}
+		}
+		status := statusFromBrokerError(endpointErr, http.StatusInternalServerError)
 		slog.Error("KIS proxy endpoint error",
 			"path", rawPath,
 			"method", method,
 			"tr_id", trID,
 			"status", status,
-			"error", err,
+			"error", endpointErr,
 		)
 		return respond(c, status, Response{
 			OK:     false,
-			Error:  err.Error(),
+			Error:  endpointErr.Error(),
 			Broker: brk.Name(),
 		})
+	}
+
+	if cacheable {
+		s.kisCache.set(cacheKey, result, cacheTTL)
 	}
 
 	return respond(c, http.StatusOK, Response{
@@ -121,17 +176,17 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 	})
 }
 
-func (s *Server) resolveKISProxyBroker(accountID string) (broker.Broker, int, string) {
+func (s *Server) resolveKISProxyBroker(accountID string) (broker.Broker, string, int, string) {
 	accountID = strings.TrimSpace(accountID)
 	if accountID != "" {
 		brk, status, reason := s.resolveBrokerByAccountID(accountID)
 		if brk == nil {
-			return nil, status, reason
+			return nil, "", status, reason
 		}
 		if !strings.EqualFold(strings.TrimSpace(brk.Name()), broker.NameKIS) {
-			return nil, http.StatusBadRequest, "account broker is not KIS"
+			return nil, "", http.StatusBadRequest, "account broker is not KIS"
 		}
-		return brk, 0, ""
+		return brk, s.resolveKISProxyAccountID(accountID), 0, ""
 	}
 
 	for _, acc := range s.accounts {
@@ -139,10 +194,25 @@ func (s *Server) resolveKISProxyBroker(accountID string) (broker.Broker, int, st
 			continue
 		}
 		if brk, ok := s.getBrokerStrict(acc.AccountID); ok {
-			return brk, 0, ""
+			return brk, strings.TrimSpace(acc.AccountID), 0, ""
 		}
 	}
-	return nil, http.StatusServiceUnavailable, "no KIS account available"
+	return nil, "", http.StatusServiceUnavailable, "no KIS account available"
+}
+
+func (s *Server) resolveKISProxyAccountID(accountID string) string {
+	accountID = strings.TrimSpace(accountID)
+	if accountID == "" {
+		return ""
+	}
+	if _, ok := s.brokers[accountID]; ok {
+		return accountID
+	}
+	candidates := s.findBrokerAccountCandidates(accountID)
+	if len(candidates) == 1 {
+		return candidates[0]
+	}
+	return accountID
 }
 
 func normalizeKISProxyPath(path string) string {

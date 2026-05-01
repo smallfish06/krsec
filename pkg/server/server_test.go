@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -44,6 +45,25 @@ func (fakeBroker) CancelOrder(context.Context, string) error { return nil }
 
 func (fakeBroker) ModifyOrder(context.Context, string, broker.ModifyOrderRequest) (*broker.OrderResult, error) {
 	return &broker.OrderResult{}, nil
+}
+
+type fakeKISProxyBroker struct {
+	fakeBroker
+	calls int
+	resp  map[string]interface{}
+}
+
+func (b *fakeKISProxyBroker) Name() string { return broker.NameKIS }
+
+func (b *fakeKISProxyBroker) CallEndpoint(
+	context.Context,
+	string,
+	string,
+	string,
+	interface{},
+) (interface{}, error) {
+	b.calls++
+	return b.resp, nil
 }
 
 func TestNew_HealthAndAccounts(t *testing.T) {
@@ -90,6 +110,57 @@ func TestNew_HealthAndAccounts(t *testing.T) {
 	}
 	if got.Data[0].ID != "12345678-01" || got.Data[0].Broker != "custom" {
 		t.Fatalf("unexpected account row: %+v", got.Data[0])
+	}
+}
+
+func TestNew_KISProxyCachePolicyCanDisableDefaultCaching(t *testing.T) {
+	kisBroker := &fakeKISProxyBroker{
+		resp: map[string]interface{}{"rt_cd": "0", "price": "70000"},
+	}
+	policyCalled := false
+	s := New(Options{
+		Host: "127.0.0.1",
+		Port: 18082,
+		Accounts: []Account{
+			{ID: "kis-acc", Name: "main", Broker: "kis"},
+		},
+		Brokers: map[string]broker.Broker{
+			"kis-acc": kisBroker,
+		},
+		KISProxyCache: KISProxyCacheOptions{
+			Policy: func(req KISProxyCacheRequest) (time.Duration, bool) {
+				policyCalled = true
+				if req.Path != "/uapi/domestic-stock/v1/quotations/inquire-price" {
+					t.Fatalf("policy path = %q", req.Path)
+				}
+				if req.TRID != "FHKST01010100" {
+					t.Fatalf("policy tr_id = %q", req.TRID)
+				}
+				if req.AccountID != "kis-acc" {
+					t.Fatalf("policy account_id = %q", req.AccountID)
+				}
+				if got := req.Params["FID_INPUT_ISCD"]; got != "005930" {
+					t.Fatalf("policy FID_INPUT_ISCD = %q", got)
+				}
+				return 0, false
+			},
+		},
+	})
+
+	body := []byte(`{"tr_id":"FHKST01010100","params":{"FID_COND_MRKT_DIV_CODE":"J","FID_INPUT_ISCD":"005930"}}`)
+	for i := 0; i < 2; i++ {
+		req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
+		rr := httptest.NewRecorder()
+		s.App().Mux.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			t.Fatalf("unexpected KIS proxy status: %d body=%s", rr.Code, rr.Body.String())
+		}
+	}
+	if !policyCalled {
+		t.Fatalf("expected custom cache policy to be called")
+	}
+	if kisBroker.calls != 2 {
+		t.Fatalf("broker calls = %d, want 2", kisBroker.calls)
 	}
 }
 
