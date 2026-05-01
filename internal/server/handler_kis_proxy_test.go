@@ -146,6 +146,47 @@ func TestHandleKISProxy_DoesNotCacheTradingEndpoints(t *testing.T) {
 	}
 }
 
+func TestHandleKISProxy_RateLimitsOutboundCalls(t *testing.T) {
+	t.Parallel()
+
+	kisBroker := &proxyKISBroker{
+		proxyStubBroker: proxyStubBroker{name: "KIS"},
+		resp:            map[string]interface{}{"rt_cd": "0"},
+	}
+	s := NewWithBrokersOptions(
+		"127.0.0.1",
+		18080,
+		[]config.AccountConfig{{AccountID: "kis-acc", Broker: "kis"}},
+		map[string]broker.Broker{"kis-acc": kisBroker},
+		ServerOptions{
+			KISProxyRateLimit: KISProxyRateLimitOptions{
+				RequestsPerSecond: 20,
+				Burst:             1,
+			},
+		},
+	)
+
+	body := []byte(`{"tr_id":"TTTC8434R","params":{"CANO":"12345678","ACNT_PRDT_CD":"01"}}`)
+	req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/trading/inquire-balance", bytes.NewReader(body))
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected first 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+
+	start := time.Now()
+	req = httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/trading/inquire-balance", bytes.NewReader(body))
+	rr = performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected second 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+	if elapsed := time.Since(start); elapsed < 40*time.Millisecond {
+		t.Fatalf("second uncached call elapsed = %s, want at least 40ms", elapsed)
+	}
+	if kisBroker.calls != 2 {
+		t.Fatalf("broker calls = %d, want 2", kisBroker.calls)
+	}
+}
+
 func TestHandleKISProxy_ServesStaleCacheOnEndpointError(t *testing.T) {
 	t.Parallel()
 

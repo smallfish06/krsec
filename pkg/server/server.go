@@ -42,15 +42,23 @@ type KISProxyCacheOptions struct {
 	StaleRetention time.Duration
 }
 
+// KISProxyRateLimitOptions configures outbound KIS upstream throttling.
+type KISProxyRateLimitOptions struct {
+	Disabled          bool
+	RequestsPerSecond float64
+	Burst             int
+}
+
 // Options configures the public API server.
 // External users can provide their own broker implementations through Brokers.
 type Options struct {
-	Host          string
-	Port          int
-	Accounts      []Account
-	Brokers       map[string]broker.Broker // account_id -> broker implementation
-	Logger        *slog.Logger             // optional structured logger; nil uses slog.Default()
-	KISProxyCache KISProxyCacheOptions
+	Host              string
+	Port              int
+	Accounts          []Account
+	Brokers           map[string]broker.Broker // account_id -> broker implementation
+	Logger            *slog.Logger             // optional structured logger; nil uses slog.Default()
+	KISProxyCache     KISProxyCacheOptions
+	KISProxyRateLimit KISProxyRateLimitOptions
 }
 
 // Server wraps the internal HTTP server and exposes a stable public API.
@@ -99,6 +107,11 @@ func toInternalOptions(opts Options) internalserver.ServerOptions {
 			Policy:         policy,
 			MaxEntries:     opts.KISProxyCache.MaxEntries,
 			StaleRetention: opts.KISProxyCache.StaleRetention,
+		},
+		KISProxyRateLimit: internalserver.KISProxyRateLimitOptions{
+			Disabled:          opts.KISProxyRateLimit.Disabled,
+			RequestsPerSecond: opts.KISProxyRateLimit.RequestsPerSecond,
+			Burst:             opts.KISProxyRateLimit.Burst,
 		},
 	}
 }
