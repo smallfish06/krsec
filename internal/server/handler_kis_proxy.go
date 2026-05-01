@@ -123,7 +123,7 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 	}
 
 	callEndpoint := func() (interface{}, error) {
-		waited, err := s.kisRateLimiter.wait(c.Context())
+		waited, err := s.kisRateLimiter.wait(c.Context(), rawPath, trID)
 		if err != nil {
 			return nil, fmt.Errorf("kis proxy rate limit wait: %w", err)
 		}
