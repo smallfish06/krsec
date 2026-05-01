@@ -31,11 +31,13 @@ type Server struct {
 	logger         *slog.Logger
 	kisCache       *kisProxyCache
 	kisCachePolicy KISProxyCachePolicy
+	kisRateLimiter *kisProxyRateLimiter
 }
 
 type ServerOptions struct {
-	Logger        *slog.Logger
-	KISProxyCache KISProxyCacheOptions
+	Logger            *slog.Logger
+	KISProxyCache     KISProxyCacheOptions
+	KISProxyRateLimit KISProxyRateLimitOptions
 }
 
 func newBaseServer(cfg *config.Config) *Server {
@@ -67,6 +69,11 @@ func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 		),
 	)
 
+	rateLimitOpts := opts.KISProxyRateLimit
+	if rateLimitOpts.isZero() {
+		rateLimitOpts = kisProxyRateLimitOptionsFromConfig(cfg.KISProxy.RateLimit)
+	}
+
 	s := &Server{
 		config:         cfg,
 		router:         r,
@@ -75,6 +82,7 @@ func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 		logger:         slog.Default(),
 		kisCache:       newKISProxyCache(opts.KISProxyCache),
 		kisCachePolicy: opts.KISProxyCache.Policy,
+		kisRateLimiter: newKISProxyRateLimiter(rateLimitOpts),
 	}
 	if s.logger == nil {
 		s.logger = slog.Default()

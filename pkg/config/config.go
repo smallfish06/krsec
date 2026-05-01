@@ -16,6 +16,7 @@ import (
 type Config struct {
 	Server   ServerConfig    `yaml:"server"`
 	Storage  StorageConfig   `yaml:"storage,omitempty"`
+	KISProxy KISProxyConfig  `yaml:"kis_proxy,omitempty"`
 	Accounts []AccountConfig `yaml:"accounts,omitempty"`
 }
 
@@ -29,6 +30,18 @@ type ServerConfig struct {
 type StorageConfig struct {
 	TokenDir        string `yaml:"token_dir"`
 	OrderContextDir string `yaml:"order_context_dir"`
+}
+
+// KISProxyConfig represents KIS proxy behavior.
+type KISProxyConfig struct {
+	RateLimit KISProxyRateLimitConfig `yaml:"rate_limit,omitempty"`
+}
+
+// KISProxyRateLimitConfig limits outbound KIS upstream calls from the proxy.
+type KISProxyRateLimitConfig struct {
+	Enabled           *bool   `yaml:"enabled,omitempty"`
+	RequestsPerSecond float64 `yaml:"requests_per_second,omitempty"`
+	Burst             int     `yaml:"burst,omitempty"`
 }
 
 // AccountConfig represents a broker account configuration
@@ -56,6 +69,12 @@ func (c *Config) Validate() error {
 
 	c.Storage.TokenDir = strings.TrimSpace(c.Storage.TokenDir)
 	c.Storage.OrderContextDir = strings.TrimSpace(c.Storage.OrderContextDir)
+	if c.KISProxy.RateLimit.RequestsPerSecond < 0 {
+		return fmt.Errorf("kis_proxy.rate_limit.requests_per_second must be greater than or equal to 0")
+	}
+	if c.KISProxy.RateLimit.Burst < 0 {
+		return fmt.Errorf("kis_proxy.rate_limit.burst must be greater than or equal to 0")
+	}
 
 	if len(c.Accounts) == 0 {
 		return fmt.Errorf("at least one account is required")

@@ -75,6 +75,66 @@ accounts:
 	}
 }
 
+func TestLoadKISProxyRateLimitConfig(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+kis_proxy:
+  rate_limit:
+    enabled: true
+    requests_per_second: 12.5
+    burst: 1
+accounts:
+  - name: "main"
+    broker: kis
+    sandbox: true
+    app_key: "k"
+    app_secret: "s"
+    account_id: "12345678-01"
+`)
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("Load() unexpected error: %v", err)
+	}
+	if cfg.KISProxy.RateLimit.Enabled == nil || !*cfg.KISProxy.RateLimit.Enabled {
+		t.Fatalf("rate_limit.enabled = %v, want true", cfg.KISProxy.RateLimit.Enabled)
+	}
+	if cfg.KISProxy.RateLimit.RequestsPerSecond != 12.5 {
+		t.Fatalf("requests_per_second = %v, want 12.5", cfg.KISProxy.RateLimit.RequestsPerSecond)
+	}
+	if cfg.KISProxy.RateLimit.Burst != 1 {
+		t.Fatalf("burst = %d, want 1", cfg.KISProxy.RateLimit.Burst)
+	}
+}
+
+func TestLoadRejectsInvalidKISProxyRateLimit(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+kis_proxy:
+  rate_limit:
+    requests_per_second: -1
+accounts:
+  - name: "main"
+    broker: kis
+    sandbox: true
+    app_key: "k"
+    app_secret: "s"
+    account_id: "12345678-01"
+`)
+
+	_, err := Load(path)
+	if err == nil {
+		t.Fatal("Load() expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "kis_proxy.rate_limit.requests_per_second") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func TestLoadRejectsLegacyKISConfig(t *testing.T) {
 	path := writeTempConfig(t, `
 server:
