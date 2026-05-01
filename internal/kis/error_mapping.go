@@ -21,8 +21,7 @@ func mapUpstreamError(status int, body []byte) error {
 }
 
 func classifyUpstream(status int, body []byte) error {
-	switch parseMsgCode(body) {
-	case "EGW00201":
+	if parseMsgCode(body) == "EGW00201" {
 		return broker.ErrRateLimitExceeded
 	}
 

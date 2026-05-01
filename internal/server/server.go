@@ -24,14 +24,25 @@ import (
 
 // Server represents the HTTP server
 type Server struct {
-	config   *config.Config
-	router   *fuego.Server
-	brokers  map[string]broker.Broker // account_id -> broker adapter
-	accounts []config.AccountConfig
-	logger   *slog.Logger
+	config         *config.Config
+	router         *fuego.Server
+	brokers        map[string]broker.Broker // account_id -> broker adapter
+	accounts       []config.AccountConfig
+	logger         *slog.Logger
+	kisCache       *kisProxyCache
+	kisCachePolicy KISProxyCachePolicy
+}
+
+type ServerOptions struct {
+	Logger        *slog.Logger
+	KISProxyCache KISProxyCacheOptions
 }
 
 func newBaseServer(cfg *config.Config) *Server {
+	return newBaseServerWithOptions(cfg, ServerOptions{})
+}
+
+func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 	host := strings.TrimSpace(cfg.Server.Host)
 	if host == "" {
 		host = "localhost"
@@ -57,11 +68,22 @@ func newBaseServer(cfg *config.Config) *Server {
 	)
 
 	s := &Server{
-		config:   cfg,
-		router:   r,
-		brokers:  make(map[string]broker.Broker),
-		accounts: cfg.Accounts,
-		logger:   slog.Default(),
+		config:         cfg,
+		router:         r,
+		brokers:        make(map[string]broker.Broker),
+		accounts:       cfg.Accounts,
+		logger:         slog.Default(),
+		kisCache:       newKISProxyCache(opts.KISProxyCache),
+		kisCachePolicy: opts.KISProxyCache.Policy,
+	}
+	if s.logger == nil {
+		s.logger = slog.Default()
+	}
+	if opts.Logger != nil {
+		s.logger = opts.Logger
+	}
+	if s.kisCachePolicy == nil {
+		s.kisCachePolicy = DefaultKISProxyCachePolicy
 	}
 
 	s.routes()
@@ -70,10 +92,7 @@ func newBaseServer(cfg *config.Config) *Server {
 
 // NewWithLogger creates a new server instance with a custom logger.
 func NewWithLogger(cfg *config.Config, logger *slog.Logger) *Server {
-	s := newBaseServer(cfg)
-	if logger != nil {
-		s.logger = logger
-	}
+	s := newBaseServerWithOptions(cfg, ServerOptions{Logger: logger})
 	return s.init(cfg)
 }
 
@@ -173,6 +192,16 @@ func (s *Server) init(cfg *config.Config) *Server {
 // NewWithBrokers creates a server with externally provided brokers.
 // This constructor is used by the public pkg/server package for OSS extensibility.
 func NewWithBrokers(host string, port int, accounts []config.AccountConfig, brokers map[string]broker.Broker) *Server {
+	return NewWithBrokersOptions(host, port, accounts, brokers, ServerOptions{})
+}
+
+func NewWithBrokersOptions(
+	host string,
+	port int,
+	accounts []config.AccountConfig,
+	brokers map[string]broker.Broker,
+	opts ServerOptions,
+) *Server {
 	host = strings.TrimSpace(host)
 	if host == "" {
 		host = "localhost"
@@ -188,7 +217,7 @@ func NewWithBrokers(host string, port int, accounts []config.AccountConfig, brok
 		},
 		Accounts: accounts,
 	}
-	s := newBaseServer(cfg)
+	s := newBaseServerWithOptions(cfg, opts)
 	for accountID, brk := range brokers {
 		if brk == nil {
 			continue
