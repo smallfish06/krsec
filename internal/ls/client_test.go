@@ -239,10 +239,15 @@ func TestClientCallEndpoint_RetriesAfterInvalidCachedToken(t *testing.T) {
 	}
 }
 
-func TestLSTRRateLimit_UsesDocumentedOverseasQuotas(t *testing.T) {
+func TestLSTRRateLimit_UsesDocumentedChartQuotas(t *testing.T) {
 	t.Parallel()
 
-	rps, burst, ok := lsTRRateLimit(TROverseasStockChart)
+	rps, burst, ok := lsTRRateLimit(TRStockChart)
+	if !ok || rps != 1 || burst != 1 {
+		t.Fatalf("t8410 limit = rps %v burst %d ok %v, want 1/1/true", rps, burst, ok)
+	}
+
+	rps, burst, ok = lsTRRateLimit(TROverseasStockChart)
 	if !ok || rps != 1 || burst != 1 {
 		t.Fatalf("g3204 limit = rps %v burst %d ok %v, want 1/1/true", rps, burst, ok)
 	}

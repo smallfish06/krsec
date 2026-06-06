@@ -307,7 +307,7 @@ func (c *Client) trLimiter(trCD string) *ratelimit.Limiter {
 
 func lsTRRateLimit(trCD string) (float64, int, bool) {
 	switch strings.ToLower(strings.TrimSpace(trCD)) {
-	case TROverseasStockChart:
+	case TRStockChart, TROverseasStockChart:
 		return 1, 1, true
 	case TROverseasStockQuote, "g3102", TROverseasStockInstrument, "g3106", TROverseasStockMaster:
 		return 10, 1, true

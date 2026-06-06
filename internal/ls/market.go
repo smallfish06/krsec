@@ -82,14 +82,7 @@ func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from
 	if limit > 500 {
 		limit = 500
 	}
-	toDate := time.Now().Format("20060102")
-	if !to.IsZero() {
-		toDate = to.Format("20060102")
-	}
-	fromDate := ""
-	if !from.IsZero() {
-		fromDate = from.Format("20060102")
-	}
+	fromDate, toDate := chartRequestDates(gubun, from, to, limit)
 	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockChart, TRStockChart, map[string]interface{}{
 		"t8410InBlock": map[string]interface{}{
 			"shcode":   symbol,
@@ -105,7 +98,15 @@ func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from
 	if err != nil {
 		return nil, err
 	}
-	return sliceValue(resp, "t8410OutBlock1"), nil
+	rows, ok := sliceValueOK(resp, "t8410OutBlock1")
+	if !ok {
+		msg := anyString(resp["rsp_msg"])
+		if msg == "" {
+			msg = "output block missing"
+		}
+		return nil, fmt.Errorf("%w: t8410OutBlock1 missing: %s", broker.ErrServerError, msg)
+	}
+	return rows, nil
 }
 
 // InquireOverseasPrice returns raw g3101 response fields for an overseas stock.
@@ -384,6 +385,51 @@ func chartGubun(interval string) (string, error) {
 	default:
 		return "", fmt.Errorf("unsupported interval for LS: %s", interval)
 	}
+}
+
+func chartRequestDates(gubun string, from, to time.Time, limit int) (string, string) {
+	fromDate := ""
+	if !from.IsZero() {
+		fromDate = from.Format("20060102")
+	}
+	if !to.IsZero() {
+		return fromDate, to.Format("20060102")
+	}
+	if from.IsZero() {
+		return "", "99999999"
+	}
+	return fromDate, chartEndDateFromStart(gubun, from, limit)
+}
+
+func chartEndDateFromStart(gubun string, from time.Time, limit int) string {
+	steps := limit - 1
+	if steps < 0 {
+		steps = 0
+	}
+	switch gubun {
+	case "2":
+		return addWeekdays(from, steps).Format("20060102")
+	case "3":
+		return from.AddDate(0, 0, steps*7).Format("20060102")
+	case "4":
+		return from.AddDate(0, steps, 0).Format("20060102")
+	default:
+		return from.Format("20060102")
+	}
+}
+
+func addWeekdays(t time.Time, count int) time.Time {
+	out := t
+	for count > 0 {
+		out = out.AddDate(0, 0, 1)
+		switch out.Weekday() {
+		case time.Saturday, time.Sunday:
+			continue
+		default:
+			count--
+		}
+	}
+	return out
 }
 
 func overseasChartGubun(interval string) (string, error) {

@@ -193,7 +193,7 @@ examples/             사용 예시
 
 ## 범위
 
-공통 HTTP API는 REST 중심입니다. LS증권은 국내 주식 `t1102/t8410/t8436`, 미국 해외주식 `g3101/g3204/g3104`를 공통 현재가/차트/종목정보 인터페이스로 제공합니다. 해외주식 가격조회는 `GET /quotes/US-NASDAQ/AAPL` 같은 공통 quote API와 raw `POST /ls/overseas-stock/market-data` `g3101` 양쪽에서 사용할 수 있습니다.
+공통 HTTP API는 REST 중심입니다. LS증권은 국내 주식 `t1102/t8410/t8436`, 미국 해외주식 `g3101/g3204/g3104`를 공통 현재가/차트/종목정보 인터페이스로 제공합니다. 국내 `t8410`과 해외 `g3204` 차트 TR은 공식 quota에 맞춰 app key별 1 TPS로 직렬화합니다. 해외주식 가격조회는 `GET /quotes/US-NASDAQ/AAPL` 같은 공통 quote API와 raw `POST /ls/overseas-stock/market-data` `g3101` 양쪽에서 사용할 수 있습니다.
 
 LS raw proxy는 LS 공식 API 가이드 스냅샷 기준 문서화된 REST TR 전체를 `path + tr_cd`로 호출할 수 있습니다. 현재 snapshot은 41개 endpoint 묶음, 365개 TR(REST 249개, WebSocket 116개)을 포함합니다. REST raw 호출은 필수 request block/field를 검증한 뒤 전달하고, WebSocket TR은 REST proxy에서 거절하며 realtime client의 `ConnectRealtime`/`Subscribe` 경로로 사용합니다.
 
