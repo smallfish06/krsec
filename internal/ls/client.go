@@ -207,6 +207,11 @@ func (c *Client) callEndpointAttempt(
 			return nil, err
 		}
 	}
+	if limiter := c.trLimiter(trCD); limiter != nil {
+		if err := limiter.Wait(ctx); err != nil {
+			return nil, err
+		}
+	}
 
 	method = strings.ToUpper(strings.TrimSpace(method))
 	if method == "" {
@@ -286,6 +291,29 @@ func (c *Client) callEndpointAttempt(
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *Client) trLimiter(trCD string) *ratelimit.Limiter {
+	rps, burst, ok := lsTRRateLimit(trCD)
+	if !ok {
+		return nil
+	}
+	appKey, _ := c.getCredentials()
+	if appKey == "" {
+		appKey = "default"
+	}
+	return ratelimit.Shared("ls-"+strings.ToLower(strings.TrimSpace(trCD)), rps, burst, appKey)
+}
+
+func lsTRRateLimit(trCD string) (float64, int, bool) {
+	switch strings.ToLower(strings.TrimSpace(trCD)) {
+	case TROverseasStockChart:
+		return 1, 1, true
+	case TROverseasStockQuote, "g3102", TROverseasStockInstrument, "g3106", TROverseasStockMaster:
+		return 10, 1, true
+	default:
+		return 0, 0, false
+	}
 }
 
 func (c *Client) refreshToken(ctx context.Context) error {
