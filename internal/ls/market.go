@@ -128,7 +128,11 @@ func (c *Client) InquireOverseasPrice(ctx context.Context, symbol, exchange stri
 	}
 	block, ok := mapValue(resp, "g3101OutBlock")
 	if !ok {
-		return nil, fmt.Errorf("%w: g3101OutBlock missing", broker.ErrServerError)
+		msg := anyString(resp["rsp_msg"])
+		if msg == "" {
+			msg = "output block missing"
+		}
+		return nil, fmt.Errorf("%w: g3101OutBlock missing: %s", broker.ErrServerError, msg)
 	}
 	return block, nil
 }

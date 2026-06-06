@@ -280,6 +280,9 @@ func (c *Client) callEndpointAttempt(
 			return nil, fmt.Errorf("decode LS response: %w", err)
 		}
 	}
+	if isEmptyLSResponse(out) {
+		return nil, fmt.Errorf("%w: LS empty response for tr_cd %s", broker.ErrServerError, trCD)
+	}
 	if code := strings.TrimSpace(asString(out["rsp_cd"])); code != "" && code != "00000" {
 		err := mapLSStatus(code, asString(out["rsp_msg"]))
 		if retryUnauthorized && errors.Is(err, broker.ErrUnauthorized) {
@@ -402,6 +405,23 @@ func mapHTTPError(status int, body []byte) error {
 	default:
 		return fmt.Errorf("%w: LS HTTP %d %s %s", broker.ErrServerError, status, code, msg)
 	}
+}
+
+func isEmptyLSResponse(out map[string]interface{}) bool {
+	if len(out) == 0 {
+		return true
+	}
+	for key, value := range out {
+		switch strings.TrimSpace(strings.ToLower(key)) {
+		case "rsp_cd", "rsp_msg":
+			if strings.TrimSpace(asString(value)) != "" {
+				return false
+			}
+		default:
+			return false
+		}
+	}
+	return true
 }
 
 func mapLSStatus(code, msg string) error {

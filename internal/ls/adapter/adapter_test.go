@@ -177,6 +177,41 @@ func TestAdapterGetQuote_MapsOverseasG3101Response(t *testing.T) {
 	}
 }
 
+func TestAdapterGetQuote_ReturnsErrorWhenG3101OutputMissing(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case internalls.PathOAuthToken:
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"access_token": "test-token",
+				"token_type":   "Bearer",
+				"expires_in":   3600,
+			})
+		case internalls.PathOverseasStockMarket:
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"rsp_cd":  "00000",
+				"rsp_msg": "해당 자료가 없습니다.",
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer ts.Close()
+
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a.Client().SetBaseURL(ts.URL)
+	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
+		t.Fatalf("Authenticate error: %v", err)
+	}
+
+	_, err := a.GetQuote(context.Background(), "US-NASDAQ", "AAPL")
+	if !errors.Is(err, broker.ErrServerError) {
+		t.Fatalf("error = %v, want ErrServerError", err)
+	}
+	if !strings.Contains(err.Error(), "g3101OutBlock missing") || !strings.Contains(err.Error(), "해당 자료가 없습니다") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func TestAdapterGetOHLCV_UsesHistoricalStartForT8410FromOnly(t *testing.T) {
 	var gotLimit float64
 	var gotStartDate string

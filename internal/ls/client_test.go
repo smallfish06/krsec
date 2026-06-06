@@ -3,6 +3,7 @@ package ls
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -177,6 +178,48 @@ func TestClientCallEndpoint_MapsLSStatusError(t *testing.T) {
 		t.Fatal("CallEndpoint expected error, got nil")
 	}
 	if !strings.Contains(err.Error(), "upstream bad request") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestClientCallEndpoint_RejectsEmptyStatusOnlyResponse(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case PathOAuthToken:
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"access_token": "test-token",
+				"token_type":   "Bearer",
+				"expires_in":   3600,
+			})
+		case PathOverseasStockMarket:
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"rsp_cd":  "",
+				"rsp_msg": "",
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer ts.Close()
+
+	c := NewClientWithTokenManager(false, &memoryTokenManager{})
+	c.SetBaseURL(ts.URL)
+	if _, err := c.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
+		t.Fatalf("Authenticate error: %v", err)
+	}
+
+	_, err := c.CallEndpoint(context.Background(), http.MethodPost, PathOverseasStockMarket, TROverseasStockQuote, map[string]interface{}{
+		"g3101InBlock": map[string]interface{}{
+			"delaygb":   "R",
+			"keysymbol": "82AAPL",
+			"exchcd":    "82",
+			"symbol":    "AAPL",
+		},
+	})
+	if !errors.Is(err, broker.ErrServerError) {
+		t.Fatalf("error = %v, want ErrServerError", err)
+	}
+	if !strings.Contains(err.Error(), "LS empty response for tr_cd g3101") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
