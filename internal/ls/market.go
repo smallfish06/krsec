@@ -201,7 +201,15 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 	if err != nil {
 		return nil, err
 	}
-	return sliceValue(resp, "g3204OutBlock1"), nil
+	rows, ok := sliceValueOK(resp, "g3204OutBlock1")
+	if !ok {
+		msg := anyString(resp["rsp_msg"])
+		if msg == "" {
+			msg = "output block missing"
+		}
+		return nil, fmt.Errorf("%w: g3204OutBlock1 missing: %s", broker.ErrServerError, msg)
+	}
+	return rows, nil
 }
 
 // InquireBalance fetches t0424 account summary and position rows.
@@ -459,13 +467,18 @@ func mapValue(m map[string]interface{}, key string) (map[string]interface{}, boo
 }
 
 func sliceValue(m map[string]interface{}, key string) []map[string]interface{} {
+	rows, _ := sliceValueOK(m, key)
+	return rows
+}
+
+func sliceValueOK(m map[string]interface{}, key string) ([]map[string]interface{}, bool) {
 	v, ok := m[key]
 	if !ok {
-		return nil
+		return nil, false
 	}
 	switch t := v.(type) {
 	case []map[string]interface{}:
-		return t
+		return t, true
 	case []interface{}:
 		out := make([]map[string]interface{}, 0, len(t))
 		for _, item := range t {
@@ -473,9 +486,9 @@ func sliceValue(m map[string]interface{}, key string) []map[string]interface{} {
 				out = append(out, row)
 			}
 		}
-		return out
+		return out, true
 	default:
-		return nil
+		return nil, false
 	}
 }
 
