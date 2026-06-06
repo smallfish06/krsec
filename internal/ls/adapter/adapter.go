@@ -57,11 +57,6 @@ func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*
 	return a.client.Authenticate(ctx, creds)
 }
 
-// CallEndpoint executes an LS REST endpoint by path and tr_cd.
-func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, request interface{}) (interface{}, error) {
-	return a.client.CallEndpoint(ctx, method, path, trCD, request)
-}
-
 // ConnectRealtime opens an LS realtime WebSocket connection.
 func (a *Adapter) ConnectRealtime(ctx context.Context) (*ls.RealtimeConn, error) {
 	return a.client.ConnectRealtime(ctx)

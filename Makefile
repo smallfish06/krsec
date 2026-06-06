@@ -1,6 +1,7 @@
 .PHONY: build run test clean deps mock \
 	kis-spec-fetch kis-spec-generate kis-spec-refresh kis-spec-check kis-spec-all \
-	kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check kiwoom-spec-all
+	kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check kiwoom-spec-all \
+	ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check ls-spec-all
 
 # Build the application
 build:
@@ -80,3 +81,22 @@ kiwoom-spec-check:
 
 # Run full Kiwoom spec workflow end-to-end
 kiwoom-spec-all: kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check
+
+# Fetch latest documented LS snapshot from portal (network required)
+ls-spec-fetch:
+	go run ./cmd/ls-specgen fetch --out pkg/ls/specs/documented_endpoints.json
+
+# Generate LS documented spec Go file from snapshot
+ls-spec-generate:
+	go run ./cmd/ls-specgen generate --in pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
+
+# Refresh snapshot + regenerate LS documented Go files
+ls-spec-refresh:
+	go run ./cmd/ls-specgen refresh --snapshot pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
+
+# Verify generated LS documented files are up to date
+ls-spec-check:
+	go run ./cmd/ls-specgen check --in pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
+
+# Run full LS spec workflow end-to-end
+ls-spec-all: ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check
