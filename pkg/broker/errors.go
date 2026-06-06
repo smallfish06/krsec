@@ -38,4 +38,7 @@ var (
 
 	// ErrUpstreamBadRequest indicates the upstream API rejected the request
 	ErrUpstreamBadRequest = errors.New("upstream bad request")
+
+	// ErrNotSupported indicates the selected broker cannot perform the operation.
+	ErrNotSupported = errors.New("not supported")
 )

@@ -30,6 +30,7 @@ jobs:
         run: |
           make kis-spec-refresh
           make kiwoom-spec-refresh
+          make ls-spec-refresh
 
       - name: Detect spec drift
         id: drift
@@ -37,12 +38,14 @@ jobs:
           set -euo pipefail
 
           TRACKED_FILES=(
-            internal/kis/specs/documented_endpoints.json
-            internal/kis/specs/documented_specs_generated.go
-            internal/kis/specs/documented_endpoint_types_generated.go
-            internal/kiwoom/specs/documented_endpoints.json
-            internal/kiwoom/specs/documented_specs_generated.go
-            internal/kiwoom/specs/documented_endpoint_types_generated.go
+            pkg/kis/specs/documented_endpoints.json
+            pkg/kis/specs/documented_specs_generated.go
+            pkg/kis/specs/documented_endpoint_types_generated.go
+            pkg/kiwoom/specs/documented_endpoints.json
+            pkg/kiwoom/specs/documented_specs_generated.go
+            pkg/kiwoom/specs/documented_endpoint_types_generated.go
+            pkg/ls/specs/documented_endpoints.json
+            pkg/ls/specs/documented_specs_generated.go
           )
 
           if git diff --quiet -- "${TRACKED_FILES[@]}"; then

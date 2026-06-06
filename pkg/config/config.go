@@ -56,12 +56,13 @@ type KISProxyRateLimitOverrideConfig struct {
 
 // AccountConfig represents a broker account configuration
 type AccountConfig struct {
-	Name      string `yaml:"name"`
-	Broker    string `yaml:"broker"` // currently supported: broker.CodeKIS, broker.CodeKiwoom
-	Sandbox   bool   `yaml:"sandbox"`
-	AppKey    string `yaml:"app_key"`
-	AppSecret string `yaml:"app_secret"`
-	AccountID string `yaml:"account_id"`
+	Name       string `yaml:"name"`
+	Broker     string `yaml:"broker"` // currently supported: broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS
+	Sandbox    bool   `yaml:"sandbox"`
+	AppKey     string `yaml:"app_key"`
+	AppSecret  string `yaml:"app_secret"`
+	AccountID  string `yaml:"account_id"`
+	MACAddress string `yaml:"mac_address,omitempty"`
 }
 
 var accountIDPattern = regexp.MustCompile(`^\d{8}(-\d{2})?$`)
@@ -116,8 +117,9 @@ func (c *Config) Validate() error {
 		switch acc.Broker {
 		case broker.CodeKIS:
 		case broker.CodeKiwoom:
+		case broker.CodeLS:
 		default:
-			return fmt.Errorf("accounts[%d].broker unsupported value %q (expected: %s|%s)", i, acc.Broker, broker.CodeKIS, broker.CodeKiwoom)
+			return fmt.Errorf("accounts[%d].broker unsupported value %q (expected: %s|%s|%s)", i, acc.Broker, broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS)
 		}
 
 		acc.AppKey = strings.TrimSpace(acc.AppKey)
@@ -142,8 +144,13 @@ func (c *Config) Validate() error {
 			if !kiwoomAccountIDPattern.MatchString(accountID) {
 				return fmt.Errorf("accounts[%d].account_id invalid format %q for %s (expected: 10-digit number)", i, accountID, broker.CodeKiwoom)
 			}
+		case broker.CodeLS:
+			if accountID == "" {
+				return fmt.Errorf("accounts[%d].account_id is required for %s", i, broker.CodeLS)
+			}
 		}
 		acc.AccountID = accountID
+		acc.MACAddress = strings.TrimSpace(acc.MACAddress)
 
 		if _, ok := seen[accountID]; ok {
 			return fmt.Errorf("duplicate account_id: %s", accountID)

@@ -46,6 +46,26 @@ func validateKiwoomProxyRequest(req *kiwoomProxyRequest) error {
 	return nil
 }
 
+func validateLSProxyRequest(req *lsProxyRequest) error {
+	req.AccountID = strings.TrimSpace(req.AccountID)
+	req.Method = strings.ToUpper(strings.TrimSpace(req.Method))
+	req.TRCD = strings.TrimSpace(req.TRCD)
+
+	if err := proxyRequestValidator.Struct(struct {
+		Method string `validate:"omitempty,oneof=GET POST PUT DELETE PATCH"`
+		TRCD   string `validate:"required"`
+	}{
+		Method: req.Method,
+		TRCD:   req.TRCD,
+	}); err != nil {
+		return proxyRequestValidationError(err, map[string]string{
+			"TRCD.required": "tr_cd is required",
+			"Method.oneof":  "unsupported method",
+		})
+	}
+	return nil
+}
+
 func proxyRequestValidationError(err error, messages map[string]string) error {
 	var invalidValidationErr *validator.InvalidValidationError
 	if errors.As(err, &invalidValidationErr) {

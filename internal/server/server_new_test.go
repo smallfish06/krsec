@@ -31,3 +31,29 @@ func TestNew_WiresKiwoomBroker(t *testing.T) {
 		t.Fatalf("broker name = %q, want KIWOOM", got)
 	}
 }
+
+func TestNew_WiresLSBroker(t *testing.T) {
+	cfg := &config.Config{
+		Server:  config.ServerConfig{Host: "127.0.0.1", Port: 18082},
+		Storage: config.StorageConfig{TokenDir: t.TempDir()},
+		Accounts: []config.AccountConfig{
+			{
+				Name:      "ls-main",
+				Broker:    "ls",
+				Sandbox:   false,
+				AppKey:    "",
+				AppSecret: "",
+				AccountID: "ls-main",
+			},
+		},
+	}
+
+	s := New(cfg)
+	brk := s.getBroker("ls-main")
+	if brk == nil {
+		t.Fatal("expected LS broker to be wired")
+	}
+	if got := brk.Name(); got != "LS" {
+		t.Fatalf("broker name = %q, want LS", got)
+	}
+}

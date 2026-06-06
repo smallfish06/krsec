@@ -3,6 +3,7 @@ module github.com/smallfish06/krsec
 go 1.26
 
 require (
+	github.com/coder/websocket v1.8.14
 	github.com/getkin/kin-openapi v0.135.0
 	github.com/go-fuego/fuego v0.19.0
 	github.com/go-playground/validator/v10 v10.30.2

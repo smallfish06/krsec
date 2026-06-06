@@ -12,7 +12,7 @@
 |---|---|
 | 한국투자증권 (KIS) | ✅ |
 | 키움증권 | ✅ |
-| LS증권 | 예정 |
+| LS증권 | ✅ REST + WebSocket 실시간 체결, 국내/미국 주식 시세, 문서화된 전체 TR 스냅샷 |
 
 ## 설치
 
@@ -39,6 +39,14 @@ accounts:
     app_key: "YOUR_APP_KEY"
     app_secret: "YOUR_APP_SECRET"
     account_id: "12345678-01"
+
+  - name: "ls-main"
+    broker: ls
+    sandbox: false
+    app_key: "YOUR_LS_APP_KEY"
+    app_secret: "YOUR_LS_APP_SECRET"
+    account_id: "ls-main"
+    # mac_address: "YOUR_MAC_ADDRESS"  # LS 계정에서 요구되는 경우만 설정
 ```
 
 ## 실행
@@ -53,6 +61,7 @@ krsec -config config.yaml
 |---|---|---|
 | `POST` | `/kis/<documented-uapi-path>` | KIS 문서 스펙에 등록된 정적 엔드포인트 호출 (`/uapi` prefix 제외 경로) |
 | `POST` | `/kiwoom/{path...}` | Kiwoom 엔드포인트 호출 (`/api` 경로 + `api_id`를 구현/문서 스냅샷 기반 generated 매핑(비웹소켓 REST)) |
+| `POST` | `/ls/{path...}` | LS OpenAPI 엔드포인트 호출 (`tr_cd`와 요청 block 전달, 문서 스냅샷 기반 REST TR 검증) |
 | `GET` | `/quotes/{market}/{symbol}` | 현재가 |
 | `GET` | `/quotes/{market}/{symbol}/ohlcv` | 일봉 |
 | `GET` | `/instruments/{market}/{symbol}` | 종목 정보 |
@@ -75,6 +84,10 @@ curl http://localhost:8080/quotes/KRX/005930
 ```
 
 ```bash
+curl http://localhost:8080/quotes/US-NASDAQ/AAPL
+```
+
+```bash
 curl -X POST http://localhost:8080/kis/overseas-price/v1/quotations/price \
   -H "Content-Type: application/json" \
   -d '{
@@ -83,6 +96,36 @@ curl -X POST http://localhost:8080/kis/overseas-price/v1/quotations/price \
       "AUTH": "",
       "EXCD": "NAS",
       "SYMB": "AAPL"
+    }
+  }'
+```
+
+```bash
+curl -X POST http://localhost:8080/ls/stock/market-data \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tr_cd": "t1102",
+    "params": {
+      "t1102InBlock": {
+        "shcode": "078020",
+        "exchgubun": "K"
+      }
+    }
+  }'
+```
+
+```bash
+curl -X POST http://localhost:8080/ls/overseas-stock/market-data \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tr_cd": "g3101",
+    "params": {
+      "g3101InBlock": {
+        "delaygb": "R",
+        "keysymbol": "82AAPL",
+        "exchcd": "82",
+        "symbol": "AAPL"
+      }
     }
   }'
 ```
@@ -139,15 +182,24 @@ pkg/broker/           공개 인터페이스
 pkg/server/           임베드 가능한 HTTP 서버
 pkg/kis/specs/        KIS documented endpoint generated 타입/스펙
 pkg/kiwoom/specs/     Kiwoom documented endpoint generated 타입/스펙
+pkg/ls/               LS 공개 어댑터 + 토큰 매니저
+pkg/ls/specs/         LS documented endpoint generated 스펙
 internal/kis/         KIS 클라이언트 + 어댑터
 internal/kiwoom/      키움 클라이언트 + 어댑터
+internal/ls/          LS REST/WebSocket 클라이언트 + 어댑터
 internal/server/      HTTP 핸들러
 examples/             사용 예시
 ```
 
 ## 범위
 
-REST API만 지원합니다. WebSocket(실시간 시세, 실시간 체결 등)은 지원 범위에 포함되지 않습니다.
+공통 HTTP API는 REST 중심입니다. LS증권은 국내 주식 `t1102/t8410/t8436`, 미국 해외주식 `g3101/g3204/g3104`를 공통 현재가/차트/종목정보 인터페이스로 제공합니다. 해외주식 가격조회는 `GET /quotes/US-NASDAQ/AAPL` 같은 공통 quote API와 raw `POST /ls/overseas-stock/market-data` `g3101` 양쪽에서 사용할 수 있습니다.
+
+LS raw proxy는 LS 공식 API 가이드 스냅샷 기준 문서화된 REST TR 전체를 `path + tr_cd`로 호출할 수 있습니다. 현재 snapshot은 41개 endpoint 묶음, 365개 TR(REST 249개, WebSocket 116개)을 포함합니다. REST raw 호출은 필수 request block/field를 검증한 뒤 전달하고, WebSocket TR은 REST proxy에서 거절하며 realtime client의 `ConnectRealtime`/`Subscribe` 경로로 사용합니다.
+
+LS증권은 REST 조회/주문 어댑터와 별도로 WebSocket 실시간 체결 구독 클라이언트를 제공합니다. `BuildTradeSubscriptions`로 LS 종목마스터 기준 KOSPI/KOSDAQ 체결 구독 목록을 만들고 `SubscribeMany`로 한 연결에 등록할 수 있습니다. 미국 해외주식은 `BuildOverseasTradeSubscriptions(ctx, "US-NASDAQ", maxRows)` 또는 `OverseasRealtimeKey("82", "AAPL")`와 `GSC/GSH` TR로 구독할 수 있습니다.
+
+LS 주문 정정/취소/주문조회/체결조회는 LS 원주문 컨텍스트 요구사항과 현재 공통 인터페이스가 맞지 않아 아직 `ErrNotSupported`를 반환합니다.
 
 ## 개발
 
@@ -160,6 +212,8 @@ make kis-spec-check    # KIS generated spec/type 동기화 확인
 make kis-spec-refresh  # KIS 포털 snapshot 갱신 + generated 파일 재생성
 make kiwoom-spec-check   # Kiwoom generated spec/type 동기화 확인
 make kiwoom-spec-refresh # Kiwoom 포털 snapshot 갱신 + generated 파일 재생성
+make ls-spec-check       # LS generated spec 동기화 확인
+make ls-spec-refresh     # LS 포털 snapshot 갱신 + generated 파일 재생성
 ```
 
 ### KIS spec 관리
@@ -173,6 +227,13 @@ make kiwoom-spec-refresh # Kiwoom 포털 snapshot 갱신 + generated 파일 재�
 - Kiwoom 문서 스펙은 `pkg/kiwoom/specs/documented_endpoints.json` snapshot으로 버전 관리합니다.
 - 런타임은 웹사이트를 조회하지 않고, snapshot에서 생성된 코드만 사용합니다.
 - CI는 `make kiwoom-spec-check`로 generated 파일 drift를 차단합니다.
+
+### LS spec 관리
+
+- LS 문서 스펙은 `pkg/ls/specs/documented_endpoints.json` snapshot으로 버전 관리합니다.
+- 런타임은 웹사이트를 조회하지 않고, snapshot에서 생성된 코드만 사용합니다.
+- `cmd/ls-specgen`은 LS 공식 API 가이드의 REST/WEBSOCKET TR 목록과 request/response field 속성을 수집합니다.
+- CI는 `make ls-spec-check`로 generated 파일 drift를 차단합니다.
 
 ## AI 에이전트 안내
 

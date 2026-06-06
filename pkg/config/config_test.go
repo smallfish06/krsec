@@ -46,6 +46,40 @@ accounts:
 	}
 }
 
+func TestLoadValidLSConfig(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+accounts:
+  - name: "ls-main"
+    broker: LS
+    sandbox: false
+    app_key: "k"
+    app_secret: "s"
+    account_id: "  ls-main  "
+    mac_address: "  00:11:22:33:44:55  "
+`)
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("Load() unexpected error: %v", err)
+	}
+	if len(cfg.Accounts) != 1 {
+		t.Fatalf("accounts length = %d, want 1", len(cfg.Accounts))
+	}
+	acc := cfg.Accounts[0]
+	if acc.Broker != "ls" {
+		t.Fatalf("broker = %q, want ls", acc.Broker)
+	}
+	if acc.AccountID != "ls-main" {
+		t.Fatalf("account_id = %q, want ls-main", acc.AccountID)
+	}
+	if acc.MACAddress != "00:11:22:33:44:55" {
+		t.Fatalf("mac_address = %q", acc.MACAddress)
+	}
+}
+
 func TestLoadStorageConfig(t *testing.T) {
 	path := writeTempConfig(t, `
 server:

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"maps"
@@ -13,12 +14,14 @@ import (
 
 	"github.com/smallfish06/krsec/internal/kis"
 	"github.com/smallfish06/krsec/internal/kiwoom"
+	internalls "github.com/smallfish06/krsec/internal/ls"
 	pkgadapter "github.com/smallfish06/krsec/pkg/adapter"
 	"github.com/smallfish06/krsec/pkg/broker"
 	"github.com/smallfish06/krsec/pkg/config"
 	pkgkis "github.com/smallfish06/krsec/pkg/kis"
 	pkgkiwoom "github.com/smallfish06/krsec/pkg/kiwoom"
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
+	pkgls "github.com/smallfish06/krsec/pkg/ls"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
 
@@ -35,7 +38,7 @@ type endpointCase struct {
 	Name        string
 	Method      string
 	Path        string
-	TRID        string // KIS: tr_id, Kiwoom: api_id
+	TRID        string // KIS/LS: tr_id/tr_cd, Kiwoom: api_id
 	Fields      map[string]string
 	ExpectError bool
 }
@@ -54,6 +57,7 @@ func main() {
 
 	kisTokenManager := pkgkis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	kiwoomTokenManager := pkgkiwoom.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
+	lsTokenManager := pkgls.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 
 	for _, acc := range cfg.Accounts {
 		acc := acc
@@ -62,6 +66,8 @@ func main() {
 			runKISAccount(&results, acc, kisTokenManager, cfg.Storage.OrderContextDir)
 		case broker.CodeKiwoom:
 			runKiwoomAccount(&results, acc, kiwoomTokenManager, cfg.Storage.OrderContextDir)
+		case broker.CodeLS:
+			runLSAccount(&results, acc, lsTokenManager)
 		default:
 			results = append(results, smokeResult{
 				Broker:   strings.ToUpper(acc.Broker),
@@ -240,6 +246,125 @@ func runKiwoomAccount(results *[]smokeResult, acc config.AccountConfig, tm token
 			Quantity:  1,
 			Price:     1,
 		})
+		return err
+	})
+}
+
+func runLSAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencache.Manager) {
+	a := pkgls.NewAdapterWithOptions(acc.Sandbox, acc.AccountID, pkgls.Options{
+		Options:    pkgadapter.Options{TokenManager: tm},
+		MACAddress: acc.MACAddress,
+	})
+	creds := broker.Credentials{AppKey: acc.AppKey, AppSecret: acc.AppSecret}
+
+	runCase(results, "LS", acc.AccountID, "auth", false, func(ctx context.Context) error {
+		_, err := a.Authenticate(ctx, creds)
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetQuote(KRX,078020)", false, func(ctx context.Context) error {
+		_, err := a.GetQuote(ctx, "KRX", "078020")
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetQuote(US-NASDAQ,AAPL)", false, func(ctx context.Context) error {
+		_, err := a.GetQuote(ctx, "US-NASDAQ", "AAPL")
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetOHLCV(KRX,078020,1d)", false, func(ctx context.Context) error {
+		_, err := a.GetOHLCV(ctx, "KRX", "078020", broker.OHLCVOpts{Interval: "1d", Limit: 10})
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetOHLCV(US-NASDAQ,AAPL,1d)", false, func(ctx context.Context) error {
+		_, err := a.GetOHLCV(ctx, "US-NASDAQ", "AAPL", broker.OHLCVOpts{Interval: "1d", Limit: 5})
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetInstrument(KRX,078020)", false, func(ctx context.Context) error {
+		_, err := a.GetInstrument(ctx, "KRX", "078020")
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "GetInstrument(US-NASDAQ,AAPL)", false, func(ctx context.Context) error {
+		_, err := a.GetInstrument(ctx, "US-NASDAQ", "AAPL")
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "CallEndpoint t1102", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]interface{}{
+			"t1102InBlock": map[string]interface{}{
+				"shcode":    "078020",
+				"exchgubun": "K",
+			},
+		})
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "CallEndpoint g3101", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathOverseasStockMarket, internalls.TROverseasStockQuote, map[string]interface{}{
+			"g3101InBlock": map[string]interface{}{
+				"delaygb":   "R",
+				"keysymbol": "82AAPL",
+				"exchcd":    "82",
+				"symbol":    "AAPL",
+			},
+		})
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "BuildTradeSubscriptions", false, func(ctx context.Context) error {
+		subs, err := a.BuildTradeSubscriptions(ctx)
+		if err != nil {
+			return err
+		}
+		if len(subs) == 0 {
+			return fmt.Errorf("no realtime subscriptions built")
+		}
+		return nil
+	})
+	runCase(results, "LS", acc.AccountID, "BuildOverseasTradeSubscriptions(US-NASDAQ)", false, func(ctx context.Context) error {
+		subs, err := a.BuildOverseasTradeSubscriptions(ctx, "US-NASDAQ", 5)
+		if err != nil {
+			return err
+		}
+		if len(subs) == 0 {
+			return fmt.Errorf("no overseas realtime subscriptions built")
+		}
+		return nil
+	})
+	runCase(results, "LS", acc.AccountID, "RealtimeSubscribe(S3_,078020)", false, func(ctx context.Context) error {
+		conn, err := a.ConnectRealtime(ctx)
+		if err != nil {
+			return err
+		}
+		defer func() { _ = conn.Close() }()
+
+		if err := conn.Subscribe(ctx, internalls.TRRealtimeKOSPI, "078020"); err != nil {
+			return err
+		}
+
+		readCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
+		defer cancel()
+		_, err = conn.Read(readCtx)
+		if err == nil || errors.Is(err, context.DeadlineExceeded) {
+			return nil
+		}
+		return err
+	})
+	runCase(results, "LS", acc.AccountID, "RealtimeSubscribe(GSC,82AAPL)", false, func(ctx context.Context) error {
+		conn, err := a.ConnectRealtime(ctx)
+		if err != nil {
+			return err
+		}
+		defer func() { _ = conn.Close() }()
+
+		key, err := pkgls.OverseasRealtimeKey("82", "AAPL")
+		if err != nil {
+			return err
+		}
+		if err := conn.Subscribe(ctx, internalls.TRRealtimeOverseasTrade, key); err != nil {
+			return err
+		}
+
+		readCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
+		defer cancel()
+		_, err = conn.Read(readCtx)
+		if err == nil || errors.Is(err, context.DeadlineExceeded) {
+			return nil
+		}
 		return err
 	})
 }

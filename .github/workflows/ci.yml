@@ -28,6 +28,9 @@ jobs:
       - name: Check Generated Kiwoom Specs
         run: make kiwoom-spec-check
 
+      - name: Check Generated LS Specs
+        run: make ls-spec-check
+
       - name: Vet
         run: go vet ./...
 
