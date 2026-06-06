@@ -82,6 +82,70 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 	}
 }
 
+func TestAdapterCallEndpoint_AllowsInitialOverseasChartContinuationFields(t *testing.T) {
+	t.Parallel()
+
+	var gotEndDate string
+	var gotCTSDatePresent bool
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case internalls.PathOAuthToken:
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"access_token": "test-token",
+				"token_type":   "Bearer",
+				"expires_in":   3600,
+			})
+		case internalls.PathOverseasStockChart:
+			var body map[string]map[string]interface{}
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				t.Fatalf("Decode body: %v", err)
+			}
+			block := body["g3204InBlock"]
+			gotEndDate, _ = block["edate"].(string)
+			_, gotCTSDatePresent = block["cts_date"]
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"rsp_cd":  "00000",
+				"rsp_msg": "ok",
+				"g3204OutBlock1": []map[string]interface{}{
+					{"date": "20250601", "open": "100.0", "high": "110.0", "low": "99.0", "close": "108.0", "volume": "1000"},
+				},
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer ts.Close()
+
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a.Client().SetBaseURL(ts.URL)
+	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
+		t.Fatalf("Authenticate error: %v", err)
+	}
+
+	_, err := a.CallEndpoint(context.Background(), "", internalls.PathOverseasStockChart, internalls.TROverseasStockChart, map[string]interface{}{
+		"g3204InBlock": map[string]interface{}{
+			"delaygb":   "R",
+			"keysymbol": "82TSLA",
+			"exchcd":    "82",
+			"symbol":    "TSLA",
+			"gubun":     "2",
+			"qrycnt":    5,
+			"comp_yn":   "N",
+			"sdate":     "20250203",
+			"edate":     "",
+		},
+	})
+	if err != nil {
+		t.Fatalf("CallEndpoint error: %v", err)
+	}
+	if gotEndDate != "" {
+		t.Fatalf("edate = %q, want empty string", gotEndDate)
+	}
+	if gotCTSDatePresent {
+		t.Fatalf("cts_date should not be required for initial overseas chart request")
+	}
+}
+
 func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 	t.Parallel()
 
