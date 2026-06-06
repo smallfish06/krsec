@@ -16,6 +16,8 @@ import (
 	kisadapter "github.com/smallfish06/krsec/internal/kis/adapter"
 	"github.com/smallfish06/krsec/internal/kiwoom"
 	kiwoomadapter "github.com/smallfish06/krsec/internal/kiwoom/adapter"
+	"github.com/smallfish06/krsec/internal/ls"
+	lsadapter "github.com/smallfish06/krsec/internal/ls/adapter"
 	"github.com/smallfish06/krsec/pkg/broker"
 	"github.com/smallfish06/krsec/pkg/config"
 	kisspecs "github.com/smallfish06/krsec/pkg/kis/specs"
@@ -105,7 +107,7 @@ func NewWithLogger(cfg *config.Config, logger *slog.Logger) *Server {
 }
 
 // New creates a new server instance.
-// This constructor wires built-in brokers from config (currently KIS, Kiwoom).
+// This constructor wires built-in brokers from config (currently KIS, Kiwoom, LS).
 func New(cfg *config.Config) *Server {
 	s := newBaseServer(cfg)
 	return s.init(cfg)
@@ -115,6 +117,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 
 	kisTokenManager := kis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	kiwoomTokenManager := kiwoom.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
+	lsTokenManager := ls.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 
 	// Initialize brokers for each account
 	for _, account := range cfg.Accounts {
@@ -180,6 +183,26 @@ func (s *Server) init(cfg *config.Config) *Server {
 				AppSecret: account.AppSecret,
 			}
 			go func(name string, a *kiwoomadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
+				if _, err := a.Authenticate(context.Background(), c); err != nil {
+					logger.Warn("failed to authenticate account", "account", name, "error", err)
+				} else {
+					logger.Info("authenticated account", "account", name)
+				}
+			}(account.Name, adapter, creds, s.logger)
+			brk = adapter
+		case broker.CodeLS:
+			adapter := lsadapter.NewAdapterWithOptions(
+				account.Sandbox,
+				account.AccountID,
+				lsTokenManager,
+				account.MACAddress,
+				s.logger,
+			)
+			creds := broker.Credentials{
+				AppKey:    account.AppKey,
+				AppSecret: account.AppSecret,
+			}
+			go func(name string, a *lsadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
 				if _, err := a.Authenticate(context.Background(), c); err != nil {
 					logger.Warn("failed to authenticate account", "account", name, "error", err)
 				} else {
@@ -261,6 +284,15 @@ func (s *Server) routes() {
 		fuego.OptionDescription("Calls Kiwoom endpoints implemented in krsec by path. api_id in request body is required."),
 		fuego.OptionPath("path", "Kiwoom API path under /api. Accepts wildcard segments."),
 		fuego.OptionQuery("account_id", "Optional account selector when multiple Kiwoom accounts exist."),
+	)
+
+	// LS endpoint dispatcher (calls LS endpoints by path + tr_cd)
+	fuego.Post(s.router, "/ls/{path...}", s.handleLSProxy,
+		fuego.OptionTags("LS"),
+		fuego.OptionSummary("Call LS endpoint by path"),
+		fuego.OptionDescription("Calls LS Securities OpenAPI endpoints by path. tr_cd in request body is required."),
+		fuego.OptionPath("path", "LS API path, for example /stock/market-data. Accepts wildcard segments."),
+		fuego.OptionQuery("account_id", "Optional account selector when multiple LS accounts exist."),
 	)
 
 	// Quotes

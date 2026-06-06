@@ -50675,6 +50675,44 @@
 				},
 				"type": "object"
 			},
+			"lsProxyRequest": {
+				"description": "lsProxyRequest schema",
+				"properties": {
+					"account_id": {
+						"nullable": true,
+						"type": "string"
+					},
+					"body": {
+						"additionalProperties": {
+							"nullable": true
+						},
+						"nullable": true,
+						"type": "object"
+					},
+					"method": {
+						"nullable": true,
+						"type": "string"
+					},
+					"params": {
+						"additionalProperties": {
+							"nullable": true
+						},
+						"nullable": true,
+						"type": "object"
+					},
+					"query": {
+						"additionalProperties": {
+							"nullable": true
+						},
+						"nullable": true,
+						"type": "object"
+					},
+					"tr_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
 			"unknown-interface": {
 				"description": "unknown-interface schema"
 			}
@@ -89571,6 +89609,112 @@
 				]
 			}
 		},
+		"/ls/{path...}": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleLSProxy`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nCalls LS Securities OpenAPI endpoints by path. tr_cd in request body is required.",
+				"operationId": "POST_/ls/:path...",
+				"parameters": [
+					{
+						"description": "LS API path, for example /stock/market-data. Accepts wildcard segments.",
+						"in": "path",
+						"name": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Optional account selector when multiple LS accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": " (might contain slashes)",
+						"in": "path",
+						"name": "path...",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"*/*": {
+							"schema": {
+								"$ref": "#/components/schemas/lsProxyRequest"
+							}
+						}
+					},
+					"description": "Request body for server.lsProxyRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Response"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "Call LS endpoint by path",
+				"tags": [
+					"LS"
+				]
+			}
+		},
 		"/quotes/{market}/{symbol}": {
 			"get": {
 				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleGetQuote`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nReturns the current price for a symbol.",
@@ -89721,6 +89865,19 @@
 						}
 					},
 					{
+						"description": "Use a specific account's broker (optional)",
+						"examples": {
+							"KIS account": {
+								"value": "12345678-01"
+							}
+						},
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"description": "Candle interval: 1d, 1w, 1mo",
 						"examples": {
 							"daily": {
@@ -89858,6 +90015,9 @@
 		},
 		{
 			"name": "Kiwoom"
+		},
+		{
+			"name": "LS"
 		},
 		{
 			"name": "Orders"
