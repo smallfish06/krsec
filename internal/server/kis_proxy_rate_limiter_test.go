@@ -12,16 +12,43 @@ func TestKISProxyRateLimiterWaitsBetweenBurstOneCalls(t *testing.T) {
 		Burst:             1,
 	})
 
-	if _, err := limiter.wait(context.Background()); err != nil {
+	if _, err := limiter.wait(context.Background(), "", ""); err != nil {
 		t.Fatalf("first wait unexpected error: %v", err)
 	}
 
 	start := time.Now()
-	if _, err := limiter.wait(context.Background()); err != nil {
+	if _, err := limiter.wait(context.Background(), "", ""); err != nil {
 		t.Fatalf("second wait unexpected error: %v", err)
 	}
 	if elapsed := time.Since(start); elapsed < 40*time.Millisecond {
 		t.Fatalf("second wait elapsed = %s, want at least 40ms", elapsed)
+	}
+}
+
+func TestKISProxyRateLimiterUsesEndpointOverride(t *testing.T) {
+	limiter := newKISProxyRateLimiter(KISProxyRateLimitOptions{
+		RequestsPerSecond: 1000,
+		Burst:             1,
+		Overrides: []KISProxyRateLimitOverrideOptions{
+			{
+				Path:              "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice",
+				RequestsPerSecond: 20,
+				Burst:             1,
+			},
+		},
+	})
+
+	path := "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
+	if _, err := limiter.wait(context.Background(), path, "FHKST03030200"); err != nil {
+		t.Fatalf("first wait unexpected error: %v", err)
+	}
+
+	start := time.Now()
+	if _, err := limiter.wait(context.Background(), path, "FHKST03030200"); err != nil {
+		t.Fatalf("second wait unexpected error: %v", err)
+	}
+	if elapsed := time.Since(start); elapsed < 40*time.Millisecond {
+		t.Fatalf("second override wait elapsed = %s, want at least 40ms", elapsed)
 	}
 }
 

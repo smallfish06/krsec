@@ -47,6 +47,16 @@ type KISProxyRateLimitOptions struct {
 	Disabled          bool
 	RequestsPerSecond float64
 	Burst             int
+	Overrides         []KISProxyRateLimitOverrideOptions
+}
+
+// KISProxyRateLimitOverrideOptions configures a stricter limit for one KIS
+// proxy endpoint.
+type KISProxyRateLimitOverrideOptions struct {
+	Path              string
+	TRID              string
+	RequestsPerSecond float64
+	Burst             int
 }
 
 // Options configures the public API server.
@@ -101,6 +111,15 @@ func toInternalOptions(opts Options) internalserver.ServerOptions {
 			return opts.KISProxyCache.Policy(toPublicCacheRequest(req))
 		}
 	}
+	overrides := make([]internalserver.KISProxyRateLimitOverrideOptions, 0, len(opts.KISProxyRateLimit.Overrides))
+	for _, override := range opts.KISProxyRateLimit.Overrides {
+		overrides = append(overrides, internalserver.KISProxyRateLimitOverrideOptions{
+			Path:              override.Path,
+			TRID:              override.TRID,
+			RequestsPerSecond: override.RequestsPerSecond,
+			Burst:             override.Burst,
+		})
+	}
 	return internalserver.ServerOptions{
 		Logger: opts.Logger,
 		KISProxyCache: internalserver.KISProxyCacheOptions{
@@ -112,6 +131,7 @@ func toInternalOptions(opts Options) internalserver.ServerOptions {
 			Disabled:          opts.KISProxyRateLimit.Disabled,
 			RequestsPerSecond: opts.KISProxyRateLimit.RequestsPerSecond,
 			Burst:             opts.KISProxyRateLimit.Burst,
+			Overrides:         overrides,
 		},
 	}
 }

@@ -39,7 +39,17 @@ type KISProxyConfig struct {
 
 // KISProxyRateLimitConfig limits outbound KIS upstream calls from the proxy.
 type KISProxyRateLimitConfig struct {
-	Enabled           *bool   `yaml:"enabled,omitempty"`
+	Enabled           *bool                             `yaml:"enabled,omitempty"`
+	RequestsPerSecond float64                           `yaml:"requests_per_second,omitempty"`
+	Burst             int                               `yaml:"burst,omitempty"`
+	Overrides         []KISProxyRateLimitOverrideConfig `yaml:"overrides,omitempty"`
+}
+
+// KISProxyRateLimitOverrideConfig applies a stricter limit to selected KIS
+// proxy endpoints.
+type KISProxyRateLimitOverrideConfig struct {
+	Path              string  `yaml:"path,omitempty"`
+	TRID              string  `yaml:"tr_id,omitempty"`
 	RequestsPerSecond float64 `yaml:"requests_per_second,omitempty"`
 	Burst             int     `yaml:"burst,omitempty"`
 }
@@ -74,6 +84,20 @@ func (c *Config) Validate() error {
 	}
 	if c.KISProxy.RateLimit.Burst < 0 {
 		return fmt.Errorf("kis_proxy.rate_limit.burst must be greater than or equal to 0")
+	}
+	for i := range c.KISProxy.RateLimit.Overrides {
+		override := &c.KISProxy.RateLimit.Overrides[i]
+		override.Path = strings.TrimSpace(override.Path)
+		override.TRID = strings.TrimSpace(override.TRID)
+		if override.Path == "" {
+			return fmt.Errorf("kis_proxy.rate_limit.overrides[%d].path is required", i)
+		}
+		if override.RequestsPerSecond <= 0 {
+			return fmt.Errorf("kis_proxy.rate_limit.overrides[%d].requests_per_second must be greater than 0", i)
+		}
+		if override.Burst < 0 {
+			return fmt.Errorf("kis_proxy.rate_limit.overrides[%d].burst must be greater than or equal to 0", i)
+		}
 	}
 
 	if len(c.Accounts) == 0 {

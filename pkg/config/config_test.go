@@ -85,6 +85,11 @@ kis_proxy:
     enabled: true
     requests_per_second: 12.5
     burst: 1
+    overrides:
+      - path: "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
+        tr_id: "FHKST03030200"
+        requests_per_second: 5
+        burst: 1
 accounts:
   - name: "main"
     broker: kis
@@ -106,6 +111,22 @@ accounts:
 	}
 	if cfg.KISProxy.RateLimit.Burst != 1 {
 		t.Fatalf("burst = %d, want 1", cfg.KISProxy.RateLimit.Burst)
+	}
+	if len(cfg.KISProxy.RateLimit.Overrides) != 1 {
+		t.Fatalf("overrides len = %d, want 1", len(cfg.KISProxy.RateLimit.Overrides))
+	}
+	override := cfg.KISProxy.RateLimit.Overrides[0]
+	if override.Path != "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice" {
+		t.Fatalf("override.path = %q", override.Path)
+	}
+	if override.TRID != "FHKST03030200" {
+		t.Fatalf("override.tr_id = %q", override.TRID)
+	}
+	if override.RequestsPerSecond != 5 {
+		t.Fatalf("override.requests_per_second = %v, want 5", override.RequestsPerSecond)
+	}
+	if override.Burst != 1 {
+		t.Fatalf("override.burst = %d, want 1", override.Burst)
 	}
 }
 
@@ -131,6 +152,34 @@ accounts:
 		t.Fatal("Load() expected error, got nil")
 	}
 	if !strings.Contains(err.Error(), "kis_proxy.rate_limit.requests_per_second") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestLoadRejectsInvalidKISProxyRateLimitOverride(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+kis_proxy:
+  rate_limit:
+    overrides:
+      - path: "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
+        requests_per_second: 0
+accounts:
+  - name: "main"
+    broker: kis
+    sandbox: true
+    app_key: "k"
+    app_secret: "s"
+    account_id: "12345678-01"
+`)
+
+	_, err := Load(path)
+	if err == nil {
+		t.Fatal("Load() expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "kis_proxy.rate_limit.overrides[0].requests_per_second") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
