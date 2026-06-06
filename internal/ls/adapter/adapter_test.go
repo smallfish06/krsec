@@ -178,6 +178,7 @@ func TestAdapterGetQuote_MapsOverseasG3101Response(t *testing.T) {
 func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 	var gotLimit float64
 	var gotSymbol string
+	var gotEndDate string
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -197,6 +198,7 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 			}
 			gotSymbol, _ = body["g3204InBlock"]["symbol"].(string)
 			gotLimit, _ = body["g3204InBlock"]["qrycnt"].(float64)
+			gotEndDate, _ = body["g3204InBlock"]["edate"].(string)
 			_ = json.NewEncoder(w).Encode(map[string]interface{}{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
@@ -226,6 +228,9 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 	}
 	if gotLimit != 5 {
 		t.Fatalf("request qrycnt = %v, want capped 5", gotLimit)
+	}
+	if gotEndDate != "" {
+		t.Fatalf("request edate = %q, want empty string", gotEndDate)
 	}
 	if len(rows) != 2 {
 		t.Fatalf("rows = %d, want 2", len(rows))

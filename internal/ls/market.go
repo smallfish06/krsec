@@ -174,7 +174,7 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 	if limit > 5 {
 		limit = 5
 	}
-	toDate := time.Now().Format("20060102")
+	toDate := ""
 	if !to.IsZero() {
 		toDate = to.Format("20060102")
 	}

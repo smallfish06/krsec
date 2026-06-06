@@ -67,11 +67,23 @@ func validateDocumentedRequestFields(spec lsspecs.LSEndpointSpec, payload map[st
 		if code == "" {
 			continue
 		}
+		if isOptionalContinuationField(code) {
+			continue
+		}
 		if !payloadHasField(payload, code) {
 			return fmt.Errorf("%w: missing required field %s", broker.ErrInvalidOrderRequest, code)
 		}
 	}
 	return nil
+}
+
+func isOptionalContinuationField(code string) bool {
+	switch strings.ToLower(strings.TrimSpace(code)) {
+	case "cts_date", "cts_info", "cts_seq", "cts_value", "sujung":
+		return true
+	default:
+		return false
+	}
 }
 
 func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
@@ -126,16 +138,16 @@ func payloadHasField(value interface{}, key string) bool {
 	case map[string]interface{}:
 		for k, v := range t {
 			if strings.EqualFold(strings.TrimSpace(k), key) {
-				return payloadValuePresent(v)
+				return v != nil
 			}
 			if payloadHasField(v, key) {
 				return true
 			}
 		}
 	case map[string]string:
-		for k, v := range t {
+		for k := range t {
 			if strings.EqualFold(strings.TrimSpace(k), key) {
-				return strings.TrimSpace(v) != ""
+				return true
 			}
 		}
 	case []interface{}:
@@ -146,23 +158,6 @@ func payloadHasField(value interface{}, key string) bool {
 		}
 	}
 	return false
-}
-
-func payloadValuePresent(value interface{}) bool {
-	switch t := value.(type) {
-	case nil:
-		return false
-	case string:
-		return strings.TrimSpace(t) != ""
-	case map[string]interface{}:
-		return t != nil
-	case map[string]string:
-		return t != nil
-	case []interface{}:
-		return t != nil
-	default:
-		return true
-	}
 }
 
 func normalizeEndpointPath(path string) string {
