@@ -295,6 +295,16 @@ func TestLSTRRateLimit_UsesDocumentedChartQuotas(t *testing.T) {
 		t.Fatalf("g3204 limit = rps %v burst %d ok %v, want 1/1/true", rps, burst, ok)
 	}
 
+	rps, burst, ok = lsTRRateLimit(TRForeignIndexQuote)
+	if !ok || rps != 1 || burst != 1 {
+		t.Fatalf("t3521 limit = rps %v burst %d ok %v, want 1/1/true", rps, burst, ok)
+	}
+
+	rps, burst, ok = lsTRRateLimit(TRForeignIndexHistory)
+	if !ok || rps != 1 || burst != 1 {
+		t.Fatalf("t3518 limit = rps %v burst %d ok %v, want 1/1/true", rps, burst, ok)
+	}
+
 	rps, burst, ok = lsTRRateLimit(TROverseasStockQuote)
 	if !ok || rps != 10 || burst != 1 {
 		t.Fatalf("g3101 limit = rps %v burst %d ok %v, want 10/1/true", rps, burst, ok)

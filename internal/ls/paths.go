@@ -21,21 +21,24 @@ const (
 	PathStockOrder      = "/stock/order"
 	PathStockMisc       = "/stock/etc"
 	PathStockItemSearch = "/stock/item-search"
+	PathStockInvestInfo = "/stock/investinfo"
 
 	PathOverseasStockMarket = "/overseas-stock/market-data"
 	PathOverseasStockChart  = "/overseas-stock/chart"
 )
 
 const (
-	TRStockQuote      = "t1102"
-	TRStockChart      = "t8410"
-	TRStockBalance    = "t0424"
-	TRStockOrder      = "CSPAT00601"
-	TRStockMaster     = "t8436"
-	TRRealtimeKOSPI   = "S3_"
-	TRRealtimeKOSDAQ  = "K3_"
-	TRRealtimeUnified = "US3"
-	TRRealtimeNXT     = "NS3"
+	TRStockQuote          = "t1102"
+	TRStockChart          = "t8410"
+	TRStockBalance        = "t0424"
+	TRStockOrder          = "CSPAT00601"
+	TRStockMaster         = "t8436"
+	TRForeignIndexHistory = "t3518"
+	TRForeignIndexQuote   = "t3521"
+	TRRealtimeKOSPI       = "S3_"
+	TRRealtimeKOSDAQ      = "K3_"
+	TRRealtimeUnified     = "US3"
+	TRRealtimeNXT         = "NS3"
 
 	TROverseasStockQuote      = "g3101"
 	TROverseasStockInstrument = "g3104"
