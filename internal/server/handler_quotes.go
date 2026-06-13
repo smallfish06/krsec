@@ -116,7 +116,7 @@ func parseOHLCVOpts(c queryReader) (broker.OHLCVOpts, error) {
 		opts.Interval = "1d"
 	}
 	switch strings.ToLower(strings.TrimSpace(opts.Interval)) {
-	case "1d", "d", "day", "daily", "1w", "w", "week", "weekly", "1mo", "mo", "month", "monthly":
+	case "1m", "m", "min", "minute", "1d", "d", "day", "daily", "1w", "w", "week", "weekly", "1mo", "mo", "month", "monthly":
 	default:
 		return broker.OHLCVOpts{}, fmt.Errorf("invalid interval: %s", opts.Interval)
 	}

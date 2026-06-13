@@ -1071,6 +1071,27 @@ type KISDomesticFutureoptionV1QuotationsInquireTimeFuopchartpriceRequest struct 
 	FidPwDataIncuYn    string `json:"FID_PW_DATA_INCU_YN"`
 }
 
+type KISDomesticFutureoptionV1QuotationsMarginRate struct {
+	DocumentedResponseBase
+	Output DocumentedSlice[KISDomesticFutureoptionV1QuotationsMarginRateOutputItem] `json:"output,omitempty"`
+}
+
+type KISDomesticFutureoptionV1QuotationsMarginRateOutputItem struct {
+	BastId          string `json:"bast_id"`
+	BastName        string `json:"bast_name"`
+	BrkgMgnaRt      string `json:"brkg_mgna_rt"`
+	TrMgnaRt        string `json:"tr_mgna_rt"`
+	BastPric        string `json:"bast_pric"`
+	TrMtplIdx       string `json:"tr_mtpl_idx"`
+	CtrtPerFutrMgna string `json:"ctrt_per_futr_mgna"`
+}
+
+type KISDomesticFutureoptionV1QuotationsMarginRateRequest struct {
+	BassDt       string `json:"BASS_DT"`
+	BastId       string `json:"BAST_ID"`
+	CtxAreaNk200 string `json:"CTX_AREA_NK200"`
+}
+
 type KISDomesticFutureoptionV1TradingInquireBalance struct {
 	DocumentedResponseBase
 	CtxAreaFk200 string                                                                     `json:"ctx_area_fk200,omitempty"`
@@ -5031,7 +5052,6 @@ type KISDomesticStockV1QuotationsVolumeRankRequest struct {
 	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
 	FidCondScrDivCode  string `json:"FID_COND_SCR_DIV_CODE"`
 	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`
-	FidInputDate1      string `json:"FID_INPUT_DATE_1"`
 	FidInputIscd       string `json:"FID_INPUT_ISCD"`
 	FidInputPrice1     string `json:"FID_INPUT_PRICE_1"`
 	FidInputPrice2     string `json:"FID_INPUT_PRICE_2"`
@@ -7621,6 +7641,118 @@ type KISElwV1RankingVolumeRankRequest struct {
 	FidUnasInputIscd   string `json:"FID_UNAS_INPUT_ISCD"`
 }
 
+type KISEtfetnV1QuotationsInquireAskingPrice struct {
+	DocumentedResponseBase
+	Output DocumentedSlice[KISEtfetnV1QuotationsInquireAskingPriceOutputItem] `json:"output,omitempty"`
+}
+
+type KISEtfetnV1QuotationsInquireAskingPriceOutputItem struct {
+	AsprAcptHour      string `json:"aspr_acpt_hour"`
+	Askp1             string `json:"askp1"`
+	Askp2             string `json:"askp2"`
+	Askp3             string `json:"askp3"`
+	Askp4             string `json:"askp4"`
+	Askp5             string `json:"askp5"`
+	Askp6             string `json:"askp6"`
+	Askp7             string `json:"askp7"`
+	Askp8             string `json:"askp8"`
+	Askp9             string `json:"askp9"`
+	Askp10            string `json:"askp10"`
+	Bidp1             string `json:"bidp1"`
+	Bidp2             string `json:"bidp2"`
+	Bidp3             string `json:"bidp3"`
+	Bidp4             string `json:"bidp4"`
+	Bidp5             string `json:"bidp5"`
+	Bidp6             string `json:"bidp6"`
+	Bidp7             string `json:"bidp7"`
+	Bidp8             string `json:"bidp8"`
+	Bidp9             string `json:"bidp9"`
+	Bidp10            string `json:"bidp10"`
+	AskpRsqn1         string `json:"askp_rsqn1"`
+	AskpRsqn2         string `json:"askp_rsqn2"`
+	AskpRsqn3         string `json:"askp_rsqn3"`
+	AskpRsqn4         string `json:"askp_rsqn4"`
+	AskpRsqn5         string `json:"askp_rsqn5"`
+	AskpRsqn6         string `json:"askp_rsqn6"`
+	AskpRsqn7         string `json:"askp_rsqn7"`
+	AskpRsqn8         string `json:"askp_rsqn8"`
+	AskpRsqn9         string `json:"askp_rsqn9"`
+	AskpRsqn10        string `json:"askp_rsqn10"`
+	BidpRsqn1         string `json:"bidp_rsqn1"`
+	BidpRsqn2         string `json:"bidp_rsqn2"`
+	BidpRsqn3         string `json:"bidp_rsqn3"`
+	BidpRsqn4         string `json:"bidp_rsqn4"`
+	BidpRsqn5         string `json:"bidp_rsqn5"`
+	BidpRsqn6         string `json:"bidp_rsqn6"`
+	BidpRsqn7         string `json:"bidp_rsqn7"`
+	BidpRsqn8         string `json:"bidp_rsqn8"`
+	BidpRsqn9         string `json:"bidp_rsqn9"`
+	BidpRsqn10        string `json:"bidp_rsqn10"`
+	AskpRsqnIcdc1     string `json:"askp_rsqn_icdc1"`
+	AskpRsqnIcdc2     string `json:"askp_rsqn_icdc2"`
+	AskpRsqnIcdc3     string `json:"askp_rsqn_icdc3"`
+	AskpRsqnIcdc4     string `json:"askp_rsqn_icdc4"`
+	AskpRsqnIcdc5     string `json:"askp_rsqn_icdc5"`
+	AskpRsqnIcdc6     string `json:"askp_rsqn_icdc6"`
+	AskpRsqnIcdc7     string `json:"askp_rsqn_icdc7"`
+	AskpRsqnIcdc8     string `json:"askp_rsqn_icdc8"`
+	AskpRsqnIcdc9     string `json:"askp_rsqn_icdc9"`
+	AskpRsqnIcdc10    string `json:"askp_rsqn_icdc10"`
+	BidpRsqnIcdc1     string `json:"bidp_rsqn_icdc1"`
+	BidpRsqnIcdc2     string `json:"bidp_rsqn_icdc2"`
+	BidpRsqnIcdc3     string `json:"bidp_rsqn_icdc3"`
+	BidpRsqnIcdc4     string `json:"bidp_rsqn_icdc4"`
+	BidpRsqnIcdc5     string `json:"bidp_rsqn_icdc5"`
+	BidpRsqnIcdc6     string `json:"bidp_rsqn_icdc6"`
+	BidpRsqnIcdc7     string `json:"bidp_rsqn_icdc7"`
+	BidpRsqnIcdc8     string `json:"bidp_rsqn_icdc8"`
+	BidpRsqnIcdc9     string `json:"bidp_rsqn_icdc9"`
+	BidpRsqnIcdc10    string `json:"bidp_rsqn_icdc10"`
+	TotalAskpRsqn     string `json:"total_askp_rsqn"`
+	TotalBidpRsqn     string `json:"total_bidp_rsqn"`
+	TotalAskpRsqnIcdc string `json:"total_askp_rsqn_icdc"`
+	TotalBidpRsqnIcdc string `json:"total_bidp_rsqn_icdc"`
+	OvtmTotalAskpIcdc string `json:"ovtm_total_askp_icdc"`
+	OvtmTotalBidpIcdc string `json:"ovtm_total_bidp_icdc"`
+	OvtmTotalAskpRsqn string `json:"ovtm_total_askp_rsqn"`
+	OvtmTotalBidpRsqn string `json:"ovtm_total_bidp_rsqn"`
+	NtbyAsprRsqn      string `json:"ntby_aspr_rsqn"`
+	NewMkopClsCode    string `json:"new_mkop_cls_code"`
+	LpAskpRsqn1       string `json:"lp_askp_rsqn1"`
+	LpAskpRsqn2       string `json:"lp_askp_rsqn2"`
+	LpAskpRsqn3       string `json:"lp_askp_rsqn3"`
+	LpAskpRsqn4       string `json:"lp_askp_rsqn4"`
+	LpAskpRsqn5       string `json:"lp_askp_rsqn5"`
+	LpAskpRsqn6       string `json:"lp_askp_rsqn6"`
+	LpAskpRsqn7       string `json:"lp_askp_rsqn7"`
+	LpAskpRsqn8       string `json:"lp_askp_rsqn8"`
+	LpAskpRsqn9       string `json:"lp_askp_rsqn9"`
+	LpAskpRsqn10      string `json:"lp_askp_rsqn10"`
+	LpBidpRsqn1       string `json:"lp_bidp_rsqn1"`
+	LpBidpRsqn2       string `json:"lp_bidp_rsqn2"`
+	LpBidpRsqn3       string `json:"lp_bidp_rsqn3"`
+	LpBidpRsqn4       string `json:"lp_bidp_rsqn4"`
+	LpBidpRsqn5       string `json:"lp_bidp_rsqn5"`
+	LpBidpRsqn6       string `json:"lp_bidp_rsqn6"`
+	LpBidpRsqn7       string `json:"lp_bidp_rsqn7"`
+	LpBidpRsqn8       string `json:"lp_bidp_rsqn8"`
+	LpBidpRsqn9       string `json:"lp_bidp_rsqn9"`
+	LpBidpRsqn10      string `json:"lp_bidp_rsqn10"`
+	LpTotalAskpRsqn   string `json:"lp_total_askp_rsqn"`
+	LpTotalBidpRsqn   string `json:"lp_total_bidp_rsqn"`
+	MidPrc            string `json:"mid_prc"`
+	MidpTotalRsqn     string `json:"midp_total_rsqn"`
+	MidpClsCode       string `json:"midp_cls_code"`
+	MidPrc2           string `json:"mid_prc2"`
+	MidpTotalRsqn2    string `json:"midp_total_rsqn2"`
+	MidpClsCode2      string `json:"midp_cls_code2"`
+}
+
+type KISEtfetnV1QuotationsInquireAskingPriceRequest struct {
+	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
+	FidInputIscd       string `json:"FID_INPUT_ISCD"`
+}
+
 type KISEtfetnV1QuotationsInquireComponentStockPrice struct {
 	DocumentedResponseBase
 	Output1 DocumentedSlice[KISEtfetnV1QuotationsInquireComponentStockPriceOutput1Item] `json:"output1,omitempty"`
@@ -7832,16 +7964,6 @@ type KISEtfetnV1QuotationsNavComparisonTrendOutput2Item struct {
 type KISEtfetnV1QuotationsNavComparisonTrendRequest struct {
 	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
 	FidInputIscd       string `json:"FID_INPUT_ISCD"`
-}
-
-type KISHashkey struct {
-	DocumentedResponseBase
-	Jsonbody string `json:"JsonBody,omitempty"`
-	Hash     string `json:"HASH,omitempty"`
-}
-
-type KISHashkeyRequest struct {
-	Jsonbody string `json:"JsonBody"`
 }
 
 type KISOverseasFutureoptionV1QuotationsDailyCcnl struct {
@@ -9506,6 +9628,74 @@ type KISOverseasPriceV1QuotationsInquireTimeItemchartpriceRequest struct {
 	Symb string `json:"SYMB"`
 }
 
+type KISOverseasPriceV1QuotationsMultprice struct {
+	DocumentedResponseBase
+	Output  DocumentedSlice[KISOverseasPriceV1QuotationsMultpriceOutputItem]  `json:"output,omitempty"`
+	Output2 DocumentedSlice[KISOverseasPriceV1QuotationsMultpriceOutput2Item] `json:"output2,omitempty"`
+}
+
+type KISOverseasPriceV1QuotationsMultpriceOutputItem struct {
+	Nrec string `json:"nrec"`
+}
+
+type KISOverseasPriceV1QuotationsMultpriceOutput2Item struct {
+	Rsym  string `json:"rsym"`
+	Excd  string `json:"excd"`
+	Symb  string `json:"symb"`
+	Knam  string `json:"knam"`
+	Exnm  string `json:"exnm"`
+	Nnam  string `json:"nnam"`
+	Stat1 string `json:"stat1"`
+	Stat2 string `json:"stat2"`
+	Zdiv  string `json:"zdiv"`
+	Last  string `json:"last"`
+	Sign  string `json:"sign"`
+	Diff  string `json:"diff"`
+	Rate  string `json:"rate"`
+	Open  string `json:"open"`
+	High  string `json:"high"`
+	Low   string `json:"low"`
+	Pbid  string `json:"pbid"`
+	Pask  string `json:"pask"`
+	Vbid  string `json:"vbid"`
+	Vask  string `json:"vask"`
+	Bvol  string `json:"bvol"`
+	Avol  string `json:"avol"`
+	Evol  string `json:"evol"`
+	Tvol  string `json:"tvol"`
+	Tamt  string `json:"tamt"`
+	Powx  string `json:"powx"`
+	Xhms  string `json:"xhms"`
+	Khms  string `json:"khms"`
+	Curr  string `json:"curr"`
+	Base  string `json:"base"`
+	Pvol  string `json:"pvol"`
+	Pamt  string `json:"pamt"`
+	Popen string `json:"popen"`
+	Phigh string `json:"phigh"`
+	Plow  string `json:"plow"`
+	Shar  string `json:"shar"`
+	Mcap  string `json:"mcap"`
+	Tomv  string `json:"tomv"`
+	H52p  string `json:"h52p"`
+	L52p  string `json:"l52p"`
+	H52d  string `json:"h52d"`
+	L52d  string `json:"l52d"`
+	Hanp  string `json:"hanp"`
+	Lanp  string `json:"lanp"`
+	Hand  string `json:"hand"`
+	Land  string `json:"land"`
+	Bnit  string `json:"bnit"`
+	TXprc string `json:"t_xprc"`
+}
+
+type KISOverseasPriceV1QuotationsMultpriceRequest struct {
+	Auth     string `json:"AUTH"`
+	Excd0110 string `json:"EXCD_01 ~ 10"`
+	Nrec     string `json:"NREC"`
+	Symb0110 string `json:"SYMB_01 ~ 10"`
+}
+
 type KISOverseasPriceV1QuotationsNewsTitle struct {
 	DocumentedResponseBase
 	Outblock1 DocumentedSlice[KISOverseasPriceV1QuotationsNewsTitleOutblock1Item] `json:"outblock1,omitempty"`
@@ -9744,6 +9934,7 @@ type KISOverseasPriceV1QuotationsSearchInfoOutputItem struct {
 	MemoText1              string `json:"memo_text1"`
 	OvrsNowPric1           string `json:"ovrs_now_pric1"`
 	LastRcvgDtime          string `json:"last_rcvg_dtime"`
+	SgleItemLvrgEtpYn      string `json:"sgle_item_lvrg_etp_yn"`
 }
 
 type KISOverseasPriceV1QuotationsSearchInfoRequest struct {
@@ -9889,7 +10080,7 @@ type KISOverseasStockV1RankingPriceFluctRequest struct {
 	Excd    string `json:"EXCD"`
 	Gubn    string `json:"GUBN"`
 	Keyb    string `json:"KEYB"`
-	Mixn    string `json:"MIXN"`
+	Minx    string `json:"MINX"`
 	VolRang string `json:"VOL_RANG"`
 }
 
@@ -10178,7 +10369,7 @@ type KISOverseasStockV1RankingVolumeSurgeRequest struct {
 	Auth    string `json:"AUTH"`
 	Excd    string `json:"EXCD"`
 	Keyb    string `json:"KEYB"`
-	Mixn    string `json:"MIXN"`
+	Minx    string `json:"MINX"`
 	VolRang string `json:"VOL_RANG"`
 }
 
@@ -10907,6 +11098,7 @@ var documentedEndpointResponseFactories = map[string]func() DocumentedEndpointRe
 	"/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice": func() DocumentedEndpointResponse {
 		return &KISDomesticFutureoptionV1QuotationsInquireTimeFuopchartprice{}
 	},
+	"/uapi/domestic-futureoption/v1/quotations/margin-rate":  func() DocumentedEndpointResponse { return &KISDomesticFutureoptionV1QuotationsMarginRate{} },
 	"/uapi/domestic-futureoption/v1/trading/inquire-balance": func() DocumentedEndpointResponse { return &KISDomesticFutureoptionV1TradingInquireBalance{} },
 	"/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl": func() DocumentedEndpointResponse {
 		return &KISDomesticFutureoptionV1TradingInquireBalanceSettlementPl{}
@@ -11075,15 +11267,15 @@ var documentedEndpointResponseFactories = map[string]func() DocumentedEndpointRe
 	"/uapi/elw/v1/ranking/sensitivity":                                    func() DocumentedEndpointResponse { return &KISElwV1RankingSensitivity{} },
 	"/uapi/elw/v1/ranking/updown-rate":                                    func() DocumentedEndpointResponse { return &KISElwV1RankingUpdownRate{} },
 	"/uapi/elw/v1/ranking/volume-rank":                                    func() DocumentedEndpointResponse { return &KISElwV1RankingVolumeRank{} },
+	"/uapi/etfetn/v1/quotations/inquire-asking-price":                     func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsInquireAskingPrice{} },
 	"/uapi/etfetn/v1/quotations/inquire-component-stock-price":            func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsInquireComponentStockPrice{} },
 	"/uapi/etfetn/v1/quotations/inquire-price":                            func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsInquirePrice{} },
 	"/uapi/etfetn/v1/quotations/nav-comparison-daily-trend":               func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsNavComparisonDailyTrend{} },
 	"/uapi/etfetn/v1/quotations/nav-comparison-time-trend":                func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsNavComparisonTimeTrend{} },
 	"/uapi/etfetn/v1/quotations/nav-comparison-trend":                     func() DocumentedEndpointResponse { return &KISEtfetnV1QuotationsNavComparisonTrend{} },
-	"/uapi/hashkey": func() DocumentedEndpointResponse { return &KISHashkey{} },
-	"/uapi/overseas-futureoption/v1/quotations/daily-ccnl":           func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsDailyCcnl{} },
-	"/uapi/overseas-futureoption/v1/quotations/inquire-asking-price": func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsInquireAskingPrice{} },
-	"/uapi/overseas-futureoption/v1/quotations/inquire-price":        func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsInquirePrice{} },
+	"/uapi/overseas-futureoption/v1/quotations/daily-ccnl":                func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsDailyCcnl{} },
+	"/uapi/overseas-futureoption/v1/quotations/inquire-asking-price":      func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsInquireAskingPrice{} },
+	"/uapi/overseas-futureoption/v1/quotations/inquire-price":             func() DocumentedEndpointResponse { return &KISOverseasFutureoptionV1QuotationsInquirePrice{} },
 	"/uapi/overseas-futureoption/v1/quotations/inquire-time-futurechartprice": func() DocumentedEndpointResponse {
 		return &KISOverseasFutureoptionV1QuotationsInquireTimeFuturechartprice{}
 	},
@@ -11127,6 +11319,7 @@ var documentedEndpointResponseFactories = map[string]func() DocumentedEndpointRe
 	"/uapi/overseas-price/v1/quotations/inquire-search":                func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsInquireSearch{} },
 	"/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice":  func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsInquireTimeIndexchartprice{} },
 	"/uapi/overseas-price/v1/quotations/inquire-time-itemchartprice":   func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsInquireTimeItemchartprice{} },
+	"/uapi/overseas-price/v1/quotations/multprice":                     func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsMultprice{} },
 	"/uapi/overseas-price/v1/quotations/news-title":                    func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsNewsTitle{} },
 	"/uapi/overseas-price/v1/quotations/period-rights":                 func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsPeriodRights{} },
 	"/uapi/overseas-price/v1/quotations/price":                         func() DocumentedEndpointResponse { return &KISOverseasPriceV1QuotationsPrice{} },
@@ -11165,202 +11358,203 @@ var documentedEndpointResponseFactories = map[string]func() DocumentedEndpointRe
 }
 
 var documentedEndpointRequestFactories = map[string]func() any{
-	"/uapi/domestic-bond/v1/quotations/avg-unit":                             func() any { return &KISDomesticBondV1QuotationsAvgUnitRequest{} },
-	"/uapi/domestic-bond/v1/quotations/inquire-asking-price":                 func() any { return &KISDomesticBondV1QuotationsInquireAskingPriceRequest{} },
-	"/uapi/domestic-bond/v1/quotations/inquire-ccnl":                         func() any { return &KISDomesticBondV1QuotationsInquireCcnlRequest{} },
-	"/uapi/domestic-bond/v1/quotations/inquire-daily-itemchartprice":         func() any { return &KISDomesticBondV1QuotationsInquireDailyItemchartpriceRequest{} },
-	"/uapi/domestic-bond/v1/quotations/inquire-daily-price":                  func() any { return &KISDomesticBondV1QuotationsInquireDailyPriceRequest{} },
-	"/uapi/domestic-bond/v1/quotations/inquire-price":                        func() any { return &KISDomesticBondV1QuotationsInquirePriceRequest{} },
-	"/uapi/domestic-bond/v1/quotations/issue-info":                           func() any { return &KISDomesticBondV1QuotationsIssueInfoRequest{} },
-	"/uapi/domestic-bond/v1/quotations/search-bond-info":                     func() any { return &KISDomesticBondV1QuotationsSearchBondInfoRequest{} },
-	"/uapi/domestic-bond/v1/trading/buy":                                     func() any { return &KISDomesticBondV1TradingBuyRequest{} },
-	"/uapi/domestic-bond/v1/trading/inquire-balance":                         func() any { return &KISDomesticBondV1TradingInquireBalanceRequest{} },
-	"/uapi/domestic-bond/v1/trading/inquire-daily-ccld":                      func() any { return &KISDomesticBondV1TradingInquireDailyCcldRequest{} },
-	"/uapi/domestic-bond/v1/trading/inquire-psbl-order":                      func() any { return &KISDomesticBondV1TradingInquirePsblOrderRequest{} },
-	"/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl":                   func() any { return &KISDomesticBondV1TradingInquirePsblRvsecnclRequest{} },
-	"/uapi/domestic-bond/v1/trading/order-rvsecncl":                          func() any { return &KISDomesticBondV1TradingOrderRvsecnclRequest{} },
-	"/uapi/domestic-bond/v1/trading/sell":                                    func() any { return &KISDomesticBondV1TradingSellRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/display-board-callput":        func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardCallputRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/display-board-futures":        func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardFuturesRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/display-board-option-list":    func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardOptionListRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/display-board-top":            func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardTopRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/exp-price-trend":              func() any { return &KISDomesticFutureoptionV1QuotationsExpPriceTrendRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/inquire-asking-price":         func() any { return &KISDomesticFutureoptionV1QuotationsInquireAskingPriceRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice": func() any { return &KISDomesticFutureoptionV1QuotationsInquireDailyFuopchartpriceRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/inquire-price":                func() any { return &KISDomesticFutureoptionV1QuotationsInquirePriceRequest{} },
-	"/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice":  func() any { return &KISDomesticFutureoptionV1QuotationsInquireTimeFuopchartpriceRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-balance":                 func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl":   func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceSettlementPlRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl":    func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceValuationPlRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-ccnl":                    func() any { return &KISDomesticFutureoptionV1TradingInquireCcnlRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-ccnl-bstime":             func() any { return &KISDomesticFutureoptionV1TradingInquireCcnlBstimeRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-daily-amount-fee":        func() any { return &KISDomesticFutureoptionV1TradingInquireDailyAmountFeeRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-deposit":                 func() any { return &KISDomesticFutureoptionV1TradingInquireDepositRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance":             func() any { return &KISDomesticFutureoptionV1TradingInquireNgtBalanceRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl":                func() any { return &KISDomesticFutureoptionV1TradingInquireNgtCcnlRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order":          func() any { return &KISDomesticFutureoptionV1TradingInquirePsblNgtOrderRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/inquire-psbl-order":              func() any { return &KISDomesticFutureoptionV1TradingInquirePsblOrderRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/ngt-margin-detail":               func() any { return &KISDomesticFutureoptionV1TradingNgtMarginDetailRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/order":                           func() any { return &KISDomesticFutureoptionV1TradingOrderRequest{} },
-	"/uapi/domestic-futureoption/v1/trading/order-rvsecncl":                  func() any { return &KISDomesticFutureoptionV1TradingOrderRvsecnclRequest{} },
-	"/uapi/domestic-stock/v1/finance/balance-sheet":                          func() any { return &KISDomesticStockV1FinanceBalanceSheetRequest{} },
-	"/uapi/domestic-stock/v1/finance/financial-ratio":                        func() any { return &KISDomesticStockV1FinanceFinancialRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/growth-ratio":                           func() any { return &KISDomesticStockV1FinanceGrowthRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/income-statement":                       func() any { return &KISDomesticStockV1FinanceIncomeStatementRequest{} },
-	"/uapi/domestic-stock/v1/finance/other-major-ratios":                     func() any { return &KISDomesticStockV1FinanceOtherMajorRatiosRequest{} },
-	"/uapi/domestic-stock/v1/finance/profit-ratio":                           func() any { return &KISDomesticStockV1FinanceProfitRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/stability-ratio":                        func() any { return &KISDomesticStockV1FinanceStabilityRatioRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/bonus-issue":                            func() any { return &KISDomesticStockV1KsdinfoBonusIssueRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/cap-dcrs":                               func() any { return &KISDomesticStockV1KsdinfoCapDcrsRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/dividend":                               func() any { return &KISDomesticStockV1KsdinfoDividendRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/forfeit":                                func() any { return &KISDomesticStockV1KsdinfoForfeitRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/list-info":                              func() any { return &KISDomesticStockV1KsdinfoListInfoRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/mand-deposit":                           func() any { return &KISDomesticStockV1KsdinfoMandDepositRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/merger-split":                           func() any { return &KISDomesticStockV1KsdinfoMergerSplitRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/paidin-capin":                           func() any { return &KISDomesticStockV1KsdinfoPaidinCapinRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/pub-offer":                              func() any { return &KISDomesticStockV1KsdinfoPubOfferRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/purreq":                                 func() any { return &KISDomesticStockV1KsdinfoPurreqRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/rev-split":                              func() any { return &KISDomesticStockV1KsdinfoRevSplitRequest{} },
-	"/uapi/domestic-stock/v1/ksdinfo/sharehld-meet":                          func() any { return &KISDomesticStockV1KsdinfoSharehldMeetRequest{} },
-	"/uapi/domestic-stock/v1/quotations/capture-uplowprice":                  func() any { return &KISDomesticStockV1QuotationsCaptureUplowpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/chk-holiday":                         func() any { return &KISDomesticStockV1QuotationsChkHolidayRequest{} },
-	"/uapi/domestic-stock/v1/quotations/comp-interest":                       func() any { return &KISDomesticStockV1QuotationsCompInterestRequest{} },
-	"/uapi/domestic-stock/v1/quotations/comp-program-trade-daily":            func() any { return &KISDomesticStockV1QuotationsCompProgramTradeDailyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/comp-program-trade-today":            func() any { return &KISDomesticStockV1QuotationsCompProgramTradeTodayRequest{} },
-	"/uapi/domestic-stock/v1/quotations/credit-by-company":                   func() any { return &KISDomesticStockV1QuotationsCreditByCompanyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/daily-credit-balance":                func() any { return &KISDomesticStockV1QuotationsDailyCreditBalanceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/daily-loan-trans":                    func() any { return &KISDomesticStockV1QuotationsDailyLoanTransRequest{} },
-	"/uapi/domestic-stock/v1/quotations/daily-short-sale":                    func() any { return &KISDomesticStockV1QuotationsDailyShortSaleRequest{} },
-	"/uapi/domestic-stock/v1/quotations/estimate-perform":                    func() any { return &KISDomesticStockV1QuotationsEstimatePerformRequest{} },
-	"/uapi/domestic-stock/v1/quotations/exp-closing-price":                   func() any { return &KISDomesticStockV1QuotationsExpClosingPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/exp-index-trend":                     func() any { return &KISDomesticStockV1QuotationsExpIndexTrendRequest{} },
-	"/uapi/domestic-stock/v1/quotations/exp-price-trend":                     func() any { return &KISDomesticStockV1QuotationsExpPriceTrendRequest{} },
-	"/uapi/domestic-stock/v1/quotations/exp-total-index":                     func() any { return &KISDomesticStockV1QuotationsExpTotalIndexRequest{} },
-	"/uapi/domestic-stock/v1/quotations/foreign-institution-total":           func() any { return &KISDomesticStockV1QuotationsForeignInstitutionTotalRequest{} },
-	"/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend":                  func() any { return &KISDomesticStockV1QuotationsFrgnmemPchsTrendRequest{} },
-	"/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate":              func() any { return &KISDomesticStockV1QuotationsFrgnmemTradeEstimateRequest{} },
-	"/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend":                 func() any { return &KISDomesticStockV1QuotationsFrgnmemTradeTrendRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn":        func() any { return &KISDomesticStockV1QuotationsInquireAskingPriceExpCcnRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-ccnl":                        func() any { return &KISDomesticStockV1QuotationsInquireCcnlRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice":       func() any { return &KISDomesticStockV1QuotationsInquireDailyIndexchartpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice":        func() any { return &KISDomesticStockV1QuotationsInquireDailyItemchartpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice":         func() any { return &KISDomesticStockV1QuotationsInquireDailyOvertimepriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-daily-price":                 func() any { return &KISDomesticStockV1QuotationsInquireDailyPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume":          func() any { return &KISDomesticStockV1QuotationsInquireDailyTradeVolumeRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-elw-price":                   func() any { return &KISDomesticStockV1QuotationsInquireElwPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-index-category-price":        func() any { return &KISDomesticStockV1QuotationsInquireIndexCategoryPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-index-daily-price":           func() any { return &KISDomesticStockV1QuotationsInquireIndexDailyPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-index-price":                 func() any { return &KISDomesticStockV1QuotationsInquireIndexPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-index-tickprice":             func() any { return &KISDomesticStockV1QuotationsInquireIndexTickpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-index-timeprice":             func() any { return &KISDomesticStockV1QuotationsInquireIndexTimepriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-investor":                    func() any { return &KISDomesticStockV1QuotationsInquireInvestorRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market":    func() any { return &KISDomesticStockV1QuotationsInquireInvestorDailyByMarketRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market":     func() any { return &KISDomesticStockV1QuotationsInquireInvestorTimeByMarketRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-member":                      func() any { return &KISDomesticStockV1QuotationsInquireMemberRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-member-daily":                func() any { return &KISDomesticStockV1QuotationsInquireMemberDailyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price":       func() any { return &KISDomesticStockV1QuotationsInquireOvertimeAskingPriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-overtime-price":              func() any { return &KISDomesticStockV1QuotationsInquireOvertimePriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-price":                       func() any { return &KISDomesticStockV1QuotationsInquirePriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-price-2":                     func() any { return &KISDomesticStockV1QuotationsInquirePriceN2Request{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice":        func() any { return &KISDomesticStockV1QuotationsInquireTimeDailychartpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice":        func() any { return &KISDomesticStockV1QuotationsInquireTimeIndexchartpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice":         func() any { return &KISDomesticStockV1QuotationsInquireTimeItemchartpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion":         func() any { return &KISDomesticStockV1QuotationsInquireTimeItemconclusionRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion":     func() any { return &KISDomesticStockV1QuotationsInquireTimeOvertimeconclusionRequest{} },
-	"/uapi/domestic-stock/v1/quotations/inquire-vi-status":                   func() any { return &KISDomesticStockV1QuotationsInquireViStatusRequest{} },
-	"/uapi/domestic-stock/v1/quotations/intstock-grouplist":                  func() any { return &KISDomesticStockV1QuotationsIntstockGrouplistRequest{} },
-	"/uapi/domestic-stock/v1/quotations/intstock-multprice":                  func() any { return &KISDomesticStockV1QuotationsIntstockMultpriceRequest{} },
-	"/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group":         func() any { return &KISDomesticStockV1QuotationsIntstockStocklistByGroupRequest{} },
-	"/uapi/domestic-stock/v1/quotations/invest-opbysec":                      func() any { return &KISDomesticStockV1QuotationsInvestOpbysecRequest{} },
-	"/uapi/domestic-stock/v1/quotations/invest-opinion":                      func() any { return &KISDomesticStockV1QuotationsInvestOpinionRequest{} },
-	"/uapi/domestic-stock/v1/quotations/investor-program-trade-today":        func() any { return &KISDomesticStockV1QuotationsInvestorProgramTradeTodayRequest{} },
-	"/uapi/domestic-stock/v1/quotations/investor-trade-by-stock-daily":       func() any { return &KISDomesticStockV1QuotationsInvestorTradeByStockDailyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/investor-trend-estimate":             func() any { return &KISDomesticStockV1QuotationsInvestorTrendEstimateRequest{} },
-	"/uapi/domestic-stock/v1/quotations/lendable-by-company":                 func() any { return &KISDomesticStockV1QuotationsLendableByCompanyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/market-time":                         func() any { return &KISDomesticStockV1QuotationsMarketTimeRequest{} },
-	"/uapi/domestic-stock/v1/quotations/mktfunds":                            func() any { return &KISDomesticStockV1QuotationsMktfundsRequest{} },
-	"/uapi/domestic-stock/v1/quotations/news-title":                          func() any { return &KISDomesticStockV1QuotationsNewsTitleRequest{} },
-	"/uapi/domestic-stock/v1/quotations/pbar-tratio":                         func() any { return &KISDomesticStockV1QuotationsPbarTratioRequest{} },
-	"/uapi/domestic-stock/v1/quotations/program-trade-by-stock":              func() any { return &KISDomesticStockV1QuotationsProgramTradeByStockRequest{} },
-	"/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily":        func() any { return &KISDomesticStockV1QuotationsProgramTradeByStockDailyRequest{} },
-	"/uapi/domestic-stock/v1/quotations/psearch-result":                      func() any { return &KISDomesticStockV1QuotationsPsearchResultRequest{} },
-	"/uapi/domestic-stock/v1/quotations/psearch-title":                       func() any { return &KISDomesticStockV1QuotationsPsearchTitleRequest{} },
-	"/uapi/domestic-stock/v1/quotations/search-info":                         func() any { return &KISDomesticStockV1QuotationsSearchInfoRequest{} },
-	"/uapi/domestic-stock/v1/quotations/search-stock-info":                   func() any { return &KISDomesticStockV1QuotationsSearchStockInfoRequest{} },
-	"/uapi/domestic-stock/v1/quotations/tradprt-byamt":                       func() any { return &KISDomesticStockV1QuotationsTradprtByamtRequest{} },
-	"/uapi/domestic-stock/v1/quotations/volume-rank":                         func() any { return &KISDomesticStockV1QuotationsVolumeRankRequest{} },
-	"/uapi/domestic-stock/v1/ranking/after-hour-balance":                     func() any { return &KISDomesticStockV1RankingAfterHourBalanceRequest{} },
-	"/uapi/domestic-stock/v1/ranking/bulk-trans-num":                         func() any { return &KISDomesticStockV1RankingBulkTransNumRequest{} },
-	"/uapi/domestic-stock/v1/ranking/credit-balance":                         func() any { return &KISDomesticStockV1RankingCreditBalanceRequest{} },
-	"/uapi/domestic-stock/v1/ranking/disparity":                              func() any { return &KISDomesticStockV1RankingDisparityRequest{} },
-	"/uapi/domestic-stock/v1/ranking/dividend-rate":                          func() any { return &KISDomesticStockV1RankingDividendRateRequest{} },
-	"/uapi/domestic-stock/v1/ranking/exp-trans-updown":                       func() any { return &KISDomesticStockV1RankingExpTransUpdownRequest{} },
-	"/uapi/domestic-stock/v1/ranking/finance-ratio":                          func() any { return &KISDomesticStockV1RankingFinanceRatioRequest{} },
-	"/uapi/domestic-stock/v1/ranking/fluctuation":                            func() any { return &KISDomesticStockV1RankingFluctuationRequest{} },
-	"/uapi/domestic-stock/v1/ranking/hts-top-view":                           func() any { return &KISDomesticStockV1RankingHtsTopViewRequest{} },
-	"/uapi/domestic-stock/v1/ranking/market-cap":                             func() any { return &KISDomesticStockV1RankingMarketCapRequest{} },
-	"/uapi/domestic-stock/v1/ranking/market-value":                           func() any { return &KISDomesticStockV1RankingMarketValueRequest{} },
-	"/uapi/domestic-stock/v1/ranking/near-new-highlow":                       func() any { return &KISDomesticStockV1RankingNearNewHighlowRequest{} },
-	"/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct":               func() any { return &KISDomesticStockV1RankingOvertimeExpTransFluctRequest{} },
-	"/uapi/domestic-stock/v1/ranking/overtime-fluctuation":                   func() any { return &KISDomesticStockV1RankingOvertimeFluctuationRequest{} },
-	"/uapi/domestic-stock/v1/ranking/overtime-volume":                        func() any { return &KISDomesticStockV1RankingOvertimeVolumeRequest{} },
-	"/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio":                 func() any { return &KISDomesticStockV1RankingPreferDisparateRatioRequest{} },
-	"/uapi/domestic-stock/v1/ranking/profit-asset-index":                     func() any { return &KISDomesticStockV1RankingProfitAssetIndexRequest{} },
-	"/uapi/domestic-stock/v1/ranking/quote-balance":                          func() any { return &KISDomesticStockV1RankingQuoteBalanceRequest{} },
-	"/uapi/domestic-stock/v1/ranking/short-sale":                             func() any { return &KISDomesticStockV1RankingShortSaleRequest{} },
-	"/uapi/domestic-stock/v1/ranking/top-interest-stock":                     func() any { return &KISDomesticStockV1RankingTopInterestStockRequest{} },
-	"/uapi/domestic-stock/v1/ranking/traded-by-company":                      func() any { return &KISDomesticStockV1RankingTradedByCompanyRequest{} },
-	"/uapi/domestic-stock/v1/ranking/volume-power":                           func() any { return &KISDomesticStockV1RankingVolumePowerRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-account-balance":                func() any { return &KISDomesticStockV1TradingInquireAccountBalanceRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-balance":                        func() any { return &KISDomesticStockV1TradingInquireBalanceRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl":                 func() any { return &KISDomesticStockV1TradingInquireBalanceRlzPlRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-credit-psamount":                func() any { return &KISDomesticStockV1TradingInquireCreditPsamountRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-daily-ccld":                     func() any { return &KISDomesticStockV1TradingInquireDailyCcldRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-period-profit":                  func() any { return &KISDomesticStockV1TradingInquirePeriodProfitRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-period-trade-profit":            func() any { return &KISDomesticStockV1TradingInquirePeriodTradeProfitRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-psbl-order":                     func() any { return &KISDomesticStockV1TradingInquirePsblOrderRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl":                  func() any { return &KISDomesticStockV1TradingInquirePsblRvsecnclRequest{} },
-	"/uapi/domestic-stock/v1/trading/inquire-psbl-sell":                      func() any { return &KISDomesticStockV1TradingInquirePsblSellRequest{} },
-	"/uapi/domestic-stock/v1/trading/intgr-margin":                           func() any { return &KISDomesticStockV1TradingIntgrMarginRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-cash":                             func() any { return &KISDomesticStockV1TradingOrderCashRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-credit":                           func() any { return &KISDomesticStockV1TradingOrderCreditRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-resv":                             func() any { return &KISDomesticStockV1TradingOrderResvRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-resv-ccnl":                        func() any { return &KISDomesticStockV1TradingOrderResvCcnlRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-resv-rvsecncl":                    func() any { return &KISDomesticStockV1TradingOrderResvRvsecnclRequest{} },
-	"/uapi/domestic-stock/v1/trading/order-rvsecncl":                         func() any { return &KISDomesticStockV1TradingOrderRvsecnclRequest{} },
-	"/uapi/domestic-stock/v1/trading/pension/inquire-balance":                func() any { return &KISDomesticStockV1TradingPensionInquireBalanceRequest{} },
-	"/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld":             func() any { return &KISDomesticStockV1TradingPensionInquireDailyCcldRequest{} },
-	"/uapi/domestic-stock/v1/trading/pension/inquire-deposit":                func() any { return &KISDomesticStockV1TradingPensionInquireDepositRequest{} },
-	"/uapi/domestic-stock/v1/trading/pension/inquire-present-balance":        func() any { return &KISDomesticStockV1TradingPensionInquirePresentBalanceRequest{} },
-	"/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order":             func() any { return &KISDomesticStockV1TradingPensionInquirePsblOrderRequest{} },
-	"/uapi/domestic-stock/v1/trading/period-rights":                          func() any { return &KISDomesticStockV1TradingPeriodRightsRequest{} },
-	"/uapi/elw/v1/quotations/compare-stocks":                                 func() any { return &KISElwV1QuotationsCompareStocksRequest{} },
-	"/uapi/elw/v1/quotations/cond-search":                                    func() any { return &KISElwV1QuotationsCondSearchRequest{} },
-	"/uapi/elw/v1/quotations/expiration-stocks":                              func() any { return &KISElwV1QuotationsExpirationStocksRequest{} },
-	"/uapi/elw/v1/quotations/indicator-trend-ccnl":                           func() any { return &KISElwV1QuotationsIndicatorTrendCcnlRequest{} },
-	"/uapi/elw/v1/quotations/indicator-trend-daily":                          func() any { return &KISElwV1QuotationsIndicatorTrendDailyRequest{} },
-	"/uapi/elw/v1/quotations/indicator-trend-minute":                         func() any { return &KISElwV1QuotationsIndicatorTrendMinuteRequest{} },
-	"/uapi/elw/v1/quotations/lp-trade-trend":                                 func() any { return &KISElwV1QuotationsLpTradeTrendRequest{} },
-	"/uapi/elw/v1/quotations/newly-listed":                                   func() any { return &KISElwV1QuotationsNewlyListedRequest{} },
-	"/uapi/elw/v1/quotations/sensitivity-trend-ccnl":                         func() any { return &KISElwV1QuotationsSensitivityTrendCcnlRequest{} },
-	"/uapi/elw/v1/quotations/sensitivity-trend-daily":                        func() any { return &KISElwV1QuotationsSensitivityTrendDailyRequest{} },
-	"/uapi/elw/v1/quotations/udrl-asset-list":                                func() any { return &KISElwV1QuotationsUdrlAssetListRequest{} },
-	"/uapi/elw/v1/quotations/udrl-asset-price":                               func() any { return &KISElwV1QuotationsUdrlAssetPriceRequest{} },
-	"/uapi/elw/v1/quotations/volatility-trend-ccnl":                          func() any { return &KISElwV1QuotationsVolatilityTrendCcnlRequest{} },
-	"/uapi/elw/v1/quotations/volatility-trend-daily":                         func() any { return &KISElwV1QuotationsVolatilityTrendDailyRequest{} },
-	"/uapi/elw/v1/quotations/volatility-trend-minute":                        func() any { return &KISElwV1QuotationsVolatilityTrendMinuteRequest{} },
-	"/uapi/elw/v1/quotations/volatility-trend-tick":                          func() any { return &KISElwV1QuotationsVolatilityTrendTickRequest{} },
-	"/uapi/elw/v1/ranking/indicator":                                         func() any { return &KISElwV1RankingIndicatorRequest{} },
-	"/uapi/elw/v1/ranking/quick-change":                                      func() any { return &KISElwV1RankingQuickChangeRequest{} },
-	"/uapi/elw/v1/ranking/sensitivity":                                       func() any { return &KISElwV1RankingSensitivityRequest{} },
-	"/uapi/elw/v1/ranking/updown-rate":                                       func() any { return &KISElwV1RankingUpdownRateRequest{} },
-	"/uapi/elw/v1/ranking/volume-rank":                                       func() any { return &KISElwV1RankingVolumeRankRequest{} },
-	"/uapi/etfetn/v1/quotations/inquire-component-stock-price":               func() any { return &KISEtfetnV1QuotationsInquireComponentStockPriceRequest{} },
-	"/uapi/etfetn/v1/quotations/inquire-price":                               func() any { return &KISEtfetnV1QuotationsInquirePriceRequest{} },
-	"/uapi/etfetn/v1/quotations/nav-comparison-daily-trend":                  func() any { return &KISEtfetnV1QuotationsNavComparisonDailyTrendRequest{} },
-	"/uapi/etfetn/v1/quotations/nav-comparison-time-trend":                   func() any { return &KISEtfetnV1QuotationsNavComparisonTimeTrendRequest{} },
-	"/uapi/etfetn/v1/quotations/nav-comparison-trend":                        func() any { return &KISEtfetnV1QuotationsNavComparisonTrendRequest{} },
-	"/uapi/hashkey": func() any { return &KISHashkeyRequest{} },
+	"/uapi/domestic-bond/v1/quotations/avg-unit":                              func() any { return &KISDomesticBondV1QuotationsAvgUnitRequest{} },
+	"/uapi/domestic-bond/v1/quotations/inquire-asking-price":                  func() any { return &KISDomesticBondV1QuotationsInquireAskingPriceRequest{} },
+	"/uapi/domestic-bond/v1/quotations/inquire-ccnl":                          func() any { return &KISDomesticBondV1QuotationsInquireCcnlRequest{} },
+	"/uapi/domestic-bond/v1/quotations/inquire-daily-itemchartprice":          func() any { return &KISDomesticBondV1QuotationsInquireDailyItemchartpriceRequest{} },
+	"/uapi/domestic-bond/v1/quotations/inquire-daily-price":                   func() any { return &KISDomesticBondV1QuotationsInquireDailyPriceRequest{} },
+	"/uapi/domestic-bond/v1/quotations/inquire-price":                         func() any { return &KISDomesticBondV1QuotationsInquirePriceRequest{} },
+	"/uapi/domestic-bond/v1/quotations/issue-info":                            func() any { return &KISDomesticBondV1QuotationsIssueInfoRequest{} },
+	"/uapi/domestic-bond/v1/quotations/search-bond-info":                      func() any { return &KISDomesticBondV1QuotationsSearchBondInfoRequest{} },
+	"/uapi/domestic-bond/v1/trading/buy":                                      func() any { return &KISDomesticBondV1TradingBuyRequest{} },
+	"/uapi/domestic-bond/v1/trading/inquire-balance":                          func() any { return &KISDomesticBondV1TradingInquireBalanceRequest{} },
+	"/uapi/domestic-bond/v1/trading/inquire-daily-ccld":                       func() any { return &KISDomesticBondV1TradingInquireDailyCcldRequest{} },
+	"/uapi/domestic-bond/v1/trading/inquire-psbl-order":                       func() any { return &KISDomesticBondV1TradingInquirePsblOrderRequest{} },
+	"/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl":                    func() any { return &KISDomesticBondV1TradingInquirePsblRvsecnclRequest{} },
+	"/uapi/domestic-bond/v1/trading/order-rvsecncl":                           func() any { return &KISDomesticBondV1TradingOrderRvsecnclRequest{} },
+	"/uapi/domestic-bond/v1/trading/sell":                                     func() any { return &KISDomesticBondV1TradingSellRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/display-board-callput":         func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardCallputRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/display-board-futures":         func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardFuturesRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/display-board-option-list":     func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardOptionListRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/display-board-top":             func() any { return &KISDomesticFutureoptionV1QuotationsDisplayBoardTopRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/exp-price-trend":               func() any { return &KISDomesticFutureoptionV1QuotationsExpPriceTrendRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/inquire-asking-price":          func() any { return &KISDomesticFutureoptionV1QuotationsInquireAskingPriceRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice":  func() any { return &KISDomesticFutureoptionV1QuotationsInquireDailyFuopchartpriceRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/inquire-price":                 func() any { return &KISDomesticFutureoptionV1QuotationsInquirePriceRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice":   func() any { return &KISDomesticFutureoptionV1QuotationsInquireTimeFuopchartpriceRequest{} },
+	"/uapi/domestic-futureoption/v1/quotations/margin-rate":                   func() any { return &KISDomesticFutureoptionV1QuotationsMarginRateRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-balance":                  func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl":    func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceSettlementPlRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl":     func() any { return &KISDomesticFutureoptionV1TradingInquireBalanceValuationPlRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-ccnl":                     func() any { return &KISDomesticFutureoptionV1TradingInquireCcnlRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-ccnl-bstime":              func() any { return &KISDomesticFutureoptionV1TradingInquireCcnlBstimeRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-daily-amount-fee":         func() any { return &KISDomesticFutureoptionV1TradingInquireDailyAmountFeeRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-deposit":                  func() any { return &KISDomesticFutureoptionV1TradingInquireDepositRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance":              func() any { return &KISDomesticFutureoptionV1TradingInquireNgtBalanceRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl":                 func() any { return &KISDomesticFutureoptionV1TradingInquireNgtCcnlRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order":           func() any { return &KISDomesticFutureoptionV1TradingInquirePsblNgtOrderRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/inquire-psbl-order":               func() any { return &KISDomesticFutureoptionV1TradingInquirePsblOrderRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/ngt-margin-detail":                func() any { return &KISDomesticFutureoptionV1TradingNgtMarginDetailRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/order":                            func() any { return &KISDomesticFutureoptionV1TradingOrderRequest{} },
+	"/uapi/domestic-futureoption/v1/trading/order-rvsecncl":                   func() any { return &KISDomesticFutureoptionV1TradingOrderRvsecnclRequest{} },
+	"/uapi/domestic-stock/v1/finance/balance-sheet":                           func() any { return &KISDomesticStockV1FinanceBalanceSheetRequest{} },
+	"/uapi/domestic-stock/v1/finance/financial-ratio":                         func() any { return &KISDomesticStockV1FinanceFinancialRatioRequest{} },
+	"/uapi/domestic-stock/v1/finance/growth-ratio":                            func() any { return &KISDomesticStockV1FinanceGrowthRatioRequest{} },
+	"/uapi/domestic-stock/v1/finance/income-statement":                        func() any { return &KISDomesticStockV1FinanceIncomeStatementRequest{} },
+	"/uapi/domestic-stock/v1/finance/other-major-ratios":                      func() any { return &KISDomesticStockV1FinanceOtherMajorRatiosRequest{} },
+	"/uapi/domestic-stock/v1/finance/profit-ratio":                            func() any { return &KISDomesticStockV1FinanceProfitRatioRequest{} },
+	"/uapi/domestic-stock/v1/finance/stability-ratio":                         func() any { return &KISDomesticStockV1FinanceStabilityRatioRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/bonus-issue":                             func() any { return &KISDomesticStockV1KsdinfoBonusIssueRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/cap-dcrs":                                func() any { return &KISDomesticStockV1KsdinfoCapDcrsRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/dividend":                                func() any { return &KISDomesticStockV1KsdinfoDividendRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/forfeit":                                 func() any { return &KISDomesticStockV1KsdinfoForfeitRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/list-info":                               func() any { return &KISDomesticStockV1KsdinfoListInfoRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/mand-deposit":                            func() any { return &KISDomesticStockV1KsdinfoMandDepositRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/merger-split":                            func() any { return &KISDomesticStockV1KsdinfoMergerSplitRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/paidin-capin":                            func() any { return &KISDomesticStockV1KsdinfoPaidinCapinRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/pub-offer":                               func() any { return &KISDomesticStockV1KsdinfoPubOfferRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/purreq":                                  func() any { return &KISDomesticStockV1KsdinfoPurreqRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/rev-split":                               func() any { return &KISDomesticStockV1KsdinfoRevSplitRequest{} },
+	"/uapi/domestic-stock/v1/ksdinfo/sharehld-meet":                           func() any { return &KISDomesticStockV1KsdinfoSharehldMeetRequest{} },
+	"/uapi/domestic-stock/v1/quotations/capture-uplowprice":                   func() any { return &KISDomesticStockV1QuotationsCaptureUplowpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/chk-holiday":                          func() any { return &KISDomesticStockV1QuotationsChkHolidayRequest{} },
+	"/uapi/domestic-stock/v1/quotations/comp-interest":                        func() any { return &KISDomesticStockV1QuotationsCompInterestRequest{} },
+	"/uapi/domestic-stock/v1/quotations/comp-program-trade-daily":             func() any { return &KISDomesticStockV1QuotationsCompProgramTradeDailyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/comp-program-trade-today":             func() any { return &KISDomesticStockV1QuotationsCompProgramTradeTodayRequest{} },
+	"/uapi/domestic-stock/v1/quotations/credit-by-company":                    func() any { return &KISDomesticStockV1QuotationsCreditByCompanyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/daily-credit-balance":                 func() any { return &KISDomesticStockV1QuotationsDailyCreditBalanceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/daily-loan-trans":                     func() any { return &KISDomesticStockV1QuotationsDailyLoanTransRequest{} },
+	"/uapi/domestic-stock/v1/quotations/daily-short-sale":                     func() any { return &KISDomesticStockV1QuotationsDailyShortSaleRequest{} },
+	"/uapi/domestic-stock/v1/quotations/estimate-perform":                     func() any { return &KISDomesticStockV1QuotationsEstimatePerformRequest{} },
+	"/uapi/domestic-stock/v1/quotations/exp-closing-price":                    func() any { return &KISDomesticStockV1QuotationsExpClosingPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/exp-index-trend":                      func() any { return &KISDomesticStockV1QuotationsExpIndexTrendRequest{} },
+	"/uapi/domestic-stock/v1/quotations/exp-price-trend":                      func() any { return &KISDomesticStockV1QuotationsExpPriceTrendRequest{} },
+	"/uapi/domestic-stock/v1/quotations/exp-total-index":                      func() any { return &KISDomesticStockV1QuotationsExpTotalIndexRequest{} },
+	"/uapi/domestic-stock/v1/quotations/foreign-institution-total":            func() any { return &KISDomesticStockV1QuotationsForeignInstitutionTotalRequest{} },
+	"/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend":                   func() any { return &KISDomesticStockV1QuotationsFrgnmemPchsTrendRequest{} },
+	"/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate":               func() any { return &KISDomesticStockV1QuotationsFrgnmemTradeEstimateRequest{} },
+	"/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend":                  func() any { return &KISDomesticStockV1QuotationsFrgnmemTradeTrendRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn":         func() any { return &KISDomesticStockV1QuotationsInquireAskingPriceExpCcnRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-ccnl":                         func() any { return &KISDomesticStockV1QuotationsInquireCcnlRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice":        func() any { return &KISDomesticStockV1QuotationsInquireDailyIndexchartpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice":         func() any { return &KISDomesticStockV1QuotationsInquireDailyItemchartpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice":          func() any { return &KISDomesticStockV1QuotationsInquireDailyOvertimepriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-daily-price":                  func() any { return &KISDomesticStockV1QuotationsInquireDailyPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume":           func() any { return &KISDomesticStockV1QuotationsInquireDailyTradeVolumeRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-elw-price":                    func() any { return &KISDomesticStockV1QuotationsInquireElwPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-index-category-price":         func() any { return &KISDomesticStockV1QuotationsInquireIndexCategoryPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-index-daily-price":            func() any { return &KISDomesticStockV1QuotationsInquireIndexDailyPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-index-price":                  func() any { return &KISDomesticStockV1QuotationsInquireIndexPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-index-tickprice":              func() any { return &KISDomesticStockV1QuotationsInquireIndexTickpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-index-timeprice":              func() any { return &KISDomesticStockV1QuotationsInquireIndexTimepriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-investor":                     func() any { return &KISDomesticStockV1QuotationsInquireInvestorRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market":     func() any { return &KISDomesticStockV1QuotationsInquireInvestorDailyByMarketRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market":      func() any { return &KISDomesticStockV1QuotationsInquireInvestorTimeByMarketRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-member":                       func() any { return &KISDomesticStockV1QuotationsInquireMemberRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-member-daily":                 func() any { return &KISDomesticStockV1QuotationsInquireMemberDailyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price":        func() any { return &KISDomesticStockV1QuotationsInquireOvertimeAskingPriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-overtime-price":               func() any { return &KISDomesticStockV1QuotationsInquireOvertimePriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-price":                        func() any { return &KISDomesticStockV1QuotationsInquirePriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-price-2":                      func() any { return &KISDomesticStockV1QuotationsInquirePriceN2Request{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice":         func() any { return &KISDomesticStockV1QuotationsInquireTimeDailychartpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice":         func() any { return &KISDomesticStockV1QuotationsInquireTimeIndexchartpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice":          func() any { return &KISDomesticStockV1QuotationsInquireTimeItemchartpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion":          func() any { return &KISDomesticStockV1QuotationsInquireTimeItemconclusionRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion":      func() any { return &KISDomesticStockV1QuotationsInquireTimeOvertimeconclusionRequest{} },
+	"/uapi/domestic-stock/v1/quotations/inquire-vi-status":                    func() any { return &KISDomesticStockV1QuotationsInquireViStatusRequest{} },
+	"/uapi/domestic-stock/v1/quotations/intstock-grouplist":                   func() any { return &KISDomesticStockV1QuotationsIntstockGrouplistRequest{} },
+	"/uapi/domestic-stock/v1/quotations/intstock-multprice":                   func() any { return &KISDomesticStockV1QuotationsIntstockMultpriceRequest{} },
+	"/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group":          func() any { return &KISDomesticStockV1QuotationsIntstockStocklistByGroupRequest{} },
+	"/uapi/domestic-stock/v1/quotations/invest-opbysec":                       func() any { return &KISDomesticStockV1QuotationsInvestOpbysecRequest{} },
+	"/uapi/domestic-stock/v1/quotations/invest-opinion":                       func() any { return &KISDomesticStockV1QuotationsInvestOpinionRequest{} },
+	"/uapi/domestic-stock/v1/quotations/investor-program-trade-today":         func() any { return &KISDomesticStockV1QuotationsInvestorProgramTradeTodayRequest{} },
+	"/uapi/domestic-stock/v1/quotations/investor-trade-by-stock-daily":        func() any { return &KISDomesticStockV1QuotationsInvestorTradeByStockDailyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/investor-trend-estimate":              func() any { return &KISDomesticStockV1QuotationsInvestorTrendEstimateRequest{} },
+	"/uapi/domestic-stock/v1/quotations/lendable-by-company":                  func() any { return &KISDomesticStockV1QuotationsLendableByCompanyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/market-time":                          func() any { return &KISDomesticStockV1QuotationsMarketTimeRequest{} },
+	"/uapi/domestic-stock/v1/quotations/mktfunds":                             func() any { return &KISDomesticStockV1QuotationsMktfundsRequest{} },
+	"/uapi/domestic-stock/v1/quotations/news-title":                           func() any { return &KISDomesticStockV1QuotationsNewsTitleRequest{} },
+	"/uapi/domestic-stock/v1/quotations/pbar-tratio":                          func() any { return &KISDomesticStockV1QuotationsPbarTratioRequest{} },
+	"/uapi/domestic-stock/v1/quotations/program-trade-by-stock":               func() any { return &KISDomesticStockV1QuotationsProgramTradeByStockRequest{} },
+	"/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily":         func() any { return &KISDomesticStockV1QuotationsProgramTradeByStockDailyRequest{} },
+	"/uapi/domestic-stock/v1/quotations/psearch-result":                       func() any { return &KISDomesticStockV1QuotationsPsearchResultRequest{} },
+	"/uapi/domestic-stock/v1/quotations/psearch-title":                        func() any { return &KISDomesticStockV1QuotationsPsearchTitleRequest{} },
+	"/uapi/domestic-stock/v1/quotations/search-info":                          func() any { return &KISDomesticStockV1QuotationsSearchInfoRequest{} },
+	"/uapi/domestic-stock/v1/quotations/search-stock-info":                    func() any { return &KISDomesticStockV1QuotationsSearchStockInfoRequest{} },
+	"/uapi/domestic-stock/v1/quotations/tradprt-byamt":                        func() any { return &KISDomesticStockV1QuotationsTradprtByamtRequest{} },
+	"/uapi/domestic-stock/v1/quotations/volume-rank":                          func() any { return &KISDomesticStockV1QuotationsVolumeRankRequest{} },
+	"/uapi/domestic-stock/v1/ranking/after-hour-balance":                      func() any { return &KISDomesticStockV1RankingAfterHourBalanceRequest{} },
+	"/uapi/domestic-stock/v1/ranking/bulk-trans-num":                          func() any { return &KISDomesticStockV1RankingBulkTransNumRequest{} },
+	"/uapi/domestic-stock/v1/ranking/credit-balance":                          func() any { return &KISDomesticStockV1RankingCreditBalanceRequest{} },
+	"/uapi/domestic-stock/v1/ranking/disparity":                               func() any { return &KISDomesticStockV1RankingDisparityRequest{} },
+	"/uapi/domestic-stock/v1/ranking/dividend-rate":                           func() any { return &KISDomesticStockV1RankingDividendRateRequest{} },
+	"/uapi/domestic-stock/v1/ranking/exp-trans-updown":                        func() any { return &KISDomesticStockV1RankingExpTransUpdownRequest{} },
+	"/uapi/domestic-stock/v1/ranking/finance-ratio":                           func() any { return &KISDomesticStockV1RankingFinanceRatioRequest{} },
+	"/uapi/domestic-stock/v1/ranking/fluctuation":                             func() any { return &KISDomesticStockV1RankingFluctuationRequest{} },
+	"/uapi/domestic-stock/v1/ranking/hts-top-view":                            func() any { return &KISDomesticStockV1RankingHtsTopViewRequest{} },
+	"/uapi/domestic-stock/v1/ranking/market-cap":                              func() any { return &KISDomesticStockV1RankingMarketCapRequest{} },
+	"/uapi/domestic-stock/v1/ranking/market-value":                            func() any { return &KISDomesticStockV1RankingMarketValueRequest{} },
+	"/uapi/domestic-stock/v1/ranking/near-new-highlow":                        func() any { return &KISDomesticStockV1RankingNearNewHighlowRequest{} },
+	"/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct":                func() any { return &KISDomesticStockV1RankingOvertimeExpTransFluctRequest{} },
+	"/uapi/domestic-stock/v1/ranking/overtime-fluctuation":                    func() any { return &KISDomesticStockV1RankingOvertimeFluctuationRequest{} },
+	"/uapi/domestic-stock/v1/ranking/overtime-volume":                         func() any { return &KISDomesticStockV1RankingOvertimeVolumeRequest{} },
+	"/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio":                  func() any { return &KISDomesticStockV1RankingPreferDisparateRatioRequest{} },
+	"/uapi/domestic-stock/v1/ranking/profit-asset-index":                      func() any { return &KISDomesticStockV1RankingProfitAssetIndexRequest{} },
+	"/uapi/domestic-stock/v1/ranking/quote-balance":                           func() any { return &KISDomesticStockV1RankingQuoteBalanceRequest{} },
+	"/uapi/domestic-stock/v1/ranking/short-sale":                              func() any { return &KISDomesticStockV1RankingShortSaleRequest{} },
+	"/uapi/domestic-stock/v1/ranking/top-interest-stock":                      func() any { return &KISDomesticStockV1RankingTopInterestStockRequest{} },
+	"/uapi/domestic-stock/v1/ranking/traded-by-company":                       func() any { return &KISDomesticStockV1RankingTradedByCompanyRequest{} },
+	"/uapi/domestic-stock/v1/ranking/volume-power":                            func() any { return &KISDomesticStockV1RankingVolumePowerRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-account-balance":                 func() any { return &KISDomesticStockV1TradingInquireAccountBalanceRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-balance":                         func() any { return &KISDomesticStockV1TradingInquireBalanceRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl":                  func() any { return &KISDomesticStockV1TradingInquireBalanceRlzPlRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-credit-psamount":                 func() any { return &KISDomesticStockV1TradingInquireCreditPsamountRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-daily-ccld":                      func() any { return &KISDomesticStockV1TradingInquireDailyCcldRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-period-profit":                   func() any { return &KISDomesticStockV1TradingInquirePeriodProfitRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-period-trade-profit":             func() any { return &KISDomesticStockV1TradingInquirePeriodTradeProfitRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-psbl-order":                      func() any { return &KISDomesticStockV1TradingInquirePsblOrderRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl":                   func() any { return &KISDomesticStockV1TradingInquirePsblRvsecnclRequest{} },
+	"/uapi/domestic-stock/v1/trading/inquire-psbl-sell":                       func() any { return &KISDomesticStockV1TradingInquirePsblSellRequest{} },
+	"/uapi/domestic-stock/v1/trading/intgr-margin":                            func() any { return &KISDomesticStockV1TradingIntgrMarginRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-cash":                              func() any { return &KISDomesticStockV1TradingOrderCashRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-credit":                            func() any { return &KISDomesticStockV1TradingOrderCreditRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-resv":                              func() any { return &KISDomesticStockV1TradingOrderResvRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-resv-ccnl":                         func() any { return &KISDomesticStockV1TradingOrderResvCcnlRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-resv-rvsecncl":                     func() any { return &KISDomesticStockV1TradingOrderResvRvsecnclRequest{} },
+	"/uapi/domestic-stock/v1/trading/order-rvsecncl":                          func() any { return &KISDomesticStockV1TradingOrderRvsecnclRequest{} },
+	"/uapi/domestic-stock/v1/trading/pension/inquire-balance":                 func() any { return &KISDomesticStockV1TradingPensionInquireBalanceRequest{} },
+	"/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld":              func() any { return &KISDomesticStockV1TradingPensionInquireDailyCcldRequest{} },
+	"/uapi/domestic-stock/v1/trading/pension/inquire-deposit":                 func() any { return &KISDomesticStockV1TradingPensionInquireDepositRequest{} },
+	"/uapi/domestic-stock/v1/trading/pension/inquire-present-balance":         func() any { return &KISDomesticStockV1TradingPensionInquirePresentBalanceRequest{} },
+	"/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order":              func() any { return &KISDomesticStockV1TradingPensionInquirePsblOrderRequest{} },
+	"/uapi/domestic-stock/v1/trading/period-rights":                           func() any { return &KISDomesticStockV1TradingPeriodRightsRequest{} },
+	"/uapi/elw/v1/quotations/compare-stocks":                                  func() any { return &KISElwV1QuotationsCompareStocksRequest{} },
+	"/uapi/elw/v1/quotations/cond-search":                                     func() any { return &KISElwV1QuotationsCondSearchRequest{} },
+	"/uapi/elw/v1/quotations/expiration-stocks":                               func() any { return &KISElwV1QuotationsExpirationStocksRequest{} },
+	"/uapi/elw/v1/quotations/indicator-trend-ccnl":                            func() any { return &KISElwV1QuotationsIndicatorTrendCcnlRequest{} },
+	"/uapi/elw/v1/quotations/indicator-trend-daily":                           func() any { return &KISElwV1QuotationsIndicatorTrendDailyRequest{} },
+	"/uapi/elw/v1/quotations/indicator-trend-minute":                          func() any { return &KISElwV1QuotationsIndicatorTrendMinuteRequest{} },
+	"/uapi/elw/v1/quotations/lp-trade-trend":                                  func() any { return &KISElwV1QuotationsLpTradeTrendRequest{} },
+	"/uapi/elw/v1/quotations/newly-listed":                                    func() any { return &KISElwV1QuotationsNewlyListedRequest{} },
+	"/uapi/elw/v1/quotations/sensitivity-trend-ccnl":                          func() any { return &KISElwV1QuotationsSensitivityTrendCcnlRequest{} },
+	"/uapi/elw/v1/quotations/sensitivity-trend-daily":                         func() any { return &KISElwV1QuotationsSensitivityTrendDailyRequest{} },
+	"/uapi/elw/v1/quotations/udrl-asset-list":                                 func() any { return &KISElwV1QuotationsUdrlAssetListRequest{} },
+	"/uapi/elw/v1/quotations/udrl-asset-price":                                func() any { return &KISElwV1QuotationsUdrlAssetPriceRequest{} },
+	"/uapi/elw/v1/quotations/volatility-trend-ccnl":                           func() any { return &KISElwV1QuotationsVolatilityTrendCcnlRequest{} },
+	"/uapi/elw/v1/quotations/volatility-trend-daily":                          func() any { return &KISElwV1QuotationsVolatilityTrendDailyRequest{} },
+	"/uapi/elw/v1/quotations/volatility-trend-minute":                         func() any { return &KISElwV1QuotationsVolatilityTrendMinuteRequest{} },
+	"/uapi/elw/v1/quotations/volatility-trend-tick":                           func() any { return &KISElwV1QuotationsVolatilityTrendTickRequest{} },
+	"/uapi/elw/v1/ranking/indicator":                                          func() any { return &KISElwV1RankingIndicatorRequest{} },
+	"/uapi/elw/v1/ranking/quick-change":                                       func() any { return &KISElwV1RankingQuickChangeRequest{} },
+	"/uapi/elw/v1/ranking/sensitivity":                                        func() any { return &KISElwV1RankingSensitivityRequest{} },
+	"/uapi/elw/v1/ranking/updown-rate":                                        func() any { return &KISElwV1RankingUpdownRateRequest{} },
+	"/uapi/elw/v1/ranking/volume-rank":                                        func() any { return &KISElwV1RankingVolumeRankRequest{} },
+	"/uapi/etfetn/v1/quotations/inquire-asking-price":                         func() any { return &KISEtfetnV1QuotationsInquireAskingPriceRequest{} },
+	"/uapi/etfetn/v1/quotations/inquire-component-stock-price":                func() any { return &KISEtfetnV1QuotationsInquireComponentStockPriceRequest{} },
+	"/uapi/etfetn/v1/quotations/inquire-price":                                func() any { return &KISEtfetnV1QuotationsInquirePriceRequest{} },
+	"/uapi/etfetn/v1/quotations/nav-comparison-daily-trend":                   func() any { return &KISEtfetnV1QuotationsNavComparisonDailyTrendRequest{} },
+	"/uapi/etfetn/v1/quotations/nav-comparison-time-trend":                    func() any { return &KISEtfetnV1QuotationsNavComparisonTimeTrendRequest{} },
+	"/uapi/etfetn/v1/quotations/nav-comparison-trend":                         func() any { return &KISEtfetnV1QuotationsNavComparisonTrendRequest{} },
 	"/uapi/overseas-futureoption/v1/quotations/daily-ccnl":                    func() any { return &KISOverseasFutureoptionV1QuotationsDailyCcnlRequest{} },
 	"/uapi/overseas-futureoption/v1/quotations/inquire-asking-price":          func() any { return &KISOverseasFutureoptionV1QuotationsInquireAskingPriceRequest{} },
 	"/uapi/overseas-futureoption/v1/quotations/inquire-price":                 func() any { return &KISOverseasFutureoptionV1QuotationsInquirePriceRequest{} },
@@ -11403,6 +11597,7 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/uapi/overseas-price/v1/quotations/inquire-search":                       func() any { return &KISOverseasPriceV1QuotationsInquireSearchRequest{} },
 	"/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice":         func() any { return &KISOverseasPriceV1QuotationsInquireTimeIndexchartpriceRequest{} },
 	"/uapi/overseas-price/v1/quotations/inquire-time-itemchartprice":          func() any { return &KISOverseasPriceV1QuotationsInquireTimeItemchartpriceRequest{} },
+	"/uapi/overseas-price/v1/quotations/multprice":                            func() any { return &KISOverseasPriceV1QuotationsMultpriceRequest{} },
 	"/uapi/overseas-price/v1/quotations/news-title":                           func() any { return &KISOverseasPriceV1QuotationsNewsTitleRequest{} },
 	"/uapi/overseas-price/v1/quotations/period-rights":                        func() any { return &KISOverseasPriceV1QuotationsPeriodRightsRequest{} },
 	"/uapi/overseas-price/v1/quotations/price":                                func() any { return &KISOverseasPriceV1QuotationsPriceRequest{} },

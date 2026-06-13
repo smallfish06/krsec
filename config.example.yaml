@@ -10,12 +10,13 @@ storage:
   order_context_dir: ".krsec/orders"
 
 # enum-like guide
-# - broker: ["kis", "kiwoom", "ls"]  # currently supported (strict)
+# - broker: ["kis", "kiwoom", "ls", "toss"]  # currently supported (strict)
 # - sandbox: [true, false]
 # - account_id format:
 #   - kis: "12345678-01" (recommended), "12345678" (also accepted -> normalized to -01)
 #   - kiwoom: "1234567890" (10 digits)
 #   - ls: arbitrary non-empty selector, for example "ls-main"
+#   - toss: arbitrary local selector, for example "toss-main"
 accounts:
   - name: "메인계좌"
     broker: "kis"     # expected: "kis"
@@ -45,6 +46,14 @@ accounts:
     app_secret: "YOUR_LS_APP_SECRET"
     account_id: "ls-main"
     # mac_address: "YOUR_MAC_ADDRESS"  # required only for LS accounts that need the mac_address header
+
+  - name: "토스계좌"
+    broker: "toss"    # expected: "toss"
+    sandbox: false    # Toss Open API currently documents production only
+    app_key_env: "TOSSINVEST_CLIENT_ID"
+    app_secret_env: "TOSSINVEST_CLIENT_SECRET"
+    account_id: "toss-main"  # local krsec selector
+    account_seq: "1"         # X-Tossinvest-Account value from GET /api/v1/accounts
 
 # 같은 증권사라도 계좌별로 별도 설정 가능
 # app_key/app_secret이 같으면 동일하게 입력해도 됨

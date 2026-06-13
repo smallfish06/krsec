@@ -23,6 +23,7 @@ import (
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 	pkgls "github.com/smallfish06/krsec/pkg/ls"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
+	pkgtoss "github.com/smallfish06/krsec/pkg/toss"
 )
 
 type smokeResult struct {
@@ -58,6 +59,7 @@ func main() {
 	kisTokenManager := pkgkis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	kiwoomTokenManager := pkgkiwoom.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	lsTokenManager := pkgls.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
+	tossTokenManager := pkgtoss.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 
 	for _, acc := range cfg.Accounts {
 		acc := acc
@@ -68,6 +70,8 @@ func main() {
 			runKiwoomAccount(&results, acc, kiwoomTokenManager, cfg.Storage.OrderContextDir)
 		case broker.CodeLS:
 			runLSAccount(&results, acc, lsTokenManager)
+		case broker.CodeToss:
+			runTossAccount(&results, acc, tossTokenManager)
 		default:
 			results = append(results, smokeResult{
 				Broker:   strings.ToUpper(acc.Broker),
@@ -369,7 +373,61 @@ func runLSAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencach
 	})
 }
 
-func runCase(results *[]smokeResult, brokerName, accountID, caseName string, expectError bool, fn func(context.Context) error) {
+func runTossAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencache.Manager) {
+	a := pkgtoss.NewAdapterWithOptions(acc.Sandbox, acc.AccountID, acc.AccountSeq, pkgadapter.Options{
+		TokenManager: tm,
+	})
+	creds := broker.Credentials{AppKey: acc.AppKey, AppSecret: acc.AppSecret}
+
+	if !runCase(results, "TOSS", acc.AccountID, "auth", false, func(ctx context.Context) error {
+		_, err := a.Authenticate(ctx, creds)
+		return err
+	}) {
+		return
+	}
+	runCase(results, "TOSS", acc.AccountID, "CallEndpoint accounts", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/accounts", nil, nil)
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "CallEndpoint prices(005930,AAPL)", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/prices", map[string]interface{}{
+			"symbols": "005930,AAPL",
+		}, nil)
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "CallEndpoint stocks(005930,AAPL)", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/stocks", map[string]interface{}{
+			"symbols": "005930,AAPL",
+		}, nil)
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "CallEndpoint holdings", false, func(ctx context.Context) error {
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/holdings", nil, nil)
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "GetQuote(KRX,005930)", false, func(ctx context.Context) error {
+		_, err := a.GetQuote(ctx, "KRX", "005930")
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "GetOHLCV(KRX,005930,1d)", false, func(ctx context.Context) error {
+		_, err := a.GetOHLCV(ctx, "KRX", "005930", broker.OHLCVOpts{Interval: "1d", Limit: 10})
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "GetInstrument(KRX,005930)", false, func(ctx context.Context) error {
+		_, err := a.GetInstrument(ctx, "KRX", "005930")
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "GetBalance", false, func(ctx context.Context) error {
+		_, err := a.GetBalance(ctx, acc.AccountID)
+		return err
+	})
+	runCase(results, "TOSS", acc.AccountID, "GetPositions", false, func(ctx context.Context) error {
+		_, err := a.GetPositions(ctx, acc.AccountID)
+		return err
+	})
+}
+
+func runCase(results *[]smokeResult, brokerName, accountID, caseName string, expectError bool, fn func(context.Context) error) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 
@@ -399,14 +457,21 @@ func runCase(results *[]smokeResult, brokerName, accountID, caseName string, exp
 		}
 	}
 
-	*results = append(*results, smokeResult{
+	result := smokeResult{
 		Broker:   brokerName,
 		Account:  accountID,
 		CaseName: caseName,
 		Status:   status,
 		Duration: dur,
 		Detail:   detail,
-	})
+	}
+	*results = append(*results, result)
+	printCaseProgress(result)
+	return status != "FAIL" && status != "UNEXPECTED_SUCCESS"
+}
+
+func printCaseProgress(result smokeResult) {
+	fmt.Printf("[%s] %s %s (%s)\n", result.Status, result.Broker, result.CaseName, result.Duration.Round(time.Millisecond))
 }
 
 func buildKISEndpointCases(fromDate, toDate, cano, acntPrdtCd string) []endpointCase {

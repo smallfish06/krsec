@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -56,13 +57,16 @@ type KISProxyRateLimitOverrideConfig struct {
 
 // AccountConfig represents a broker account configuration
 type AccountConfig struct {
-	Name       string `yaml:"name"`
-	Broker     string `yaml:"broker"` // currently supported: broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS
-	Sandbox    bool   `yaml:"sandbox"`
-	AppKey     string `yaml:"app_key"`
-	AppSecret  string `yaml:"app_secret"`
-	AccountID  string `yaml:"account_id"`
-	MACAddress string `yaml:"mac_address,omitempty"`
+	Name         string `yaml:"name"`
+	Broker       string `yaml:"broker"` // currently supported: broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS, broker.CodeToss
+	Sandbox      bool   `yaml:"sandbox"`
+	AppKey       string `yaml:"app_key"`
+	AppSecret    string `yaml:"app_secret"`
+	AppKeyEnv    string `yaml:"app_key_env,omitempty"`
+	AppSecretEnv string `yaml:"app_secret_env,omitempty"`
+	AccountID    string `yaml:"account_id"`
+	AccountSeq   string `yaml:"account_seq,omitempty"`
+	MACAddress   string `yaml:"mac_address,omitempty"`
 }
 
 var accountIDPattern = regexp.MustCompile(`^\d{8}(-\d{2})?$`)
@@ -118,8 +122,18 @@ func (c *Config) Validate() error {
 		case broker.CodeKIS:
 		case broker.CodeKiwoom:
 		case broker.CodeLS:
+		case broker.CodeToss:
 		default:
-			return fmt.Errorf("accounts[%d].broker unsupported value %q (expected: %s|%s|%s)", i, acc.Broker, broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS)
+			return fmt.Errorf("accounts[%d].broker unsupported value %q (expected: %s|%s|%s|%s)", i, acc.Broker, broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS, broker.CodeToss)
+		}
+
+		acc.AppKeyEnv = strings.TrimSpace(acc.AppKeyEnv)
+		acc.AppSecretEnv = strings.TrimSpace(acc.AppSecretEnv)
+		if acc.AppKeyEnv != "" {
+			acc.AppKey = strings.TrimSpace(os.Getenv(acc.AppKeyEnv))
+		}
+		if acc.AppSecretEnv != "" {
+			acc.AppSecret = strings.TrimSpace(os.Getenv(acc.AppSecretEnv))
 		}
 
 		acc.AppKey = strings.TrimSpace(acc.AppKey)
@@ -147,6 +161,20 @@ func (c *Config) Validate() error {
 		case broker.CodeLS:
 			if accountID == "" {
 				return fmt.Errorf("accounts[%d].account_id is required for %s", i, broker.CodeLS)
+			}
+		case broker.CodeToss:
+			if acc.Sandbox {
+				return fmt.Errorf("accounts[%d].sandbox is not supported for %s", i, broker.CodeToss)
+			}
+			if accountID == "" {
+				return fmt.Errorf("accounts[%d].account_id is required for %s", i, broker.CodeToss)
+			}
+			acc.AccountSeq = strings.TrimSpace(acc.AccountSeq)
+			if acc.AccountSeq == "" {
+				return fmt.Errorf("accounts[%d].account_seq is required for %s", i, broker.CodeToss)
+			}
+			if n, err := strconv.ParseInt(acc.AccountSeq, 10, 64); err != nil || n <= 0 {
+				return fmt.Errorf("accounts[%d].account_seq invalid format %q for %s (expected: positive integer)", i, acc.AccountSeq, broker.CodeToss)
 			}
 		}
 		acc.AccountID = accountID

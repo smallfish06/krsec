@@ -72,6 +72,13 @@ type Balance struct {
 	SettlementT1     float64 `json:"settlement_t1,omitempty"`
 	Unsettled        float64 `json:"unsettled,omitempty"`
 	LoanBalance      float64 `json:"loan_balance,omitempty"`
+
+	CashByCurrency          map[string]float64 `json:"cash_by_currency,omitempty"`
+	TotalAssetsByCurrency   map[string]float64 `json:"total_assets_by_currency,omitempty"`
+	BuyingPowerByCurrency   map[string]float64 `json:"buying_power_by_currency,omitempty"`
+	ProfitLossByCurrency    map[string]float64 `json:"profit_loss_by_currency,omitempty"`
+	PositionCostByCurrency  map[string]float64 `json:"position_cost_by_currency,omitempty"`
+	PositionValueByCurrency map[string]float64 `json:"position_value_by_currency,omitempty"`
 }
 
 // AssetType represents the type of asset
@@ -87,24 +94,26 @@ const (
 
 // Position represents a stock position
 type Position struct {
-	Symbol        string    `json:"symbol"`
-	Name          string    `json:"name"`
-	Market        string    `json:"market"`
-	MarketCode    string    `json:"market_code,omitempty"`
-	AssetType     AssetType `json:"asset_type"`
-	Quantity      int64     `json:"quantity"`
-	OrderableQty  int64     `json:"orderable_qty,omitempty"`
-	UnsettledQty  int64     `json:"unsettled_qty,omitempty"`
-	TodayBuyQty   int64     `json:"today_buy_qty,omitempty"`
-	TodaySellQty  int64     `json:"today_sell_qty,omitempty"`
-	AvgPrice      float64   `json:"avg_price"`
-	CurrentPrice  float64   `json:"current_price"`
-	PurchaseValue float64   `json:"purchase_value,omitempty"`
-	MarketValue   float64   `json:"market_value,omitempty"`
-	ProfitLoss    float64   `json:"profit_loss"`
-	ProfitLossPct float64   `json:"profit_loss_pct"`
-	WeightPct     float64   `json:"weight_pct,omitempty"`
-	LoanDate      string    `json:"loan_date,omitempty"`
+	Symbol              string    `json:"symbol"`
+	Name                string    `json:"name"`
+	Market              string    `json:"market"`
+	MarketCode          string    `json:"market_code,omitempty"`
+	AssetType           AssetType `json:"asset_type"`
+	Quantity            int64     `json:"quantity"`
+	QuantityDecimal     string    `json:"quantity_decimal,omitempty"`
+	OrderableQty        int64     `json:"orderable_qty,omitempty"`
+	OrderableQtyDecimal string    `json:"orderable_qty_decimal,omitempty"`
+	UnsettledQty        int64     `json:"unsettled_qty,omitempty"`
+	TodayBuyQty         int64     `json:"today_buy_qty,omitempty"`
+	TodaySellQty        int64     `json:"today_sell_qty,omitempty"`
+	AvgPrice            float64   `json:"avg_price"`
+	CurrentPrice        float64   `json:"current_price"`
+	PurchaseValue       float64   `json:"purchase_value,omitempty"`
+	MarketValue         float64   `json:"market_value,omitempty"`
+	ProfitLoss          float64   `json:"profit_loss"`
+	ProfitLossPct       float64   `json:"profit_loss_pct"`
+	WeightPct           float64   `json:"weight_pct,omitempty"`
+	LoanDate            string    `json:"loan_date,omitempty"`
 }
 
 // Instrument represents normalized instrument metadata.
@@ -173,19 +182,28 @@ const (
 
 // OrderRequest represents a new order request
 type OrderRequest struct {
-	AccountID string    `json:"account_id"`
-	Symbol    string    `json:"symbol"`
-	Market    string    `json:"market"`
-	Side      OrderSide `json:"side"`
-	Type      OrderType `json:"type"`
-	Quantity  int64     `json:"quantity"`
-	Price     float64   `json:"price,omitempty"`
+	AccountID             string    `json:"account_id"`
+	ClientOrderID         string    `json:"client_order_id,omitempty"`
+	Symbol                string    `json:"symbol"`
+	Market                string    `json:"market"`
+	Side                  OrderSide `json:"side"`
+	Type                  OrderType `json:"type"`
+	TimeInForce           string    `json:"time_in_force,omitempty"`
+	Quantity              int64     `json:"quantity"`
+	QuantityDecimal       string    `json:"quantity_decimal,omitempty"`
+	Price                 float64   `json:"price,omitempty"`
+	OrderAmount           float64   `json:"order_amount,omitempty"`
+	OrderAmountDecimal    string    `json:"order_amount_decimal,omitempty"`
+	ConfirmHighValueOrder bool      `json:"confirm_high_value_order,omitempty"`
 }
 
 // ModifyOrderRequest represents an order modification request
 type ModifyOrderRequest struct {
-	Quantity int64   `json:"quantity,omitempty"`
-	Price    float64 `json:"price,omitempty"`
+	Type                  OrderType `json:"type,omitempty"`
+	Quantity              int64     `json:"quantity,omitempty"`
+	QuantityDecimal       string    `json:"quantity_decimal,omitempty"`
+	Price                 float64   `json:"price,omitempty"`
+	ConfirmHighValueOrder bool      `json:"confirm_high_value_order,omitempty"`
 }
 
 // OrderResult represents the result of an order operation

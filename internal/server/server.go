@@ -18,6 +18,8 @@ import (
 	kiwoomadapter "github.com/smallfish06/krsec/internal/kiwoom/adapter"
 	"github.com/smallfish06/krsec/internal/ls"
 	lsadapter "github.com/smallfish06/krsec/internal/ls/adapter"
+	"github.com/smallfish06/krsec/internal/toss"
+	tossadapter "github.com/smallfish06/krsec/internal/toss/adapter"
 	"github.com/smallfish06/krsec/pkg/broker"
 	"github.com/smallfish06/krsec/pkg/config"
 	kisspecs "github.com/smallfish06/krsec/pkg/kis/specs"
@@ -107,7 +109,7 @@ func NewWithLogger(cfg *config.Config, logger *slog.Logger) *Server {
 }
 
 // New creates a new server instance.
-// This constructor wires built-in brokers from config (currently KIS, Kiwoom, LS).
+// This constructor wires built-in brokers from config (currently KIS, Kiwoom, LS, Toss).
 func New(cfg *config.Config) *Server {
 	s := newBaseServer(cfg)
 	return s.init(cfg)
@@ -118,6 +120,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 	kisTokenManager := kis.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	kiwoomTokenManager := kiwoom.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 	lsTokenManager := ls.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
+	tossTokenManager := toss.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 
 	// Initialize brokers for each account
 	for _, account := range cfg.Accounts {
@@ -210,6 +213,26 @@ func (s *Server) init(cfg *config.Config) *Server {
 				}
 			}(account.Name, adapter, creds, s.logger)
 			brk = adapter
+		case broker.CodeToss:
+			adapter := tossadapter.NewAdapterWithOptions(
+				account.Sandbox,
+				account.AccountID,
+				account.AccountSeq,
+				tossTokenManager,
+				s.logger,
+			)
+			creds := broker.Credentials{
+				AppKey:    account.AppKey,
+				AppSecret: account.AppSecret,
+			}
+			go func(name string, a *tossadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
+				if _, err := a.Authenticate(context.Background(), c); err != nil {
+					logger.Warn("failed to authenticate account", "account", name, "error", err)
+				} else {
+					logger.Info("authenticated account", "account", name)
+				}
+			}(account.Name, adapter, creds, s.logger)
+			brk = adapter
 		default:
 			s.logger.Warn("unknown broker type", "broker", account.Broker)
 			continue
@@ -293,6 +316,15 @@ func (s *Server) routes() {
 		fuego.OptionDescription("Calls LS Securities OpenAPI endpoints by path. tr_cd in request body is required."),
 		fuego.OptionPath("path", "LS API path, for example /stock/market-data. Accepts wildcard segments."),
 		fuego.OptionQuery("account_id", "Optional account selector when multiple LS accounts exist."),
+	)
+
+	// Toss endpoint dispatcher (calls documented Toss endpoints by path)
+	fuego.Post(s.router, "/toss/{path...}", s.handleTossProxy,
+		fuego.OptionTags("Toss"),
+		fuego.OptionSummary("Call Toss endpoint by path"),
+		fuego.OptionDescription("Calls Toss Securities Open API endpoints by path. method is required when one path has multiple operations."),
+		fuego.OptionPath("path", "Toss API path, for example /api/v1/prices. Accepts wildcard segments."),
+		fuego.OptionQuery("account_id", "Optional account selector when multiple Toss accounts exist."),
 	)
 
 	// Quotes

@@ -66,6 +66,22 @@ func validateLSProxyRequest(req *lsProxyRequest) error {
 	return nil
 }
 
+func validateTossProxyRequest(req *tossProxyRequest) error {
+	req.AccountID = strings.TrimSpace(req.AccountID)
+	req.Method = strings.ToUpper(strings.TrimSpace(req.Method))
+
+	if err := proxyRequestValidator.Struct(struct {
+		Method string `validate:"omitempty,oneof=GET POST PUT DELETE PATCH"`
+	}{
+		Method: req.Method,
+	}); err != nil {
+		return proxyRequestValidationError(err, map[string]string{
+			"Method.oneof": "unsupported method",
+		})
+	}
+	return nil
+}
+
 func proxyRequestValidationError(err error, messages map[string]string) error {
 	var invalidValidationErr *validator.InvalidValidationError
 	if errors.As(err, &invalidValidationErr) {

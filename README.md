@@ -13,6 +13,7 @@
 | 한국투자증권 (KIS) | ✅ |
 | 키움증권 | ✅ |
 | LS증권 | ✅ REST + WebSocket 실시간 체결, 국내/미국 주식 시세, 문서화된 전체 TR 스냅샷 |
+| 토스증권 | ✅ REST Open API 전체 raw proxy + 공통 조회/계좌/주문 인터페이스 |
 
 ## 설치
 
@@ -47,6 +48,14 @@ accounts:
     app_secret: "YOUR_LS_APP_SECRET"
     account_id: "ls-main"
     # mac_address: "YOUR_MAC_ADDRESS"  # LS 계정에서 요구되는 경우만 설정
+
+  - name: "toss-main"
+    broker: toss
+    sandbox: false
+    app_key_env: "TOSSINVEST_CLIENT_ID"
+    app_secret_env: "TOSSINVEST_CLIENT_SECRET"
+    account_id: "toss-main" # krsec 로컬 selector
+    account_seq: "1"        # Toss X-Tossinvest-Account 값
 ```
 
 ## 실행
@@ -62,8 +71,9 @@ krsec -config config.yaml
 | `POST` | `/kis/<documented-uapi-path>` | KIS 문서 스펙에 등록된 정적 엔드포인트 호출 (`/uapi` prefix 제외 경로) |
 | `POST` | `/kiwoom/{path...}` | Kiwoom 엔드포인트 호출 (`/api` 경로 + `api_id`를 구현/문서 스냅샷 기반 generated 매핑(비웹소켓 REST)) |
 | `POST` | `/ls/{path...}` | LS OpenAPI 엔드포인트 호출 (`tr_cd`와 요청 block 전달, 문서 스냅샷 기반 REST TR 검증) |
+| `POST` | `/toss/{path...}` | Toss Open API 엔드포인트 호출 (공식 OpenAPI snapshot 기반 path/method 검증) |
 | `GET` | `/quotes/{market}/{symbol}` | 현재가 |
-| `GET` | `/quotes/{market}/{symbol}/ohlcv` | 일봉 |
+| `GET` | `/quotes/{market}/{symbol}/ohlcv` | 일봉/분봉 |
 | `GET` | `/instruments/{market}/{symbol}` | 종목 정보 |
 | `GET` | `/accounts/{id}/balance` | 잔고 |
 | `GET` | `/accounts/{id}/positions` | 포지션 |
@@ -127,6 +137,29 @@ curl -X POST http://localhost:8080/ls/overseas-stock/market-data \
         "symbol": "AAPL"
       }
     }
+}'
+```
+
+```bash
+curl -X POST http://localhost:8080/toss/api/v1/prices \
+  -H "Content-Type: application/json" \
+  -d '{"query":{"symbols":"005930,AAPL"}}'
+```
+
+```bash
+curl -X POST http://localhost:8080/toss/api/v1/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_id": "toss-main",
+    "method": "POST",
+    "body": {
+      "clientOrderId": "my-order-001",
+      "symbol": "005930",
+      "side": "BUY",
+      "orderType": "LIMIT",
+      "quantity": "10",
+      "price": "70000"
+    }
   }'
 ```
 
@@ -184,9 +217,12 @@ pkg/kis/specs/        KIS documented endpoint generated 타입/스펙
 pkg/kiwoom/specs/     Kiwoom documented endpoint generated 타입/스펙
 pkg/ls/               LS 공개 어댑터 + 토큰 매니저
 pkg/ls/specs/         LS documented endpoint generated 스펙
+pkg/toss/             Toss 공개 어댑터 + 토큰 매니저
+pkg/toss/specs/       Toss OpenAPI generated 스펙
 internal/kis/         KIS 클라이언트 + 어댑터
 internal/kiwoom/      키움 클라이언트 + 어댑터
 internal/ls/          LS REST/WebSocket 클라이언트 + 어댑터
+internal/toss/        Toss REST 클라이언트 + 어댑터
 internal/server/      HTTP 핸들러
 examples/             사용 예시
 ```
@@ -201,6 +237,8 @@ LS증권은 REST 조회/주문 어댑터와 별도로 WebSocket 실시간 체결
 
 LS 주문 정정/취소/주문조회/체결조회는 LS 원주문 컨텍스트 요구사항과 현재 공통 인터페이스가 맞지 않아 아직 `ErrNotSupported`를 반환합니다.
 
+Toss증권은 공식 OpenAPI JSON snapshot 기준 전체 REST operation을 `/toss/{path...}` raw proxy로 호출할 수 있습니다. 공통 `Broker` 인터페이스에서는 현재가, 1일/1분 캔들, 종목정보, 보유주식, 매수가능금액 기반 잔고, 주문 생성/정정/취소/조회/체결 요약을 제공합니다. Toss API 키는 `app_key_env`/`app_secret_env` 환경변수 참조 방식 사용을 권장합니다.
+
 ## 개발
 
 ```bash
@@ -214,6 +252,8 @@ make kiwoom-spec-check   # Kiwoom generated spec/type 동기화 확인
 make kiwoom-spec-refresh # Kiwoom 포털 snapshot 갱신 + generated 파일 재생성
 make ls-spec-check       # LS generated spec 동기화 확인
 make ls-spec-refresh     # LS 포털 snapshot 갱신 + generated 파일 재생성
+make toss-spec-check     # Toss generated spec 동기화 확인
+make toss-spec-refresh   # Toss OpenAPI snapshot 갱신 + generated 파일 재생성
 ```
 
 ### KIS spec 관리
@@ -234,6 +274,13 @@ make ls-spec-refresh     # LS 포털 snapshot 갱신 + generated 파일 재생�
 - 런타임은 웹사이트를 조회하지 않고, snapshot에서 생성된 코드만 사용합니다.
 - `cmd/ls-specgen`은 LS 공식 API 가이드의 REST/WEBSOCKET TR 목록과 request/response field 속성을 수집합니다.
 - CI는 `make ls-spec-check`로 generated 파일 drift를 차단합니다.
+
+### Toss spec 관리
+
+- Toss 문서 스펙은 `pkg/toss/specs/documented_endpoints.json` snapshot으로 버전 관리합니다.
+- 런타임은 웹사이트를 조회하지 않고, snapshot에서 생성된 코드만 사용합니다.
+- `cmd/toss-specgen`은 Toss 공식 OpenAPI JSON에서 path/method/account-header/rate-limit metadata를 생성합니다.
+- CI는 `make toss-spec-check`로 generated 파일 drift를 차단합니다.
 
 ## AI 에이전트 안내
 

@@ -2807,6 +2807,10 @@
           "required": true
         },
         {
+          "code": "qry_sort_tp",
+          "type": "String"
+        },
+        {
           "code": "stk_cd",
           "type": "String"
         },
@@ -13263,6 +13267,10 @@
         "trde_tp"
       ],
       "request_fields": [
+        {
+          "code": "amt_qty_tp",
+          "type": "String"
+        },
         {
           "code": "mrkt_tp",
           "type": "String",
