@@ -199,7 +199,7 @@ func fetchSnapshot(client *http.Client, url string) (*openAPISnapshot, error) {
 		return nil, fmt.Errorf("decode Toss OpenAPI JSON: %w", err)
 	}
 	if len(snap.Paths) == 0 {
-		return nil, fmt.Errorf("Toss OpenAPI snapshot contains no paths")
+		return nil, fmt.Errorf("toss OpenAPI snapshot contains no paths")
 	}
 	return &snap, nil
 }

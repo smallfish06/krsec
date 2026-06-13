@@ -9,7 +9,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -403,11 +402,4 @@ func normalizePath(path string) string {
 		path = "/" + path
 	}
 	return path
-}
-
-func decimalString(v float64) string {
-	if v == 0 {
-		return ""
-	}
-	return strconv.FormatFloat(v, 'f', -1, 64)
 }
