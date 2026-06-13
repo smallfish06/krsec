@@ -18,6 +18,7 @@ type Account struct {
 	Name        string
 	Broker      string
 	Sandbox     bool
+	AccountSeq  string
 	Credentials broker.Credentials
 }
 
@@ -164,12 +165,13 @@ func toInternalAccounts(accounts []Account) []config.AccountConfig {
 			continue
 		}
 		out = append(out, config.AccountConfig{
-			Name:      strings.TrimSpace(acc.Name),
-			Broker:    strings.ToLower(strings.TrimSpace(acc.Broker)),
-			Sandbox:   acc.Sandbox,
-			AppKey:    strings.TrimSpace(acc.Credentials.AppKey),
-			AppSecret: strings.TrimSpace(acc.Credentials.AppSecret),
-			AccountID: id,
+			Name:       strings.TrimSpace(acc.Name),
+			Broker:     strings.ToLower(strings.TrimSpace(acc.Broker)),
+			Sandbox:    acc.Sandbox,
+			AppKey:     strings.TrimSpace(acc.Credentials.AppKey),
+			AppSecret:  strings.TrimSpace(acc.Credentials.AppSecret),
+			AccountID:  id,
+			AccountSeq: strings.TrimSpace(acc.AccountSeq),
 		})
 	}
 	return out

@@ -12,8 +12,8 @@ import (
 func TestDocumentedEndpointResponseFactoryCoverage(t *testing.T) {
 	t.Parallel()
 
-	if got := kisspecs.DocumentedEndpointResponseFactoryCount(); got != 273 {
-		t.Fatalf("factory count = %d, want 273", got)
+	if got, want := kisspecs.DocumentedEndpointResponseFactoryCount(), len(kisspecs.DocumentedKISEndpointSpecs); got != want {
+		t.Fatalf("factory count = %d, spec count = %d", got, want)
 	}
 }
 

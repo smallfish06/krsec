@@ -137,6 +137,7 @@ type KiwoomApiDostkAcntKt00015Request struct {
 	EndDt        string `json:"end_dt,omitempty"`
 	FrgnStexCode string `json:"frgn_stex_code,omitempty"`
 	GdsTp        string `json:"gds_tp,omitempty"`
+	QrySortTp    string `json:"qry_sort_tp,omitempty"`
 	StkCd        string `json:"stk_cd,omitempty"`
 	StrtDt       string `json:"strt_dt,omitempty"`
 	Tp           string `json:"tp,omitempty"`
@@ -862,9 +863,10 @@ type KiwoomApiDostkRkinfoKa10062Request struct {
 }
 
 type KiwoomApiDostkRkinfoKa10065Request struct {
-	MrktTp string `json:"mrkt_tp,omitempty"`
-	OrgnTp string `json:"orgn_tp,omitempty"`
-	TrdeTp string `json:"trde_tp,omitempty"`
+	AmtQtyTp string `json:"amt_qty_tp,omitempty"`
+	MrktTp   string `json:"mrkt_tp,omitempty"`
+	OrgnTp   string `json:"orgn_tp,omitempty"`
+	TrdeTp   string `json:"trde_tp,omitempty"`
 }
 
 type KiwoomApiDostkRkinfoKa10098Request struct {

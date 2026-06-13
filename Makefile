@@ -1,7 +1,8 @@
 .PHONY: build run test clean deps mock \
 	kis-spec-fetch kis-spec-generate kis-spec-refresh kis-spec-check kis-spec-all \
 	kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check kiwoom-spec-all \
-	ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check ls-spec-all
+	ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check ls-spec-all \
+	toss-spec-fetch toss-spec-generate toss-spec-refresh toss-spec-check toss-spec-all
 
 # Build the application
 build:
@@ -100,3 +101,22 @@ ls-spec-check:
 
 # Run full LS spec workflow end-to-end
 ls-spec-all: ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check
+
+# Fetch latest documented Toss snapshot from official OpenAPI JSON (network required)
+toss-spec-fetch:
+	go run ./cmd/toss-specgen fetch --out pkg/toss/specs/documented_endpoints.json
+
+# Generate Toss documented spec Go file from snapshot
+toss-spec-generate:
+	go run ./cmd/toss-specgen generate --in pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
+
+# Refresh snapshot + regenerate Toss documented Go files
+toss-spec-refresh:
+	go run ./cmd/toss-specgen refresh --snapshot pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
+
+# Verify generated Toss documented files are up to date
+toss-spec-check:
+	go run ./cmd/toss-specgen check --in pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
+
+# Run full Toss spec workflow end-to-end
+toss-spec-all: toss-spec-fetch toss-spec-generate toss-spec-refresh toss-spec-check

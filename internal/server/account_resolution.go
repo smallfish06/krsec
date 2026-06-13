@@ -18,6 +18,8 @@ func normalizeBrokerCode(name string) string {
 		return broker.CodeKiwoom
 	case broker.CodeLS, strings.ToLower(broker.NameLS):
 		return broker.CodeLS
+	case broker.CodeToss, strings.ToLower(broker.NameToss):
+		return broker.CodeToss
 	default:
 		return ""
 	}

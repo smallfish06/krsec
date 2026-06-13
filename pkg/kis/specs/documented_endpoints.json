@@ -4143,6 +4143,74 @@
       ]
     },
     {
+      "path": "/uapi/domestic-futureoption/v1/quotations/margin-rate",
+      "method": "GET",
+      "real_trid": "TTTO6032R",
+      "virtual_trid": "미지원",
+      "required_fields": [
+        "BASS_DT",
+        "BAST_ID",
+        "CTX_AREA_NK200"
+      ],
+      "response_props": [
+        {
+          "code": "rt_cd",
+          "type": "A0001",
+          "order": "001"
+        },
+        {
+          "code": "msg_cd",
+          "type": "A0001",
+          "order": "002"
+        },
+        {
+          "code": "msg1",
+          "type": "A0001",
+          "order": "003"
+        },
+        {
+          "code": "output",
+          "type": "A0005",
+          "order": "004"
+        },
+        {
+          "code": "bast_id",
+          "type": "A0001",
+          "order": "004.001"
+        },
+        {
+          "code": "bast_name",
+          "type": "A0001",
+          "order": "004.002"
+        },
+        {
+          "code": "brkg_mgna_rt",
+          "type": "A0001",
+          "order": "004.003"
+        },
+        {
+          "code": "tr_mgna_rt",
+          "type": "A0001",
+          "order": "004.004"
+        },
+        {
+          "code": "bast_pric",
+          "type": "A0001",
+          "order": "004.005"
+        },
+        {
+          "code": "tr_mtpl_idx",
+          "type": "A0001",
+          "order": "004.006"
+        },
+        {
+          "code": "ctrt_per_futr_mgna",
+          "type": "A0001",
+          "order": "004.007"
+        }
+      ]
+    },
+    {
       "path": "/uapi/domestic-futureoption/v1/trading/inquire-balance",
       "method": "GET",
       "real_trid": "CTFO6118R",
@@ -19241,7 +19309,6 @@
         "FID_COND_MRKT_DIV_CODE",
         "FID_COND_SCR_DIV_CODE",
         "FID_DIV_CLS_CODE",
-        "FID_INPUT_DATE_1",
         "FID_INPUT_ISCD",
         "FID_INPUT_PRICE_1",
         "FID_INPUT_PRICE_2",
@@ -28103,6 +28170,533 @@
       ]
     },
     {
+      "path": "/uapi/etfetn/v1/quotations/inquire-asking-price",
+      "method": "GET",
+      "real_trid": "FHPST02400200",
+      "virtual_trid": "",
+      "required_fields": [
+        "FID_COND_MRKT_DIV_CODE",
+        "FID_INPUT_ISCD"
+      ],
+      "response_props": [
+        {
+          "code": "rt_cd",
+          "type": "A0001",
+          "order": "001"
+        },
+        {
+          "code": "msg_cd",
+          "type": "A0001",
+          "order": "002"
+        },
+        {
+          "code": "msg1",
+          "type": "A0001",
+          "order": "003"
+        },
+        {
+          "code": "output",
+          "type": "A0003",
+          "order": "004"
+        },
+        {
+          "code": "aspr_acpt_hour",
+          "type": "A0001",
+          "order": "004.001"
+        },
+        {
+          "code": "askp1",
+          "type": "A0001",
+          "order": "004.002"
+        },
+        {
+          "code": "askp2",
+          "type": "A0001",
+          "order": "004.003"
+        },
+        {
+          "code": "askp3",
+          "type": "A0001",
+          "order": "004.004"
+        },
+        {
+          "code": "askp4",
+          "type": "A0001",
+          "order": "004.005"
+        },
+        {
+          "code": "askp5",
+          "type": "A0001",
+          "order": "004.006"
+        },
+        {
+          "code": "askp6",
+          "type": "A0001",
+          "order": "004.007"
+        },
+        {
+          "code": "askp7",
+          "type": "A0001",
+          "order": "004.008"
+        },
+        {
+          "code": "askp8",
+          "type": "A0001",
+          "order": "004.009"
+        },
+        {
+          "code": "askp9",
+          "type": "A0001",
+          "order": "004.010"
+        },
+        {
+          "code": "askp10",
+          "type": "A0001",
+          "order": "004.011"
+        },
+        {
+          "code": "bidp1",
+          "type": "A0001",
+          "order": "004.012"
+        },
+        {
+          "code": "bidp2",
+          "type": "A0001",
+          "order": "004.013"
+        },
+        {
+          "code": "bidp3",
+          "type": "A0001",
+          "order": "004.014"
+        },
+        {
+          "code": "bidp4",
+          "type": "A0001",
+          "order": "004.015"
+        },
+        {
+          "code": "bidp5",
+          "type": "A0001",
+          "order": "004.016"
+        },
+        {
+          "code": "bidp6",
+          "type": "A0001",
+          "order": "004.017"
+        },
+        {
+          "code": "bidp7",
+          "type": "A0001",
+          "order": "004.018"
+        },
+        {
+          "code": "bidp8",
+          "type": "A0001",
+          "order": "004.019"
+        },
+        {
+          "code": "bidp9",
+          "type": "A0001",
+          "order": "004.020"
+        },
+        {
+          "code": "bidp10",
+          "type": "A0001",
+          "order": "004.021"
+        },
+        {
+          "code": "askp_rsqn1",
+          "type": "A0001",
+          "order": "004.022"
+        },
+        {
+          "code": "askp_rsqn2",
+          "type": "A0001",
+          "order": "004.023"
+        },
+        {
+          "code": "askp_rsqn3",
+          "type": "A0001",
+          "order": "004.024"
+        },
+        {
+          "code": "askp_rsqn4",
+          "type": "A0001",
+          "order": "004.025"
+        },
+        {
+          "code": "askp_rsqn5",
+          "type": "A0001",
+          "order": "004.026"
+        },
+        {
+          "code": "askp_rsqn6",
+          "type": "A0001",
+          "order": "004.027"
+        },
+        {
+          "code": "askp_rsqn7",
+          "type": "A0001",
+          "order": "004.028"
+        },
+        {
+          "code": "askp_rsqn8",
+          "type": "A0001",
+          "order": "004.029"
+        },
+        {
+          "code": "askp_rsqn9",
+          "type": "A0001",
+          "order": "004.030"
+        },
+        {
+          "code": "askp_rsqn10",
+          "type": "A0001",
+          "order": "004.031"
+        },
+        {
+          "code": "bidp_rsqn1",
+          "type": "A0001",
+          "order": "004.032"
+        },
+        {
+          "code": "bidp_rsqn2",
+          "type": "A0001",
+          "order": "004.033"
+        },
+        {
+          "code": "bidp_rsqn3",
+          "type": "A0001",
+          "order": "004.034"
+        },
+        {
+          "code": "bidp_rsqn4",
+          "type": "A0001",
+          "order": "004.035"
+        },
+        {
+          "code": "bidp_rsqn5",
+          "type": "A0001",
+          "order": "004.036"
+        },
+        {
+          "code": "bidp_rsqn6",
+          "type": "A0001",
+          "order": "004.037"
+        },
+        {
+          "code": "bidp_rsqn7",
+          "type": "A0001",
+          "order": "004.038"
+        },
+        {
+          "code": "bidp_rsqn8",
+          "type": "A0001",
+          "order": "004.039"
+        },
+        {
+          "code": "bidp_rsqn9",
+          "type": "A0001",
+          "order": "004.040"
+        },
+        {
+          "code": "bidp_rsqn10",
+          "type": "A0001",
+          "order": "004.041"
+        },
+        {
+          "code": "askp_rsqn_icdc1",
+          "type": "A0001",
+          "order": "004.042"
+        },
+        {
+          "code": "askp_rsqn_icdc2",
+          "type": "A0001",
+          "order": "004.043"
+        },
+        {
+          "code": "askp_rsqn_icdc3",
+          "type": "A0001",
+          "order": "004.044"
+        },
+        {
+          "code": "askp_rsqn_icdc4",
+          "type": "A0001",
+          "order": "004.045"
+        },
+        {
+          "code": "askp_rsqn_icdc5",
+          "type": "A0001",
+          "order": "004.046"
+        },
+        {
+          "code": "askp_rsqn_icdc6",
+          "type": "A0001",
+          "order": "004.047"
+        },
+        {
+          "code": "askp_rsqn_icdc7",
+          "type": "A0001",
+          "order": "004.048"
+        },
+        {
+          "code": "askp_rsqn_icdc8",
+          "type": "A0001",
+          "order": "004.049"
+        },
+        {
+          "code": "askp_rsqn_icdc9",
+          "type": "A0001",
+          "order": "004.050"
+        },
+        {
+          "code": "askp_rsqn_icdc10",
+          "type": "A0001",
+          "order": "004.051"
+        },
+        {
+          "code": "bidp_rsqn_icdc1",
+          "type": "A0001",
+          "order": "004.052"
+        },
+        {
+          "code": "bidp_rsqn_icdc2",
+          "type": "A0001",
+          "order": "004.053"
+        },
+        {
+          "code": "bidp_rsqn_icdc3",
+          "type": "A0001",
+          "order": "004.054"
+        },
+        {
+          "code": "bidp_rsqn_icdc4",
+          "type": "A0001",
+          "order": "004.055"
+        },
+        {
+          "code": "bidp_rsqn_icdc5",
+          "type": "A0001",
+          "order": "004.056"
+        },
+        {
+          "code": "bidp_rsqn_icdc6",
+          "type": "A0001",
+          "order": "004.057"
+        },
+        {
+          "code": "bidp_rsqn_icdc7",
+          "type": "A0001",
+          "order": "004.058"
+        },
+        {
+          "code": "bidp_rsqn_icdc8",
+          "type": "A0001",
+          "order": "004.059"
+        },
+        {
+          "code": "bidp_rsqn_icdc9",
+          "type": "A0001",
+          "order": "004.060"
+        },
+        {
+          "code": "bidp_rsqn_icdc10",
+          "type": "A0001",
+          "order": "004.061"
+        },
+        {
+          "code": "total_askp_rsqn",
+          "type": "A0001",
+          "order": "004.062"
+        },
+        {
+          "code": "total_bidp_rsqn",
+          "type": "A0001",
+          "order": "004.063"
+        },
+        {
+          "code": "total_askp_rsqn_icdc",
+          "type": "A0001",
+          "order": "004.064"
+        },
+        {
+          "code": "total_bidp_rsqn_icdc",
+          "type": "A0001",
+          "order": "004.065"
+        },
+        {
+          "code": "ovtm_total_askp_icdc",
+          "type": "A0001",
+          "order": "004.066"
+        },
+        {
+          "code": "ovtm_total_bidp_icdc",
+          "type": "A0001",
+          "order": "004.067"
+        },
+        {
+          "code": "ovtm_total_askp_rsqn",
+          "type": "A0001",
+          "order": "004.068"
+        },
+        {
+          "code": "ovtm_total_bidp_rsqn",
+          "type": "A0001",
+          "order": "004.069"
+        },
+        {
+          "code": "ntby_aspr_rsqn",
+          "type": "A0001",
+          "order": "004.070"
+        },
+        {
+          "code": "new_mkop_cls_code",
+          "type": "A0001",
+          "order": "004.071"
+        },
+        {
+          "code": "lp_askp_rsqn1",
+          "type": "A0001",
+          "order": "004.072"
+        },
+        {
+          "code": "lp_askp_rsqn2",
+          "type": "A0001",
+          "order": "004.073"
+        },
+        {
+          "code": "lp_askp_rsqn3",
+          "type": "A0001",
+          "order": "004.074"
+        },
+        {
+          "code": "lp_askp_rsqn4",
+          "type": "A0001",
+          "order": "004.075"
+        },
+        {
+          "code": "lp_askp_rsqn5",
+          "type": "A0001",
+          "order": "004.076"
+        },
+        {
+          "code": "lp_askp_rsqn6",
+          "type": "A0001",
+          "order": "004.077"
+        },
+        {
+          "code": "lp_askp_rsqn7",
+          "type": "A0001",
+          "order": "004.078"
+        },
+        {
+          "code": "lp_askp_rsqn8",
+          "type": "A0001",
+          "order": "004.079"
+        },
+        {
+          "code": "lp_askp_rsqn9",
+          "type": "A0001",
+          "order": "004.080"
+        },
+        {
+          "code": "lp_askp_rsqn10",
+          "type": "A0001",
+          "order": "004.081"
+        },
+        {
+          "code": "lp_bidp_rsqn1",
+          "type": "A0001",
+          "order": "004.082"
+        },
+        {
+          "code": "lp_bidp_rsqn2",
+          "type": "A0001",
+          "order": "004.083"
+        },
+        {
+          "code": "lp_bidp_rsqn3",
+          "type": "A0001",
+          "order": "004.084"
+        },
+        {
+          "code": "lp_bidp_rsqn4",
+          "type": "A0001",
+          "order": "004.085"
+        },
+        {
+          "code": "lp_bidp_rsqn5",
+          "type": "A0001",
+          "order": "004.086"
+        },
+        {
+          "code": "lp_bidp_rsqn6",
+          "type": "A0001",
+          "order": "004.087"
+        },
+        {
+          "code": "lp_bidp_rsqn7",
+          "type": "A0001",
+          "order": "004.088"
+        },
+        {
+          "code": "lp_bidp_rsqn8",
+          "type": "A0001",
+          "order": "004.089"
+        },
+        {
+          "code": "lp_bidp_rsqn9",
+          "type": "A0001",
+          "order": "004.090"
+        },
+        {
+          "code": "lp_bidp_rsqn10",
+          "type": "A0001",
+          "order": "004.091"
+        },
+        {
+          "code": "lp_total_askp_rsqn",
+          "type": "A0001",
+          "order": "004.092"
+        },
+        {
+          "code": "lp_total_bidp_rsqn",
+          "type": "A0001",
+          "order": "004.093"
+        },
+        {
+          "code": "mid_prc",
+          "type": "A0001",
+          "order": "004.094"
+        },
+        {
+          "code": "midp_total_rsqn",
+          "type": "A0001",
+          "order": "004.095"
+        },
+        {
+          "code": "midp_cls_code",
+          "type": "A0001",
+          "order": "004.096"
+        },
+        {
+          "code": "mid_prc2",
+          "type": "A0001",
+          "order": "004.097"
+        },
+        {
+          "code": "midp_total_rsqn2",
+          "type": "A0001",
+          "order": "004.098"
+        },
+        {
+          "code": "midp_cls_code2",
+          "type": "A0001",
+          "order": "004.099"
+        }
+      ]
+    },
+    {
       "path": "/uapi/etfetn/v1/quotations/inquire-component-stock-price",
       "method": "GET",
       "real_trid": "FHKST121600C0",
@@ -28953,27 +29547,6 @@
           "code": "lprc_nav",
           "type": "A0001",
           "order": "005.008"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/hashkey",
-      "method": "POST",
-      "real_trid": "",
-      "virtual_trid": "",
-      "required_fields": [
-        "JsonBody"
-      ],
-      "response_props": [
-        {
-          "code": "JsonBody",
-          "type": "A0003",
-          "order": "001"
-        },
-        {
-          "code": "HASH",
-          "type": "A0001",
-          "order": "002"
         }
       ]
     },
@@ -34856,6 +35429,290 @@
       ]
     },
     {
+      "path": "/uapi/overseas-price/v1/quotations/multprice",
+      "method": "GET",
+      "real_trid": "HHDFS76220000",
+      "virtual_trid": "미지원",
+      "required_fields": [
+        "AUTH",
+        "EXCD_01 ~ 10",
+        "NREC",
+        "SYMB_01 ~ 10"
+      ],
+      "response_props": [
+        {
+          "code": "rt_cd",
+          "type": "A0001",
+          "order": "001"
+        },
+        {
+          "code": "msg_cd",
+          "type": "A0001",
+          "order": "002"
+        },
+        {
+          "code": "msg1",
+          "type": "A0001",
+          "order": "003"
+        },
+        {
+          "code": "output",
+          "type": "A0003",
+          "order": "004"
+        },
+        {
+          "code": "nrec",
+          "type": "A0001",
+          "order": "004.001"
+        },
+        {
+          "code": "output2",
+          "type": "A0005",
+          "order": "005"
+        },
+        {
+          "code": "rsym",
+          "type": "A0001",
+          "order": "005.001"
+        },
+        {
+          "code": "excd",
+          "type": "A0001",
+          "order": "005.002"
+        },
+        {
+          "code": "symb",
+          "type": "A0001",
+          "order": "005.003"
+        },
+        {
+          "code": "knam",
+          "type": "A0001",
+          "order": "005.004"
+        },
+        {
+          "code": "exnm",
+          "type": "A0001",
+          "order": "005.005"
+        },
+        {
+          "code": "nnam",
+          "type": "A0001",
+          "order": "005.006"
+        },
+        {
+          "code": "stat1",
+          "type": "A0001",
+          "order": "005.007"
+        },
+        {
+          "code": "stat2",
+          "type": "A0001",
+          "order": "005.008"
+        },
+        {
+          "code": "zdiv",
+          "type": "A0001",
+          "order": "005.009"
+        },
+        {
+          "code": "last",
+          "type": "A0001",
+          "order": "005.010"
+        },
+        {
+          "code": "sign",
+          "type": "A0001",
+          "order": "005.011"
+        },
+        {
+          "code": "diff",
+          "type": "A0001",
+          "order": "005.012"
+        },
+        {
+          "code": "rate",
+          "type": "A0001",
+          "order": "005.013"
+        },
+        {
+          "code": "open",
+          "type": "A0001",
+          "order": "005.014"
+        },
+        {
+          "code": "high",
+          "type": "A0001",
+          "order": "005.015"
+        },
+        {
+          "code": "low",
+          "type": "A0001",
+          "order": "005.016"
+        },
+        {
+          "code": "pbid",
+          "type": "A0001",
+          "order": "005.017"
+        },
+        {
+          "code": "pask",
+          "type": "A0001",
+          "order": "005.018"
+        },
+        {
+          "code": "vbid",
+          "type": "A0001",
+          "order": "005.019"
+        },
+        {
+          "code": "vask",
+          "type": "A0001",
+          "order": "005.020"
+        },
+        {
+          "code": "bvol",
+          "type": "A0001",
+          "order": "005.021"
+        },
+        {
+          "code": "avol",
+          "type": "A0001",
+          "order": "005.022"
+        },
+        {
+          "code": "evol",
+          "type": "A0001",
+          "order": "005.023"
+        },
+        {
+          "code": "tvol",
+          "type": "A0001",
+          "order": "005.024"
+        },
+        {
+          "code": "tamt",
+          "type": "A0001",
+          "order": "005.025"
+        },
+        {
+          "code": "powx",
+          "type": "A0001",
+          "order": "005.026"
+        },
+        {
+          "code": "xhms",
+          "type": "A0001",
+          "order": "005.027"
+        },
+        {
+          "code": "khms",
+          "type": "A0001",
+          "order": "005.028"
+        },
+        {
+          "code": "curr",
+          "type": "A0001",
+          "order": "005.029"
+        },
+        {
+          "code": "base",
+          "type": "A0001",
+          "order": "005.030"
+        },
+        {
+          "code": "pvol",
+          "type": "A0001",
+          "order": "005.031"
+        },
+        {
+          "code": "pamt",
+          "type": "A0001",
+          "order": "005.032"
+        },
+        {
+          "code": "popen",
+          "type": "A0001",
+          "order": "005.033"
+        },
+        {
+          "code": "phigh",
+          "type": "A0001",
+          "order": "005.034"
+        },
+        {
+          "code": "plow",
+          "type": "A0001",
+          "order": "005.035"
+        },
+        {
+          "code": "shar",
+          "type": "A0001",
+          "order": "005.036"
+        },
+        {
+          "code": "mcap",
+          "type": "A0001",
+          "order": "005.037"
+        },
+        {
+          "code": "tomv",
+          "type": "A0001",
+          "order": "005.038"
+        },
+        {
+          "code": "h52p",
+          "type": "A0001",
+          "order": "005.039"
+        },
+        {
+          "code": "l52p",
+          "type": "A0001",
+          "order": "005.040"
+        },
+        {
+          "code": "h52d",
+          "type": "A0001",
+          "order": "005.041"
+        },
+        {
+          "code": "l52d",
+          "type": "A0001",
+          "order": "005.042"
+        },
+        {
+          "code": "hanp",
+          "type": "A0001",
+          "order": "005.043"
+        },
+        {
+          "code": "lanp",
+          "type": "A0001",
+          "order": "005.044"
+        },
+        {
+          "code": "hand",
+          "type": "A0001",
+          "order": "005.045"
+        },
+        {
+          "code": "land",
+          "type": "A0001",
+          "order": "005.046"
+        },
+        {
+          "code": "bnit",
+          "type": "A0001",
+          "order": "005.047"
+        },
+        {
+          "code": "t_xprc",
+          "type": "A0001",
+          "order": "005.048"
+        }
+      ]
+    },
+    {
       "path": "/uapi/overseas-price/v1/quotations/news-title",
       "method": "GET",
       "real_trid": "HHPSTH60100C1",
@@ -35815,6 +36672,11 @@
           "code": "last_rcvg_dtime",
           "type": "A0001",
           "order": "004.055"
+        },
+        {
+          "code": "sgle_item_lvrg_etp_yn",
+          "type": "A0001",
+          "order": "004.055"
         }
       ]
     },
@@ -36177,7 +37039,7 @@
         "EXCD",
         "GUBN",
         "KEYB",
-        "MIXN",
+        "MINX",
         "VOL_RANG"
       ],
       "response_props": [
@@ -37182,7 +38044,7 @@
         "AUTH",
         "EXCD",
         "KEYB",
-        "MIXN",
+        "MINX",
         "VOL_RANG"
       ],
       "response_props": [

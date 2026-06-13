@@ -80,6 +80,90 @@ accounts:
 	}
 }
 
+func TestLoadValidTossConfigResolvesEnvCredentials(t *testing.T) {
+	t.Setenv("TOSS_TEST_CLIENT_ID", "client-id")
+	t.Setenv("TOSS_TEST_CLIENT_SECRET", "client-secret")
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+accounts:
+  - name: "toss-main"
+    broker: TOSS
+    sandbox: false
+    app_key_env: "TOSS_TEST_CLIENT_ID"
+    app_secret_env: "TOSS_TEST_CLIENT_SECRET"
+    account_id: "  toss-main  "
+    account_seq: "  1  "
+`)
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("Load() unexpected error: %v", err)
+	}
+	if len(cfg.Accounts) != 1 {
+		t.Fatalf("accounts length = %d, want 1", len(cfg.Accounts))
+	}
+	acc := cfg.Accounts[0]
+	if acc.Broker != "toss" {
+		t.Fatalf("broker = %q, want toss", acc.Broker)
+	}
+	if acc.AppKey != "client-id" || acc.AppSecret != "client-secret" {
+		t.Fatalf("credentials not resolved from env: %+v", acc)
+	}
+	if acc.AccountID != "toss-main" || acc.AccountSeq != "1" {
+		t.Fatalf("unexpected account fields: %+v", acc)
+	}
+}
+
+func TestLoadRejectsTossSandbox(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+accounts:
+  - name: "toss-main"
+    broker: toss
+    sandbox: true
+    app_key: "k"
+    app_secret: "s"
+    account_id: "toss-main"
+    account_seq: "1"
+`)
+
+	_, err := Load(path)
+	if err == nil {
+		t.Fatal("Load() expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "sandbox is not supported") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestLoadRejectsInvalidTossAccountSeq(t *testing.T) {
+	path := writeTempConfig(t, `
+server:
+  host: "127.0.0.1"
+  port: 9090
+accounts:
+  - name: "toss-main"
+    broker: toss
+    sandbox: false
+    app_key: "k"
+    app_secret: "s"
+    account_id: "toss-main"
+    account_seq: "abc"
+`)
+
+	_, err := Load(path)
+	if err == nil {
+		t.Fatal("Load() expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "account_seq invalid format") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func TestLoadStorageConfig(t *testing.T) {
 	path := writeTempConfig(t, `
 server:

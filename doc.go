@@ -2,7 +2,7 @@
 // broker APIs.
 //
 // This module abstracts away the differences between Korean broker REST APIs
-// (KIS, Kiwoom, LS, etc.) behind a single [github.com/smallfish06/krsec/pkg/broker.Broker] interface.
+// (KIS, Kiwoom, LS, Toss, etc.) behind a single [github.com/smallfish06/krsec/pkg/broker.Broker] interface.
 //
 // Most users will import one of the sub-packages:
 //
