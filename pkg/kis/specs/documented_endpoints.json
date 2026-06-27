@@ -36669,14 +36669,14 @@
           "order": "004.054"
         },
         {
-          "code": "last_rcvg_dtime",
+          "code": "sgle_item_lvrg_etp_yn",
           "type": "A0001",
           "order": "004.055"
         },
         {
-          "code": "sgle_item_lvrg_etp_yn",
+          "code": "last_rcvg_dtime",
           "type": "A0001",
-          "order": "004.055"
+          "order": "004.056"
         }
       ]
     },

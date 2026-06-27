@@ -7741,51 +7741,6 @@
     },
     {
       "path": "/api/dostk/frgnistt",
-      "api_id": "ka10009",
-      "method": "POST",
-      "required_fields": [
-        "stk_cd"
-      ],
-      "request_fields": [
-        {
-          "code": "stk_cd",
-          "type": "String",
-          "required": true
-        }
-      ],
-      "response_fields": [
-        {
-          "code": "close_pric",
-          "type": "String"
-        },
-        {
-          "code": "date",
-          "type": "String"
-        },
-        {
-          "code": "frgnr_daly_nettrde",
-          "type": "String"
-        },
-        {
-          "code": "frgnr_qota_rt",
-          "type": "String"
-        },
-        {
-          "code": "orgn_daly_nettrde",
-          "type": "String"
-        },
-        {
-          "code": "orgn_dt_acc",
-          "type": "String"
-        },
-        {
-          "code": "pre",
-          "type": "String"
-        }
-      ]
-    },
-    {
-      "path": "/api/dostk/frgnistt",
       "api_id": "ka10131",
       "method": "POST",
       "required_fields": [
@@ -17769,6 +17724,66 @@
         {
           "code": "thema_comp_stk",
           "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/watchlist",
+      "api_id": "ka01300",
+      "method": "POST",
+      "response_fields": [
+        {
+          "code": "- gcod",
+          "type": "String"
+        },
+        {
+          "code": "- name",
+          "type": "String"
+        },
+        {
+          "code": "nofi",
+          "type": "LIST"
+        },
+        {
+          "code": "rtcd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/watchlist",
+      "api_id": "ka01301",
+      "method": "POST",
+      "required_fields": [
+        "arn_grp_id"
+      ],
+      "request_fields": [
+        {
+          "code": "arn_grp_id",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- bgb",
+          "type": "String"
+        },
+        {
+          "code": "- bgb_clr",
+          "type": "String"
+        },
+        {
+          "code": "- cod2",
+          "type": "String"
+        },
+        {
+          "code": "nofj",
+          "type": "LIST"
+        },
+        {
+          "code": "rtcd",
+          "type": "String"
         }
       ]
     }

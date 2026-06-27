@@ -9933,8 +9933,8 @@ type KISOverseasPriceV1QuotationsSearchInfoOutputItem struct {
 	SdrfStopEclsErlmDt     string `json:"sdrf_stop_ecls_erlm_dt"`
 	MemoText1              string `json:"memo_text1"`
 	OvrsNowPric1           string `json:"ovrs_now_pric1"`
-	LastRcvgDtime          string `json:"last_rcvg_dtime"`
 	SgleItemLvrgEtpYn      string `json:"sgle_item_lvrg_etp_yn"`
+	LastRcvgDtime          string `json:"last_rcvg_dtime"`
 }
 
 type KISOverseasPriceV1QuotationsSearchInfoRequest struct {
