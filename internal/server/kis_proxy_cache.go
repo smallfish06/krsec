@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	defaultKISProxyCacheMaxEntries = 4096
-	kisProxyCacheStaleRetention    = 24 * time.Hour
+	defaultKISProxyCacheMaxEntries = 2048
+	kisProxyCacheStaleRetention    = 15 * time.Minute
 	kisProxyCacheRealTimeTTL       = time.Minute
 	kisProxyCacheCurrentPriceTTL   = 5 * time.Minute
 	kisProxyCacheDailyTTL          = time.Hour
@@ -62,7 +62,7 @@ func newKISProxyCache(opts KISProxyCacheOptions) *kisProxyCache {
 	if opts.StaleRetention <= 0 {
 		opts.StaleRetention = kisProxyCacheStaleRetention
 	}
-	return &kisProxyCache{
+	c := &kisProxyCache{
 		items: ttlcache.New(
 			ttlcache.WithCapacity[string, kisProxyCacheEntry](uint64(opts.MaxEntries)),
 			ttlcache.WithDisableTouchOnHit[string, kisProxyCacheEntry](),
@@ -70,6 +70,13 @@ func newKISProxyCache(opts KISProxyCacheOptions) *kisProxyCache {
 		staleRetention: opts.StaleRetention,
 		now:            time.Now,
 	}
+	// Actively reclaim expired entries on a timer. Without this, ttlcache only
+	// drops items on capacity pressure or on a subsequent Get of the same key,
+	// so cached responses (large chart/daily payloads) linger for their full
+	// ttl+staleRetention lifetime and memory never returns to baseline. Start
+	// blocks until Stop, so it runs for the process lifetime in a goroutine.
+	go c.items.Start()
+	return c
 }
 
 func (c *kisProxyCache) getFresh(key string) (interface{}, bool) {
