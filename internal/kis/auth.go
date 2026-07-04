@@ -10,7 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/sync/singleflight"
+
 	"github.com/smallfish06/krsec/pkg/broker"
+	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
 
 // TokenResponse represents the KIS token response
@@ -21,6 +24,15 @@ type TokenResponse struct {
 	ExpiresIn             int    `json:"expires_in"`
 	AccessTokenExpiresStr string `json:"access_token_expires"`
 }
+
+// authFlight collapses concurrent token issuance per appKey so a burst of
+// requests hitting an expired token results in a single /oauth2/tokenP call
+// instead of queueing one-per-minute on the auth rate limiter.
+var authFlight singleflight.Group
+
+// issueTimeout bounds a detached token issuance: up to one auth-limiter
+// window (60s) plus the HTTP round trip.
+const issueTimeout = 90 * time.Second
 
 // Authenticate authenticates with KIS and returns a token
 func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
@@ -40,8 +52,44 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 		}, nil
 	}
 
+	// Issue at most one token per appKey at a time. The issuance runs on a
+	// detached context so one canceled caller cannot poison the refresh for
+	// every other request waiting on it.
+	ch := authFlight.DoChan(creds.AppKey, func() (interface{}, error) {
+		return issueToken(tm, c.httpClient, c.baseURL, creds)
+	})
+
+	select {
+	case res := <-ch:
+		if res.Err != nil {
+			return nil, res.Err
+		}
+		token := res.Val.(*broker.Token)
+		c.setToken(token.AccessToken, token.ExpiresAt)
+		return token, nil
+	case <-ctx.Done():
+		// The in-flight issuance keeps running and caches its result for
+		// subsequent callers.
+		return nil, ctx.Err()
+	}
+}
+
+// issueToken requests a fresh token from KIS and stores it in the manager.
+func issueToken(tm tokencache.Manager, httpClient *http.Client, baseURL string, creds broker.Credentials) (*broker.Token, error) {
+	// Another flight may have refreshed while we were queued.
+	if token, expiresAt, ok := tm.GetToken(creds.AppKey); ok {
+		return &broker.Token{
+			AccessToken: token,
+			TokenType:   "Bearer",
+			ExpiresAt:   expiresAt,
+		}, nil
+	}
+
 	// Apply token issuance rate limit (1/minute per appkey)
 	tm.WaitForAuth(creds.AppKey)
+
+	ctx, cancel := context.WithTimeout(context.Background(), issueTimeout)
+	defer cancel()
 
 	reqBody := map[string]string{
 		"grant_type": "client_credentials",
@@ -54,7 +102,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 		return nil, fmt.Errorf("marshal request: %w", err)
 	}
 
-	url := c.baseURL + "/oauth2/tokenP"
+	url := baseURL + "/oauth2/tokenP"
 	req, err := http.NewRequestWithContext(ctx, "POST", url, strings.NewReader(string(bodyJSON)))
 	if err != nil {
 		return nil, fmt.Errorf("create request: %w", err)
@@ -62,7 +110,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("do request: %w", err)
 	}
@@ -80,9 +128,6 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 
 	// Calculate expiration time
 	expiresAt := time.Now().Add(time.Duration(tokenResp.ExpiresIn) * time.Second)
-
-	// Store token in client
-	c.setToken(tokenResp.AccessToken, expiresAt)
 
 	// Store token in manager (shared cache + optional persistence)
 	if err := tm.SetToken(creds.AppKey, tokenResp.AccessToken, expiresAt); err != nil {

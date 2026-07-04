@@ -10,8 +10,20 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/sync/singleflight"
+
 	"github.com/smallfish06/krsec/pkg/broker"
+	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
+
+// authFlight collapses concurrent token issuance per appKey so a burst of
+// requests hitting an expired token results in a single token call instead
+// of queueing one-per-minute on the auth rate limiter.
+var authFlight singleflight.Group
+
+// issueTimeout bounds a detached token issuance: up to one auth-limiter
+// window (60s) plus the HTTP round trip.
+const issueTimeout = 90 * time.Second
 
 // TokenResponse is Kiwoom OAuth token response.
 type TokenResponse struct {
@@ -40,7 +52,38 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
 	}
 
+	// Issue at most one token per appKey at a time. The issuance runs on a
+	// detached context so one canceled caller cannot poison the refresh for
+	// every other request waiting on it.
+	ch := authFlight.DoChan(appKey, func() (interface{}, error) {
+		return c.issueToken(tm, appKey, appSecret)
+	})
+	select {
+	case res := <-ch:
+		if res.Err != nil {
+			return nil, res.Err
+		}
+		token := res.Val.(*broker.Token)
+		c.setToken(token.AccessToken, token.ExpiresAt)
+		return token, nil
+	case <-ctx.Done():
+		// The in-flight issuance keeps running and caches its result for
+		// subsequent callers.
+		return nil, ctx.Err()
+	}
+}
+
+// issueToken requests a fresh token from Kiwoom and stores it in the manager.
+func (c *Client) issueToken(tm tokencache.Manager, appKey, appSecret string) (*broker.Token, error) {
+	// Another flight may have refreshed while we were queued.
+	if token, expiresAt, ok := tm.GetToken(appKey); ok {
+		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
+	}
+
 	tm.WaitForAuth(appKey)
+
+	ctx, cancel := context.WithTimeout(context.Background(), issueTimeout)
+	defer cancel()
 
 	reqBody := map[string]string{
 		"grant_type": "client_credentials",
