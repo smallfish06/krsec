@@ -2,11 +2,15 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
 	"sort"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -547,10 +551,41 @@ func toKiwoomStaticProxyPath(path, apiID string) string {
 	return "/kiwoom" + trimmed + "/" + id
 }
 
-// Run starts the HTTP server
+// shutdownDrainTimeout bounds how long in-flight requests may drain after a
+// termination signal. Keep it below Kubernetes' terminationGracePeriodSeconds
+// so draining finishes before SIGKILL.
+const shutdownDrainTimeout = 20 * time.Second
+
+// Run starts the HTTP server and shuts it down gracefully on SIGTERM/SIGINT,
+// draining in-flight requests instead of dropping them mid-rollout.
 func (s *Server) Run() error {
 	s.logger.Info("server listening", "addr", s.router.Addr)
-	return s.router.Run()
+
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- s.router.Run()
+	}()
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
+	defer signal.Stop(sigCh)
+
+	select {
+	case err := <-errCh:
+		return err
+	case sig := <-sigCh:
+		s.logger.Info("shutting down", "signal", sig.String())
+		ctx, cancel := context.WithTimeout(context.Background(), shutdownDrainTimeout)
+		defer cancel()
+		if err := s.router.Shutdown(ctx); err != nil {
+			return fmt.Errorf("graceful shutdown: %w", err)
+		}
+		// Serve returns http.ErrServerClosed after Shutdown; not an error.
+		if err := <-errCh; err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+		return nil
+	}
 }
 
 // App returns the underlying Fuego server for embedding/customization.
