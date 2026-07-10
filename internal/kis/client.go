@@ -94,8 +94,9 @@ func (c *Client) Name() string {
 func (c *Client) SetCredentials(appKey, appSecret string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	appKey = strings.TrimSpace(appKey)
 	c.appKey = appKey
-	c.appSecret = appSecret
+	c.appSecret = strings.TrimSpace(appSecret)
 	if appKey != "" {
 		c.apiLimiter = ratelimit.Shared(broker.CodeKIS, kisRequestsPerSecond, kisBurst, appKey)
 	}

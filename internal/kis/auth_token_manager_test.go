@@ -2,6 +2,7 @@ package kis
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,6 +10,25 @@ import (
 
 	"github.com/smallfish06/krsec/pkg/broker"
 )
+
+func TestAuthenticateRejectsMissingCredentialsBeforeTokenLookup(t *testing.T) {
+	tm := &stubTokenManager{}
+	c := NewClientWithTokenManager(false, tm)
+
+	for _, creds := range []broker.Credentials{
+		{},
+		{AppKey: "app-key"},
+		{AppSecret: "app-secret"},
+		{AppKey: "  ", AppSecret: "app-secret"},
+	} {
+		if _, err := c.Authenticate(context.Background(), creds); !errors.Is(err, broker.ErrInvalidCredentials) {
+			t.Fatalf("Authenticate(%+v) error = %v, want ErrInvalidCredentials", creds, err)
+		}
+	}
+	if tm.getCalls != 0 || tm.waitCalls != 0 || tm.setCalls != 0 {
+		t.Fatalf("token manager called for invalid credentials: get=%d wait=%d set=%d", tm.getCalls, tm.waitCalls, tm.setCalls)
+	}
+}
 
 type stubTokenManager struct {
 	cachedToken   string

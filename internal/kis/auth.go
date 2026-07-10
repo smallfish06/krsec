@@ -36,14 +36,21 @@ const issueTimeout = 90 * time.Second
 
 // Authenticate authenticates with KIS and returns a token
 func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
-	c.SetCredentials(creds.AppKey, creds.AppSecret)
+	appKey := strings.TrimSpace(creds.AppKey)
+	appSecret := strings.TrimSpace(creds.AppSecret)
+	if appKey == "" || appSecret == "" {
+		return nil, broker.ErrInvalidCredentials
+	}
+	creds.AppKey = appKey
+	creds.AppSecret = appSecret
+	c.SetCredentials(appKey, appSecret)
 
 	// Check token manager first (shared cache across clients)
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
-	if token, expiresAt, ok := tm.GetToken(creds.AppKey); ok {
+	if token, expiresAt, ok := tm.GetToken(appKey); ok {
 		c.setToken(token, expiresAt)
 		return &broker.Token{
 			AccessToken: token,
@@ -55,7 +62,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	// Issue at most one token per appKey at a time. The issuance runs on a
 	// detached context so one canceled caller cannot poison the refresh for
 	// every other request waiting on it.
-	ch := authFlight.DoChan(creds.AppKey, func() (interface{}, error) {
+	ch := authFlight.DoChan(appKey, func() (interface{}, error) {
 		return issueToken(tm, c.httpClient, c.baseURL, creds)
 	})
 

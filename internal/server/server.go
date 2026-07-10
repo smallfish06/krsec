@@ -142,14 +142,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
-			// Authenticate in background (don't block server start)
-			go func(name string, a *kisadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
-				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					logger.Warn("failed to authenticate account", "account", name, "error", err)
-				} else {
-					logger.Info("authenticated account", "account", name)
-				}
-			}(account.Name, adapter, creds, s.logger)
+			s.authenticateInBackground(account.Name, adapter, creds)
 
 			// Bootstrap symbol master files in background.
 			go func(name string, a *kisadapter.Adapter, logger *slog.Logger) {
@@ -189,13 +182,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
-			go func(name string, a *kiwoomadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
-				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					logger.Warn("failed to authenticate account", "account", name, "error", err)
-				} else {
-					logger.Info("authenticated account", "account", name)
-				}
-			}(account.Name, adapter, creds, s.logger)
+			s.authenticateInBackground(account.Name, adapter, creds)
 			brk = adapter
 		case broker.CodeLS:
 			adapter := lsadapter.NewAdapterWithOptions(
@@ -209,13 +196,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
-			go func(name string, a *lsadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
-				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					logger.Warn("failed to authenticate account", "account", name, "error", err)
-				} else {
-					logger.Info("authenticated account", "account", name)
-				}
-			}(account.Name, adapter, creds, s.logger)
+			s.authenticateInBackground(account.Name, adapter, creds)
 			brk = adapter
 		case broker.CodeToss:
 			adapter := tossadapter.NewAdapterWithOptions(
@@ -229,13 +210,7 @@ func (s *Server) init(cfg *config.Config) *Server {
 				AppKey:    account.AppKey,
 				AppSecret: account.AppSecret,
 			}
-			go func(name string, a *tossadapter.Adapter, c broker.Credentials, logger *slog.Logger) {
-				if _, err := a.Authenticate(context.Background(), c); err != nil {
-					logger.Warn("failed to authenticate account", "account", name, "error", err)
-				} else {
-					logger.Info("authenticated account", "account", name)
-				}
-			}(account.Name, adapter, creds, s.logger)
+			s.authenticateInBackground(account.Name, adapter, creds)
 			brk = adapter
 		default:
 			s.logger.Warn("unknown broker type", "broker", account.Broker)
@@ -245,6 +220,16 @@ func (s *Server) init(cfg *config.Config) *Server {
 	}
 
 	return s
+}
+
+func (s *Server) authenticateInBackground(name string, brk broker.Broker, creds broker.Credentials) {
+	go func() {
+		if _, err := brk.Authenticate(context.Background(), creds); err != nil {
+			s.logger.Warn("failed to authenticate account", "account", name, "error", err)
+			return
+		}
+		s.logger.Info("authenticated account", "account", name)
+	}()
 }
 
 // NewWithBrokers creates a server with externally provided brokers.
