@@ -23024,7 +23024,7 @@
           "order": "004.019"
         },
         {
-          "code": "cnc_cfrm_qty",
+          "code": "cncl_cfrm_qty",
           "type": "A0001",
           "order": "004.020"
         },

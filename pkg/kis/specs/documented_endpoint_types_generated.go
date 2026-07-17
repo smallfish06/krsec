@@ -6125,7 +6125,7 @@ type KISDomesticStockV1TradingInquireDailyCcldOutput1Item struct {
 	LoanDt                 string `json:"loan_dt"`
 	OrdrEmpno              string `json:"ordr_empno"`
 	OrdDvsnCd              string `json:"ord_dvsn_cd"`
-	CncCfrmQty             string `json:"cnc_cfrm_qty"`
+	CnclCfrmQty            string `json:"cncl_cfrm_qty"`
 	RmnQty                 string `json:"rmn_qty"`
 	RjctQty                string `json:"rjct_qty"`
 	CcldCndtName           string `json:"ccld_cndt_name"`

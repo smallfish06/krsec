@@ -66,7 +66,23 @@ type apiTRIORow struct {
 	InputOutput  string `json:"inptOutputTp"`
 	Essential    string `json:"esntYn"`
 	Type         string `json:"type"`
+	TypeNm       string `json:"typeNm"`
+	ItemType     string `json:"itemType"`
 	HeaderBodyTp string `json:"headBodyTp"`
+}
+
+// fieldType normalizes the documented field type across portal schema
+// revisions: older payloads used type="LIST"/"String", newer ones use
+// typeNm="List<Map>"/"String" plus itemType="R" for repeated groups.
+func (r apiTRIORow) fieldType() string {
+	t := strings.TrimSpace(r.Type)
+	if t == "" {
+		t = strings.TrimSpace(r.TypeNm)
+	}
+	if strings.EqualFold(strings.TrimSpace(r.ItemType), "R") || strings.HasPrefix(strings.ToLower(t), "list") {
+		return "LIST"
+	}
+	return t
 }
 
 func main() {
@@ -324,7 +340,7 @@ func extractIOFields(rows []apiTRIORow, ioType string) []requestFieldSnapshot {
 		code = strings.ToLower(code)
 		field := requestFieldSnapshot{
 			Code:     code,
-			Type:     strings.TrimSpace(row.Type),
+			Type:     row.fieldType(),
 			Required: strings.EqualFold(strings.TrimSpace(row.Essential), "Y"),
 		}
 		if existing, ok := byCode[code]; ok {

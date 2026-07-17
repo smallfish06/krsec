@@ -1377,7 +1377,7 @@ func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderCont
 			remainQty = ordQty - filledQty
 		}
 		rejectQty := parseIntOrDefault(item.RjctQty, 0)
-		cancelled := parseYN(item.CnclYn) || parseIntOrDefault(item.CncCfrmQty, 0) > 0
+		cancelled := parseYN(item.CnclYn) || parseIntOrDefault(item.CnclCfrmQty, 0) > 0
 		base := orderStatusSnapshot{
 			FilledQty:      int64(filledQty),
 			RemainingQty:   int64(remainQty),
