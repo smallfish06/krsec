@@ -330,6 +330,14 @@ func TestNew_OpenAPIEndpoints(t *testing.T) {
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response.opaf_invsr_trde.items not found")
 	}
+	// Array item schemas are emitted as named $refs; resolve before inspecting.
+	if ref, _ := listItems["$ref"].(string); ref != "" {
+		name := strings.TrimPrefix(ref, "#/components/schemas/")
+		listItems, ok = schemas[name].(map[string]interface{})
+		if !ok {
+			t.Fatalf("KiwoomApiDostkMrkcondKa10066Response item schema %q not found", name)
+		}
+	}
 	itemProps, ok := listItems["properties"].(map[string]interface{})
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response item properties not found")
