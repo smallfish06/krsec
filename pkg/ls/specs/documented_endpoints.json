@@ -9129,7 +9129,6 @@
               "name": "t8466OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -9380,7 +9379,6 @@
               "name": "t8466OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -13269,7 +13267,6 @@
               "name": "t2112InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -13305,7 +13302,6 @@
               "name": "t2112OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -13976,7 +13972,6 @@
               "name": "t2212InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -14048,7 +14043,6 @@
               "name": "t2212OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -14075,7 +14069,6 @@
               "name": "t2212OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -14353,7 +14346,6 @@
               "name": "t2214InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -14434,7 +14426,6 @@
               "name": "t2214OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -14488,7 +14479,6 @@
               "name": "t2214OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -15499,7 +15489,6 @@
               "name": "t2407InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -15589,7 +15578,6 @@
               "name": "t2407OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -15652,7 +15640,6 @@
               "name": "t2407OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -15912,7 +15899,6 @@
               "name": "t2424InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -15984,7 +15970,6 @@
               "name": "t2424OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -16065,7 +16050,6 @@
               "name": "t2424OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -16411,7 +16395,6 @@
               "name": "t8401InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -16438,7 +16421,6 @@
               "name": "t8401OutBlock",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -16572,7 +16554,6 @@
               "name": "t8402InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -16608,7 +16589,6 @@
               "name": "t8402OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -22585,7 +22565,6 @@
               "name": "t8467InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -22621,7 +22600,6 @@
               "name": "t8467OutBlock",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -35505,7 +35483,6 @@
               "name": "t8408InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -35631,7 +35608,6 @@
               "name": "t8408OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -35793,7 +35769,6 @@
               "name": "t8408OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -35936,7 +35911,6 @@
               "name": "t8409OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -35945,7 +35919,6 @@
               "name": "t8409InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -36224,7 +36197,6 @@
               "name": "t8409OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -36385,7 +36357,6 @@
               "name": "t8429OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -36394,7 +36365,6 @@
               "name": "t8429InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -36628,7 +36598,6 @@
               "name": "t8429OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -37086,7 +37055,6 @@
               "name": "t1511InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -37122,7 +37090,6 @@
               "name": "t1511OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -40598,7 +40565,6 @@
               "name": "CSPAQ12200OutBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -40607,7 +40573,6 @@
               "name": "CSPAQ12200InBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -40688,7 +40653,6 @@
               "name": "CSPAQ12200OutBlock2",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -43215,7 +43179,6 @@
               "name": "CSPAQ22200OutBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -43224,7 +43187,6 @@
               "name": "CSPAQ22200InBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -43287,7 +43249,6 @@
               "name": "CSPAQ22200OutBlock2",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -43727,7 +43688,6 @@
               "name": "CSPBQ00200OutBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -43736,7 +43696,6 @@
               "name": "CSPBQ00200InBlock1",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -43844,7 +43803,6 @@
               "name": "CSPBQ00200OutBlock2",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -45603,7 +45561,6 @@
               "name": "t0424OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -45612,7 +45569,6 @@
               "name": "t0424InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -45747,7 +45703,6 @@
               "name": "t0424OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -51730,7 +51685,6 @@
               "name": "t1956OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -51739,7 +51693,6 @@
               "name": "t1956InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -52513,7 +52466,6 @@
               "name": "t1956OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -67262,7 +67214,6 @@
               "name": "t1716InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -67370,7 +67321,6 @@
               "name": "t1716OutBlock",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -69726,7 +69676,6 @@
               "name": "t1481OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -69735,7 +69684,6 @@
               "name": "t1481InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -69816,7 +69764,6 @@
               "name": "t1481OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -93805,7 +93752,6 @@
               "name": "t1633InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -93913,7 +93859,6 @@
               "name": "t1633OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -93949,7 +93894,6 @@
               "name": "t1633OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -94155,7 +94099,6 @@
               "name": "t1636InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -94236,7 +94179,6 @@
               "name": "t1636OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "002"
             },
             {
@@ -94263,7 +94205,6 @@
               "name": "t1636OutBlock1",
               "type": "A0005",
               "required": true,
-              "length": "null",
               "order": "003"
             },
             {
@@ -127347,7 +127288,6 @@
               "name": "o3121OutBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {
@@ -127356,7 +127296,6 @@
               "name": "o3121InBlock",
               "type": "A0003",
               "required": true,
-              "length": "null",
               "order": "001"
             },
             {

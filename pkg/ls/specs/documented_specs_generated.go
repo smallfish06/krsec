@@ -1314,7 +1314,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "004", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8466OutBlock", Name: "t8466OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8466OutBlock", Name: "t8466OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.001", Required: true},
 			{Code: "jisiga", Name: "\uc804\uc77c\uc2dc\uac00", Type: "A0004", Length: "9.2", Order: "001.002", Required: true},
 			{Code: "jihigh", Name: "\uc804\uc77c\uace0\uac00", Type: "A0004", Length: "9.2", Order: "001.003", Required: true},
@@ -1332,7 +1332,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "e_time", Name: "\uc7a5\uc885\ub8cc\uc2dc\uac04(HHMMSS)", Type: "A0001", Length: "6", Order: "001.015", Required: true},
 			{Code: "dshmin", Name: "\ub3d9\uc2dc\ud638\uac00\ucc98\ub9ac\uc2dc\uac04(MM:\ubd84)", Type: "A0001", Length: "2", Order: "001.016", Required: true},
 			{Code: "rec_count", Name: "\ub808\ucf54\ub4dc\uce74\uc6b4\ud2b8", Type: "A0004", Length: "7", Order: "001.017", Required: true},
-			{Code: "t8466OutBlock1", Name: "t8466OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t8466OutBlock1", Name: "t8466OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "002.001", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "9.2", Order: "002.002", Required: true},
 			{Code: "high", Name: "\uace0\uac00", Type: "A0004", Length: "9.2", Order: "002.003", Required: true},
@@ -1893,7 +1893,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t2112InBlock", Name: "t2112InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t2112InBlock", Name: "t2112InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -1903,7 +1903,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t2112OutBlock", Name: "t2112OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t2112OutBlock", Name: "t2112OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "hname", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "20", Order: "002.002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "9.2", Order: "002.003", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.004", Required: true},
@@ -2006,7 +2006,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t2212InBlock", Name: "t2212InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t2212InBlock", Name: "t2212InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "focode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 			{Code: "cvolume", Name: "\ud2b9\uc774\uac70\ub798\ub7c9", Type: "A0004", Length: "12", Order: "001.003", Required: true},
 			{Code: "stime", Name: "\uc2dc\uc791\uc2dc\uac04", Type: "A0001", Length: "4", Order: "001.004", Required: true},
@@ -2020,9 +2020,9 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t2212OutBlock", Name: "t2212OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t2212OutBlock", Name: "t2212OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "cts_time", Name: "\uc2dc\uac04CTS", Type: "A0001", Length: "10", Order: "002.002", Required: true},
-			{Code: "t2212OutBlock1", Name: "t2212OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t2212OutBlock1", Name: "t2212OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "chetime", Name: "\uc2dc\uac04", Type: "A0001", Length: "10", Order: "003.002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "9.2", Order: "003.003", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "003.004", Required: true},
@@ -2065,7 +2065,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t2214InBlock", Name: "t2214InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t2214InBlock", Name: "t2214InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 			{Code: "futcheck", Name: "\uc120\ubb3c\ucd5c\uadfc\uc6d4\ubb3c", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "001.004", Required: true},
@@ -2080,12 +2080,12 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t2214OutBlock", Name: "t2214OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t2214OutBlock", Name: "t2214OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "002.002", Required: true},
 			{Code: "cts_code", Name: "CTS\uc885\ubaa9\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "002.003", Required: true},
 			{Code: "lastdate", Name: "\uc804\uc885\ubaa9\ub9cc\uae30\uc77c", Type: "A0001", Length: "8", Order: "002.004", Required: true},
 			{Code: "nowfutyn", Name: "\ucd5c\uadfc\uc6d4\uc120\ubb3c\uc5ec\ubd80", Type: "A0001", Length: "1", Order: "002.005", Required: true},
-			{Code: "t2214OutBlock1", Name: "t2214OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t2214OutBlock1", Name: "t2214OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "003.002", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "9.2", Order: "003.003", Required: true},
 			{Code: "high", Name: "\uace0\uac00", Type: "A0004", Length: "9.2", Order: "003.004", Required: true},
@@ -2227,7 +2227,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t2407InBlock", Name: "t2407InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t2407InBlock", Name: "t2407InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "focode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 			{Code: "bgubun", Name: "\ubd84\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "nmin", Name: "N\ubd84", Type: "A0003", Length: "2", Order: "001.004", Required: true},
@@ -2243,13 +2243,13 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t2407OutBlock", Name: "t2407OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t2407OutBlock", Name: "t2407OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "mdvolume", Name: "\ub9e4\ub3c4\uccb4\uacb0\uc218\ub7c9", Type: "A0004", Length: "12", Order: "002.002", Required: true},
 			{Code: "mdchecnt", Name: "\ub9e4\ub3c4\uccb4\uacb0\uac74\uc218", Type: "A0004", Length: "8", Order: "002.003", Required: true},
 			{Code: "msvolume", Name: "\ub9e4\uc218\uccb4\uacb0\uc218\ub7c9", Type: "A0004", Length: "12", Order: "002.004", Required: true},
 			{Code: "mschecnt", Name: "\ub9e4\uc218\uccb4\uacb0\uac74\uc218", Type: "A0004", Length: "8", Order: "002.005", Required: true},
 			{Code: "cts_time", Name: "\uc2dc\uac04CTS", Type: "A0001", Length: "6", Order: "002.006", Required: true},
-			{Code: "t2407OutBlock1", Name: "t2407OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t2407OutBlock1", Name: "t2407OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "time", Name: "\uc2dc\uac04", Type: "A0001", Length: "6", Order: "003.002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "9.2", Order: "003.003", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "003.004", Required: true},
@@ -2290,7 +2290,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t2424InBlock", Name: "t2424InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t2424InBlock", Name: "t2424InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "focode", Name: "\uc885\ubaa9\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 			{Code: "bdgubun", Name: "\ubd84\uc77c\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "nmin", Name: "N\ubd84", Type: "A0003", Length: "3", Order: "001.004", Required: true},
@@ -2304,7 +2304,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t2424OutBlock", Name: "t2424OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t2424OutBlock", Name: "t2424OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "9.2", Order: "002.002", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.003", Required: true},
 			{Code: "change", Name: "\uc804\uc77c\ub300\ube44", Type: "A0004", Length: "9.2", Order: "002.004", Required: true},
@@ -2312,7 +2312,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "cvolume", Name: "\uccb4\uacb0\uc218\ub7c9", Type: "A0004", Length: "8", Order: "002.006", Required: true},
 			{Code: "volume", Name: "\ub204\uc801\uac70\ub798\ub7c9", Type: "A0004", Length: "15", Order: "002.007", Required: true},
 			{Code: "openyak", Name: "\ubbf8\uacb0\uc81c\uc218\ub7c9", Type: "A0004", Length: "8", Order: "002.008", Required: true},
-			{Code: "t2424OutBlock1", Name: "t2424OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t2424OutBlock1", Name: "t2424OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "dt", Name: "\uc77c\uc790\uc2dc\uac04", Type: "A0001", Length: "14", Order: "003.002", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "9.2", Order: "003.003", Required: true},
 			{Code: "high", Name: "\uace0\uac00", Type: "A0004", Length: "9.2", Order: "003.004", Required: true},
@@ -2380,7 +2380,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8401InBlock", Name: "t8401InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8401InBlock", Name: "t8401InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "dummy", Name: "Dummy", Type: "A0001", Length: "1", Order: "002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -2390,7 +2390,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8401OutBlock", Name: "t8401OutBlock", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t8401OutBlock", Name: "t8401OutBlock", Type: "A0005", Order: "002", Required: true},
 			{Code: "hname", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "20", Order: "002.002", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "002.003", Required: true},
 			{Code: "expcode", Name: "\ud655\uc7a5\ucf54\ub4dc", Type: "A0001", Length: "12", Order: "002.004", Required: true},
@@ -2415,7 +2415,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8402InBlock", Name: "t8402InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8402InBlock", Name: "t8402InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "focode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -2425,7 +2425,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8402OutBlock", Name: "t8402OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t8402OutBlock", Name: "t8402OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "hname", Name: "\ud55c\uae00\uba85", Type: "A0001", Length: "20", Order: "002.002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "8", Order: "002.003", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.004", Required: true},
@@ -3361,7 +3361,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8467InBlock", Name: "t8467InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8467InBlock", Name: "t8467InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "gubun", Name: "\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -3371,7 +3371,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8467OutBlock", Name: "t8467OutBlock", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t8467OutBlock", Name: "t8467OutBlock", Type: "A0005", Order: "002", Required: true},
 			{Code: "hname", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "20", Order: "002.002", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "8", Order: "002.003", Required: true},
 			{Code: "expcode", Name: "\ud655\uc7a5\ucf54\ub4dc", Type: "A0001", Length: "12", Order: "002.004", Required: true},
@@ -3928,7 +3928,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8408InBlock", Name: "t8408InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8408InBlock", Name: "t8408InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.002", Required: true},
 			{Code: "ncnt", Name: "\ub2e8\uc704(n\ud2f1)", Type: "A0004", Length: "4", Order: "001.003", Required: true},
 			{Code: "qrycnt", Name: "\uc694\uccad\uac74\uc218(\ucd5c\ub300-\uc555\ucd95:2000\ube44\uc555\ucd95:500)", Type: "A0004", Length: "4", Order: "001.004", Required: true},
@@ -3948,7 +3948,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8408OutBlock", Name: "t8408OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t8408OutBlock", Name: "t8408OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "002.002", Required: true},
 			{Code: "jisiga", Name: "\uc804\uc77c\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "002.003", Required: true},
 			{Code: "jihigh", Name: "\uc804\uc77c\uace0\uac00", Type: "A0004", Length: "10.2", Order: "002.004", Required: true},
@@ -3965,7 +3965,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "e_time", Name: "\uc7a5\uc885\ub8cc\uc2dc\uac04(HHMMSS)", Type: "A0001", Length: "6", Order: "002.015", Required: true},
 			{Code: "dshmin", Name: "\ub3d9\uc2dc\ud638\uac00\ucc98\ub9ac\uc2dc\uac04(MM:\ubd84)", Type: "A0001", Length: "2", Order: "002.016", Required: true},
 			{Code: "rec_count", Name: "\ub808\ucf54\ub4dc\uce74\uc6b4\ud2b8", Type: "A0004", Length: "7", Order: "002.017", Required: true},
-			{Code: "t8408OutBlock1", Name: "t8408OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t8408OutBlock1", Name: "t8408OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "003.002", Required: true},
 			{Code: "time", Name: "\uc2dc\uac04", Type: "A0001", Length: "6", Order: "003.003", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "003.004", Required: true},
@@ -3993,7 +3993,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8409InBlock", Name: "t8409InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8409InBlock", Name: "t8409InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.001", Required: true},
 			{Code: "ncnt", Name: "\ub2e8\uc704(n\ubd84)", Type: "A0004", Length: "4", Order: "001.002", Required: true},
 			{Code: "qrycnt", Name: "\uc694\uccad\uac74\uc218(\ucd5c\ub300-\uc555\ucd95:2000\ube44\uc555\ucd95:500)", Type: "A0004", Length: "4", Order: "001.003", Required: true},
@@ -4013,7 +4013,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "004", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8409OutBlock", Name: "t8409OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8409OutBlock", Name: "t8409OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.001", Required: true},
 			{Code: "jisiga", Name: "\uc804\uc77c\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "001.002", Required: true},
 			{Code: "jihigh", Name: "\uc804\uc77c\uace0\uac00", Type: "A0004", Length: "10.2", Order: "001.003", Required: true},
@@ -4031,7 +4031,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "e_time", Name: "\uc5c5\uc885\uc885\ub8cc\uc2dc\uac04(HHMMSS)", Type: "A0001", Length: "6", Order: "001.015", Required: true},
 			{Code: "dshmin", Name: "\ub3d9\uc2dc\ud638\uac00\ucc98\ub9ac\uc2dc\uac04(MM:\ubd84)", Type: "A0001", Length: "2", Order: "001.016", Required: true},
 			{Code: "rec_count", Name: "\ub808\ucf54\ub4dc\uce74\uc6b4\ud2b8", Type: "A0004", Length: "7", Order: "001.017", Required: true},
-			{Code: "t8409OutBlock1", Name: "t8409OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t8409OutBlock1", Name: "t8409OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "002.001", Required: true},
 			{Code: "time", Name: "\uc2dc\uac04", Type: "A0001", Length: "6", Order: "002.002", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "002.003", Required: true},
@@ -4060,7 +4060,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t8429InBlock", Name: "t8429InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8429InBlock", Name: "t8429InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.001", Required: true},
 			{Code: "gubun", Name: "\uc8fc\uae30\uad6c\ubd84(2:\uc77c3:\uc8fc4:\uc6d4)", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "qrycnt", Name: "\uc694\uccad\uac74\uc218(\ucd5c\ub300-\uc555\ucd95:2000\ube44\uc555\ucd95:500)", Type: "A0004", Length: "4", Order: "001.003", Required: true},
@@ -4076,7 +4076,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "004", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t8429OutBlock", Name: "t8429OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t8429OutBlock", Name: "t8429OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.001", Required: true},
 			{Code: "jisiga", Name: "\uc804\uc77c\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "001.002", Required: true},
 			{Code: "jihigh", Name: "\uc804\uc77c\uace0\uac00", Type: "A0004", Length: "10.2", Order: "001.003", Required: true},
@@ -4093,7 +4093,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "e_time", Name: "\uc5c5\uc885\uc885\ub8cc\uc2dc\uac04", Type: "A0001", Length: "6", Order: "001.014", Required: true},
 			{Code: "dshmin", Name: "\ub3d9\uc2dc\ud638\uac00\ucc98\ub9ac\uc2dc\uac04(MM:\ubd84)", Type: "A0001", Length: "2", Order: "001.015", Required: true},
 			{Code: "rec_count", Name: "\ub808\ucf54\ub4dc\uce74\uc6b4\ud2b8", Type: "A0004", Length: "7", Order: "001.016", Required: true},
-			{Code: "t8429OutBlock1", Name: "t8429OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t8429OutBlock1", Name: "t8429OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "002.001", Required: true},
 			{Code: "open", Name: "\uc2dc\uac00", Type: "A0004", Length: "10.2", Order: "002.002", Required: true},
 			{Code: "high", Name: "\uace0\uac00", Type: "A0004", Length: "10.2", Order: "002.003", Required: true},
@@ -4171,7 +4171,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1511InBlock", Name: "t1511InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1511InBlock", Name: "t1511InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "upcode", Name: "\uc5c5\uc885\ucf54\ub4dc", Type: "A0001", Length: "3", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -4181,7 +4181,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1511OutBlock", Name: "t1511OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t1511OutBlock", Name: "t1511OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "gubun", Name: "\uc5c5\uc885\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.002", Required: true},
 			{Code: "hname", Name: "\uc5c5\uc885\uba85", Type: "A0001", Length: "20", Order: "002.003", Required: true},
 			{Code: "pricejisu", Name: "\ud604\uc7ac\uc9c0\uc218", Type: "A0004", Length: "10.2", Order: "002.004", Required: true},
@@ -5558,7 +5558,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "o3121InBlock", Name: "o3121InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "o3121InBlock", Name: "o3121InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "MktGb", Name: "\uc2dc\uc7a5\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "BscGdsCd", Name: "\uc635\uc158\uae30\ucd08\uc0c1\ud488\ucf54\ub4dc", Type: "A0001", Length: "10", Order: "001.003", Required: true},
 		},
@@ -5569,7 +5569,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "o3121OutBlock", Name: "o3121OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "o3121OutBlock", Name: "o3121OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "Symbol", Name: "\uc885\ubaa9\ucf54\ub4dc", Type: "A0001", Length: "16", Order: "001.001", Required: true},
 			{Code: "SymbolNm", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "50", Order: "001.002", Required: true},
 			{Code: "ApplDate", Name: "\uc885\ubaa9\ubc30\uce58\uc218\uc2e0\uc77c(\ud55c\uad6d\uc77c\uc790)", Type: "A0001", Length: "8", Order: "001.003", Required: true},
@@ -7685,7 +7685,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "CSPAQ12200InBlock1", Name: "CSPAQ12200InBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPAQ12200InBlock1", Name: "CSPAQ12200InBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "BalCreTp", Name: "\uc794\uace0\uc0dd\uc131\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -7695,13 +7695,13 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "CSPAQ12200OutBlock1", Name: "CSPAQ12200OutBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPAQ12200OutBlock1", Name: "CSPAQ12200OutBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "001.001", Required: true},
 			{Code: "MgmtBrnNo", Name: "\uad00\ub9ac\uc9c0\uc810\ubc88\ud638", Type: "A0001", Length: "3", Order: "001.002", Required: true},
 			{Code: "AcntNo", Name: "\uacc4\uc88c\ubc88\ud638", Type: "A0001", Length: "20", Order: "001.003", Required: true},
 			{Code: "Pwd", Name: "\ube44\ubc00\ubc88\ud638", Type: "A0001", Length: "8", Order: "001.004", Required: true},
 			{Code: "BalCreTp", Name: "\uc794\uace0\uc0dd\uc131\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.005", Required: true},
-			{Code: "CSPAQ12200OutBlock2", Name: "CSPAQ12200OutBlock2", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "CSPAQ12200OutBlock2", Name: "CSPAQ12200OutBlock2", Type: "A0003", Order: "002", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "002.001", Required: true},
 			{Code: "BrnNm", Name: "\uc9c0\uc810\uba85", Type: "A0001", Length: "40", Order: "002.002", Required: true},
 			{Code: "AcntNm", Name: "\uacc4\uc88c\uba85", Type: "A0001", Length: "40", Order: "002.003", Required: true},
@@ -8028,7 +8028,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "CSPAQ22200InBlock1", Name: "CSPAQ22200InBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPAQ22200InBlock1", Name: "CSPAQ22200InBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "BalCreTp", Name: "\uc794\uace0\uc0dd\uc131\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -8038,11 +8038,11 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "CSPAQ22200OutBlock1", Name: "CSPAQ22200OutBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPAQ22200OutBlock1", Name: "CSPAQ22200OutBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "001.001", Required: true},
 			{Code: "MgmtBrnNo", Name: "\uad00\ub9ac\uc9c0\uc810\ubc88\ud638", Type: "A0001", Length: "3", Order: "001.002", Required: true},
 			{Code: "BalCreTp", Name: "\uc794\uace0\uc0dd\uc131\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
-			{Code: "CSPAQ22200OutBlock2", Name: "CSPAQ22200OutBlock2", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "CSPAQ22200OutBlock2", Name: "CSPAQ22200OutBlock2", Type: "A0003", Order: "002", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "002.001", Required: true},
 			{Code: "BrnNm", Name: "\uc9c0\uc810\uba85", Type: "A0001", Length: "40", Order: "002.002", Required: true},
 			{Code: "AcntNm", Name: "\uacc4\uc88c\uba85", Type: "A0001", Length: "40", Order: "002.003", Required: true},
@@ -8101,7 +8101,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "CSPBQ00200InBlock1", Name: "CSPBQ00200InBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPBQ00200InBlock1", Name: "CSPBQ00200InBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "BnsTpCode", Name: "\ub9e4\ub9e4\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "IsuNo", Name: "\uc885\ubaa9\ubc88\ud638", Type: "A0001", Length: "12", Order: "001.003", Required: true},
 			{Code: "OrdPrc", Name: "\uc8fc\ubb38\uac00\uaca9", Type: "A0004", Length: "15.2", Order: "001.004", Required: true},
@@ -8113,7 +8113,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "CSPBQ00200OutBlock1", Name: "CSPBQ00200OutBlock1", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "CSPBQ00200OutBlock1", Name: "CSPBQ00200OutBlock1", Type: "A0003", Order: "001", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "001.001", Required: true},
 			{Code: "BnsTpCode", Name: "\ub9e4\ub9e4\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "AcntNo", Name: "\uacc4\uc88c\ubc88\ud638", Type: "A0001", Length: "20", Order: "001.003", Required: true},
@@ -8121,7 +8121,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "IsuNo", Name: "\uc885\ubaa9\ubc88\ud638", Type: "A0001", Length: "12", Order: "001.005", Required: true},
 			{Code: "OrdPrc", Name: "\uc8fc\ubb38\uac00\uaca9", Type: "A0004", Length: "15.2", Order: "001.006", Required: true},
 			{Code: "RegCommdaCode", Name: "\ud1b5\uc2e0\ub9e4\uccb4\ucf54\ub4dc", Type: "A0001", Length: "2", Order: "001.007", Required: true},
-			{Code: "CSPBQ00200OutBlock2", Name: "CSPBQ00200OutBlock2", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "CSPBQ00200OutBlock2", Name: "CSPBQ00200OutBlock2", Type: "A0003", Order: "002", Required: true},
 			{Code: "RecCnt", Name: "\ub808\ucf54\ub4dc\uac2f\uc218", Type: "A0004", Length: "5", Order: "002.001", Required: true},
 			{Code: "AcntNm", Name: "\uacc4\uc88c\uba85", Type: "A0001", Length: "40", Order: "002.002", Required: true},
 			{Code: "IsuNm", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "40", Order: "002.003", Required: true},
@@ -8380,7 +8380,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t0424InBlock", Name: "t0424InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t0424InBlock", Name: "t0424InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "prcgb", Name: "\ub2e8\uac00\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.001", Required: true},
 			{Code: "chegb", Name: "\uccb4\uacb0\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "dangb", Name: "\ub2e8\uc77c\uac00\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
@@ -8394,7 +8394,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "004", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t0424OutBlock", Name: "t0424OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t0424OutBlock", Name: "t0424OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "sunamt", Name: "\ucd94\uc815\uc21c\uc790\uc0b0", Type: "A0004", Length: "18", Order: "001.001", Required: true},
 			{Code: "dtsunik", Name: "\uc2e4\ud604\uc190\uc775", Type: "A0004", Length: "18", Order: "001.002", Required: true},
 			{Code: "mamt", Name: "\ub9e4\uc785\uae08\uc561", Type: "A0004", Length: "18", Order: "001.003", Required: true},
@@ -8402,7 +8402,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "cts_expcode", Name: "CTS_\uc885\ubaa9\ubc88\ud638", Type: "A0001", Length: "22", Order: "001.005", Required: true},
 			{Code: "tappamt", Name: "\ud3c9\uac00\uae08\uc561", Type: "A0004", Length: "18", Order: "001.006", Required: true},
 			{Code: "tdtsunik", Name: "\ud3c9\uac00\uc190\uc775", Type: "A0004", Length: "18", Order: "001.007", Required: true},
-			{Code: "t0424OutBlock1", Name: "t0424OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t0424OutBlock1", Name: "t0424OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "expcode", Name: "\uc885\ubaa9\ubc88\ud638", Type: "A0001", Length: "12", Order: "002.001", Required: true},
 			{Code: "jangb", Name: "\uc794\uace0\uad6c\ubd84", Type: "A0001", Length: "10", Order: "002.002", Required: true},
 			{Code: "janqty", Name: "\uc794\uace0\uc218\ub7c9", Type: "A0004", Length: "18", Order: "002.003", Required: true},
@@ -9267,7 +9267,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1956InBlock", Name: "t1956InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1956InBlock", Name: "t1956InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\ub2e8\ucd95\ucf54\ub4dc", Type: "A0001", Length: "6", Order: "001.002", Required: true},
 		},
 		ResponseHeaders: []LSFieldSpec{
@@ -9277,7 +9277,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1956OutBlock", Name: "t1956OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1956OutBlock", Name: "t1956OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "hname", Name: "\ud55c\uae00\uba85", Type: "A0001", Length: "40", Order: "001.001", Required: true},
 			{Code: "chetime", Name: "\uccb4\uacb0\uc2dc\uac04", Type: "A0001", Length: "10", Order: "001.002", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "8", Order: "001.003", Required: true},
@@ -9360,7 +9360,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "valuation", Name: "\ub9cc\uae30\ud3c9\uac00\uac00\uaca9\ubc29\uc2dd", Type: "A0001", Length: "100", Order: "001.080", Required: true},
 			{Code: "givemoney", Name: "\ud655\uc815\uc9c0\uae09\uc561", Type: "A0004", Length: "8.3", Order: "001.081", Required: true},
 			{Code: "intrns_wth_p2", Name: "\ub0b4\uc7ac\uac00\uce58", Type: "A0004", Length: "6.2", Order: "001.082", Required: true},
-			{Code: "t1956OutBlock1", Name: "t1956OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t1956OutBlock1", Name: "t1956OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "bskcode", Name: "\uae30\ucd08\uc790\uc0b0\ucf54\ub4dc", Type: "A0001", Length: "6", Order: "002.001", Required: true},
 			{Code: "bskbno", Name: "\uae30\ucd08\uc790\uc0b0\ube44\uc728", Type: "A0004", Length: "3", Order: "002.002", Required: true},
 			{Code: "bskprice", Name: "\uae30\ucd08\uc790\uc0b0\ud604\uc7ac\uac00", Type: "A0004", Length: "8", Order: "002.003", Required: true},
@@ -11613,7 +11613,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1716InBlock", Name: "t1716InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1716InBlock", Name: "t1716InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "shcode", Name: "\uc885\ubaa9\ucf54\ub4dc", Type: "A0001", Length: "6", Order: "001.001", Required: true},
 			{Code: "gubun", Name: "\uad6c\ubd84(0:\uc77c\uac04\uc21c\ub9e4\uc2181:\uae30\uac04\ub204\uc801\uc21c\ub9e4\uc218)", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "fromdt", Name: "\uc2dc\uc791\uc77c\uc790", Type: "A0001", Length: "8", Order: "001.003", Required: true},
@@ -11631,7 +11631,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1716OutBlock", Name: "t1716OutBlock", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t1716OutBlock", Name: "t1716OutBlock", Type: "A0005", Order: "002", Required: true},
 			{Code: "date", Name: "\uc77c\uc790", Type: "A0001", Length: "8", Order: "002.002", Required: true},
 			{Code: "close", Name: "\uc885\uac00", Type: "A0004", Length: "8", Order: "002.003", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.004", Required: true},
@@ -12007,7 +12007,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1481InBlock", Name: "t1481InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1481InBlock", Name: "t1481InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "gubun1", Name: "\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "gubun2", Name: "\uc0c1\uc2b9\ud558\ub77d", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "jongchk", Name: "\uc885\ubaa9\uccb4\ud06c", Type: "A0001", Length: "1", Order: "001.004", Required: true},
@@ -12021,9 +12021,9 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1481OutBlock", Name: "t1481OutBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1481OutBlock", Name: "t1481OutBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "idx", Name: "IDX", Type: "A0004", Length: "4", Order: "001.001", Required: true},
-			{Code: "t1481OutBlock1", Name: "t1481OutBlock1", Type: "A0005", Length: "null", Order: "002", Required: true},
+			{Code: "t1481OutBlock1", Name: "t1481OutBlock1", Type: "A0005", Order: "002", Required: true},
 			{Code: "hname", Name: "\ud55c\uae00\uba85", Type: "A0001", Length: "20", Order: "002.001", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "8", Order: "002.002", Required: true},
 			{Code: "sign", Name: "\uc804\uc77c\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "002.003", Required: true},
@@ -15666,7 +15666,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1633InBlock", Name: "t1633InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1633InBlock", Name: "t1633InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "gubun", Name: "\uc2dc\uc7a5\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "gubun1", Name: "\uae08\uc561\uc218\ub7c9\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "gubun2", Name: "\uc218\uce58\ub204\uc801\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.004", Required: true},
@@ -15684,10 +15684,10 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1633OutBlock", Name: "t1633OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t1633OutBlock", Name: "t1633OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "date", Name: "\ub0a0\uc9dc", Type: "A0001", Length: "8", Order: "002.002", Required: true},
 			{Code: "idx", Name: "IDX", Type: "A0004", Length: "4", Order: "002.003", Required: true},
-			{Code: "t1633OutBlock1", Name: "t1633OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t1633OutBlock1", Name: "t1633OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "date", Name: "\uc77c\uc790", Type: "A0001", Length: "8", Order: "003.002", Required: true},
 			{Code: "jisu", Name: "KP200", Type: "A0004", Length: "10.2", Order: "003.003", Required: true},
 			{Code: "sign", Name: "\ub300\ube44\uad6c\ubd84", Type: "A0001", Length: "1", Order: "003.004", Required: true},
@@ -15722,7 +15722,7 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "mac_address", Name: "MAC \uc8fc\uc18c", Type: "A0001", Length: "12", Order: "006", Required: true},
 		},
 		RequestFields: []LSFieldSpec{
-			{Code: "t1636InBlock", Name: "t1636InBlock", Type: "A0003", Length: "null", Order: "001", Required: true},
+			{Code: "t1636InBlock", Name: "t1636InBlock", Type: "A0003", Order: "001", Required: true},
 			{Code: "gubun", Name: "\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.002", Required: true},
 			{Code: "gubun1", Name: "\uae08\uc561\uc218\ub7c9\uad6c\ubd84", Type: "A0001", Length: "1", Order: "001.003", Required: true},
 			{Code: "gubun2", Name: "\uc815\ub82c\uae30\uc900", Type: "A0001", Length: "1", Order: "001.004", Required: true},
@@ -15737,9 +15737,9 @@ var DocumentedLSEndpointSpecs = map[string]LSEndpointSpec{
 			{Code: "tr_cont_key", Name: "\uc5f0\uc18d \uac70\ub798 Key", Type: "A0001", Length: "18", Order: "005", Required: true},
 		},
 		ResponseFields: []LSFieldSpec{
-			{Code: "t1636OutBlock", Name: "t1636OutBlock", Type: "A0003", Length: "null", Order: "002", Required: true},
+			{Code: "t1636OutBlock", Name: "t1636OutBlock", Type: "A0003", Order: "002", Required: true},
 			{Code: "cts_idx", Name: "IDXCTS", Type: "A0004", Length: "4", Order: "002.002", Required: true},
-			{Code: "t1636OutBlock1", Name: "t1636OutBlock1", Type: "A0005", Length: "null", Order: "003", Required: true},
+			{Code: "t1636OutBlock1", Name: "t1636OutBlock1", Type: "A0005", Order: "003", Required: true},
 			{Code: "rank", Name: "\uc21c\uc704", Type: "A0004", Length: "8", Order: "003.002", Required: true},
 			{Code: "hname", Name: "\uc885\ubaa9\uba85", Type: "A0001", Length: "20", Order: "003.003", Required: true},
 			{Code: "price", Name: "\ud604\uc7ac\uac00", Type: "A0004", Length: "8", Order: "003.004", Required: true},

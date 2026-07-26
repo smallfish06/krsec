@@ -477,7 +477,7 @@ func fetchTRProperties(client *http.Client, propertyURL, trID string) ([]propert
 			Name:     strings.TrimSpace(string(record.PropertyName)),
 			Type:     strings.TrimSpace(string(record.PropertyType)),
 			Required: strings.EqualFold(strings.TrimSpace(string(record.RequireYN)), "Y"),
-			Length:   strings.TrimSpace(string(record.PropertyLength)),
+			Length:   cleanPropertyLength(string(record.PropertyLength)),
 			Order:    strings.TrimSpace(string(record.PropertyOrder)),
 		})
 	}
@@ -737,6 +737,16 @@ func cleanPropertyCode(code string) string {
 	code = strings.TrimLeft(code, "- ")
 	code = strings.TrimSpace(code)
 	return code
+}
+
+// cleanPropertyLength normalizes the portal's propertyLength: the API emits
+// the literal string "null" (not JSON null) for block-header rows.
+func cleanPropertyLength(raw string) string {
+	length := strings.TrimSpace(raw)
+	if strings.EqualFold(length, "null") {
+		return ""
+	}
+	return length
 }
 
 func decodeJSONString(raw string) string {
