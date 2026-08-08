@@ -115463,7 +115463,7 @@
 					{
 						"description": "Kiwoom API path under /api. Accepts wildcard segments.",
 						"in": "path",
-						"name": "path",
+						"name": "path...",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -115480,15 +115480,6 @@
 					{
 						"in": "header",
 						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": " (might contain slashes)",
-						"in": "path",
-						"name": "path...",
-						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -115566,7 +115557,7 @@
 					{
 						"description": "LS API path, for example /stock/market-data. Accepts wildcard segments.",
 						"in": "path",
-						"name": "path",
+						"name": "path...",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -115583,15 +115574,6 @@
 					{
 						"in": "header",
 						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": " (might contain slashes)",
-						"in": "path",
-						"name": "path...",
-						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -115941,7 +115923,7 @@
 					{
 						"description": "Toss API path, for example /api/v1/prices. Accepts wildcard segments.",
 						"in": "path",
-						"name": "path",
+						"name": "path...",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -115958,15 +115940,6 @@
 					{
 						"in": "header",
 						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": " (might contain slashes)",
-						"in": "path",
-						"name": "path...",
-						"required": true,
 						"schema": {
 							"type": "string"
 						}

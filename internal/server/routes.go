@@ -28,7 +28,7 @@ func (s *Server) routes() {
 		fuego.OptionTags("Kiwoom"),
 		fuego.OptionSummary("Call Kiwoom endpoint by path"),
 		fuego.OptionDescription("Calls Kiwoom endpoints implemented in krsec by path. api_id in request body is required."),
-		fuego.OptionPath("path", "Kiwoom API path under /api. Accepts wildcard segments."),
+		fuego.OptionPath("path...", "Kiwoom API path under /api. Accepts wildcard segments."),
 		fuego.OptionQuery("account_id", "Optional account selector when multiple Kiwoom accounts exist."),
 	)
 
@@ -37,7 +37,7 @@ func (s *Server) routes() {
 		fuego.OptionTags("LS"),
 		fuego.OptionSummary("Call LS endpoint by path"),
 		fuego.OptionDescription("Calls LS Securities OpenAPI endpoints by path. tr_cd in request body is required."),
-		fuego.OptionPath("path", "LS API path, for example /stock/market-data. Accepts wildcard segments."),
+		fuego.OptionPath("path...", "LS API path, for example /stock/market-data. Accepts wildcard segments."),
 		fuego.OptionQuery("account_id", "Optional account selector when multiple LS accounts exist."),
 	)
 
@@ -46,7 +46,7 @@ func (s *Server) routes() {
 		fuego.OptionTags("Toss"),
 		fuego.OptionSummary("Call Toss endpoint by path"),
 		fuego.OptionDescription("Calls Toss Securities Open API endpoints by path. method is required when one path has multiple operations."),
-		fuego.OptionPath("path", "Toss API path, for example /api/v1/prices. Accepts wildcard segments."),
+		fuego.OptionPath("path...", "Toss API path, for example /api/v1/prices. Accepts wildcard segments."),
 		fuego.OptionQuery("account_id", "Optional account selector when multiple Toss accounts exist."),
 	)
 
