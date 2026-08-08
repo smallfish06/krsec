@@ -23,6 +23,12 @@ go install github.com/smallfish06/krsec/cmd/krsec@latest
 
 바이너리: [Releases](https://github.com/smallfish06/krsec/releases)
 
+Docker (config의 `server.host`를 `0.0.0.0`으로 설정):
+
+```bash
+docker run -v $(pwd):/data -p 8080:8080 ghcr.io/smallfish06/krsec:latest
+```
+
 ## 설정
 
 ```bash
