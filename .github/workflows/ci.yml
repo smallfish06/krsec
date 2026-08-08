@@ -25,6 +25,9 @@ jobs:
       - name: Check generated specs (all brokers)
         run: make spec-check-all
 
+      - name: Check committed OpenAPI spec
+        run: make openapi-check
+
       - name: Vet
         run: go vet ./...
 

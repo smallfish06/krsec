@@ -1,7 +1,7 @@
 SPEC_BROKERS := kis kiwoom ls toss
 
 .PHONY: build run test clean deps dev-tools lint fmt vet mock \
-	spec-fetch-all spec-generate-all spec-refresh-all spec-check-all \
+	openapi openapi-check spec-fetch-all spec-generate-all spec-refresh-all spec-check-all \
 	$(foreach b,$(SPEC_BROKERS),$(b)-spec-fetch $(b)-spec-generate $(b)-spec-refresh $(b)-spec-check $(b)-spec-all)
 
 # Build the application
@@ -44,6 +44,20 @@ fmt:
 # Vet code
 vet:
 	go vet ./...
+
+# Regenerate the committed OpenAPI spec (doc/openapi.json)
+openapi:
+	go run ./cmd/openapi-export -out doc/openapi.json
+
+# Verify the committed OpenAPI spec is up to date
+openapi-check:
+	@tmp=$$(mktemp); \
+	go run ./cmd/openapi-export -out $$tmp >/dev/null 2>&1; \
+	if ! diff -q doc/openapi.json $$tmp >/dev/null; then \
+		echo "doc/openapi.json is stale — run 'make openapi' and commit the result"; \
+		rm -f $$tmp; exit 1; \
+	fi; \
+	rm -f $$tmp; echo "openapi-check: doc/openapi.json is up to date"
 
 # --- Documented spec workflow (per broker) ---------------------------------
 # Each broker follows the same layout:

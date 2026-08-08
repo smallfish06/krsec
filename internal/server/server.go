@@ -58,6 +58,9 @@ func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 		fuego.WithEngineOptions(
 			fuego.WithOpenAPIConfig(fuego.OpenAPIConfig{
 				PrettyFormatJSON: true,
+				// The spec is exported explicitly via cmd/openapi-export;
+				// serving must not write doc/openapi.json into the process cwd.
+				DisableLocalSave: true,
 				Info: &openapi3.Info{
 					Title:       "Korea Securities API",
 					Description: "Unified broker API over multiple securities broker adapters",
