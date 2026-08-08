@@ -1,3 +1,4 @@
+// Package config loads and validates krsec YAML configuration.
 package config
 
 import (
@@ -191,7 +192,7 @@ func (c *Config) Validate() error {
 
 // Load loads configuration from a YAML file
 func Load(filename string) (*Config, error) {
-	data, err := os.ReadFile(filename)
+	data, err := os.ReadFile(filename) //nolint:gosec // G304: the config path is caller-provided by design
 	if err != nil {
 		return nil, fmt.Errorf("read config file: %w", err)
 	}

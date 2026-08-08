@@ -1,3 +1,4 @@
+// Package ls exposes the public LS Securities adapter, including realtime.
 package ls
 
 import (
@@ -17,8 +18,13 @@ type Adapter interface {
 	BuildOverseasTradeSubscriptions(ctx context.Context, market string, maxRows int) ([]RealtimeSubscription, error)
 }
 
+// RealtimeConn is a live LS websocket connection.
 type RealtimeConn = internal.RealtimeConn
+
+// RealtimeMessage is a single message received over a realtime connection.
 type RealtimeMessage = internal.RealtimeMessage
+
+// RealtimeSubscription describes one tr_cd+key realtime subscription.
 type RealtimeSubscription = internal.RealtimeSubscription
 
 // OverseasRealtimeKey returns the fixed-width realtime key used by LS GSC/GSH.

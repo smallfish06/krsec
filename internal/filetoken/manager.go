@@ -172,7 +172,7 @@ func (m *Manager) loadAll() {
 		}
 
 		path := filepath.Join(dir, name)
-		data, err := os.ReadFile(path)
+		data, err := os.ReadFile(path) //nolint:gosec // G304: dir is the configured token store, names filtered by allowFileName
 		if err != nil {
 			continue
 		}
@@ -208,7 +208,7 @@ func (m *Manager) save(appKey string, entry *Entry) error {
 	}
 	path := filepath.Join(dir, filename)
 
-	data, err := json.MarshalIndent(entry, "", "  ")
+	data, err := json.MarshalIndent(entry, "", "  ") //nolint:gosec // G117: persisting tokens to the 0600 token store is this package's purpose
 	if err != nil {
 		return fmt.Errorf("marshal token entry: %w", err)
 	}

@@ -1,3 +1,4 @@
+// Example: fetch a Kiwoom account balance through the public adapter.
 package main
 
 import (

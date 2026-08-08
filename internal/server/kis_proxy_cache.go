@@ -64,7 +64,7 @@ func newKISProxyCache(opts KISProxyCacheOptions) *kisProxyCache {
 	}
 	c := &kisProxyCache{
 		items: ttlcache.New(
-			ttlcache.WithCapacity[string, kisProxyCacheEntry](uint64(opts.MaxEntries)),
+			ttlcache.WithCapacity[string, kisProxyCacheEntry](uint64(opts.MaxEntries)), //nolint:gosec // G115: MaxEntries is defaulted to a positive value above
 			ttlcache.WithDisableTouchOnHit[string, kisProxyCacheEntry](),
 		),
 		staleRetention: opts.StaleRetention,

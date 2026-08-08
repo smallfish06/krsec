@@ -1,3 +1,4 @@
+// Package kis exposes the public KIS (Korea Investment & Securities) adapter.
 package kis
 
 import (

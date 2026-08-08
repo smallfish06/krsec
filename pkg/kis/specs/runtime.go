@@ -1,3 +1,5 @@
+// Package specs holds the generated documented KIS endpoint specs
+// and their shared runtime helpers.
 package specs
 
 import (
@@ -21,6 +23,7 @@ type DocumentedResponseBase struct {
 	Msg1  string `json:"msg1,omitempty"`
 }
 
+// IsSuccess reports whether the KIS response status code indicates success.
 func (b *DocumentedResponseBase) IsSuccess() bool {
 	rt := strings.TrimSpace(b.RtCD)
 	// Some endpoints (e.g. hashkey) do not return rt_cd.
@@ -30,10 +33,12 @@ func (b *DocumentedResponseBase) IsSuccess() bool {
 	return rt == "0"
 }
 
+// GetMsgCode returns the trimmed KIS message code (msg_cd).
 func (b *DocumentedResponseBase) GetMsgCode() string {
 	return strings.TrimSpace(b.MsgCD)
 }
 
+// GetMsg1 returns the trimmed KIS message text (msg1).
 func (b *DocumentedResponseBase) GetMsg1() string {
 	return strings.TrimSpace(b.Msg1)
 }
@@ -68,6 +73,8 @@ func DocumentedEndpointRequestFactoryCount() int {
 // KIS documented payloads occasionally disagree with runtime payload container shape.
 type DocumentedSlice[T any] []T
 
+// UnmarshalJSON accepts either a JSON array or a single object and
+// normalizes both to a slice.
 func (s *DocumentedSlice[T]) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 || bytes.Equal(data, []byte("null")) {
@@ -95,6 +102,7 @@ func (s *DocumentedSlice[T]) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// MarshalJSON always emits the canonical JSON array form.
 func (s DocumentedSlice[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal([]T(s))
 }

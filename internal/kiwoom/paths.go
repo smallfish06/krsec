@@ -21,6 +21,6 @@ const (
 	PathAccount     = "/api/dostk/acnt"
 	PathChart       = "/api/dostk/chart"
 	PathOrder       = "/api/dostk/ordr"
-	PathCreditOrder = "/api/dostk/crdordr"
+	PathCreditOrder = "/api/dostk/crdordr" //nolint:gosec // G101: URL path constant, not a credential
 	PathWebSocket   = "/api/dostk/websocket"
 )

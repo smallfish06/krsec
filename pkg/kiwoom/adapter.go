@@ -1,3 +1,4 @@
+// Package kiwoom exposes the public Kiwoom Securities adapter.
 package kiwoom
 
 import (

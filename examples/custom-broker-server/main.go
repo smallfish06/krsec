@@ -1,3 +1,4 @@
+// Example: embed the krsec server with a custom in-memory broker.
 package main
 
 import (
@@ -92,16 +93,16 @@ func (b *demoBroker) GetOHLCV(_ context.Context, market, symbol string, opts bro
 	now := time.Now().UTC()
 	for i := limit - 1; i >= 0; i-- {
 		t := now.Add(-time.Duration(i) * 24 * time.Hour)
-		open := base + float64((i%7)-3)*120
-		close := open + float64((i%5)-2)*80
-		high := max(open, close) + 90
-		low := min(open, close) - 110
+		openPx := base + float64((i%7)-3)*120
+		closePx := openPx + float64((i%5)-2)*80
+		high := max(openPx, closePx) + 90
+		low := min(openPx, closePx) - 110
 		out = append(out, broker.OHLCV{
 			Timestamp: t,
-			Open:      open,
+			Open:      openPx,
 			High:      high,
 			Low:       low,
-			Close:     close,
+			Close:     closePx,
 			Volume:    100000 + int64(i*777),
 		})
 	}
@@ -318,16 +319,3 @@ func sampleOrder() string {
 	return `{"symbol":"005930","market":"KRX","side":"buy","type":"market","quantity":1}`
 }
 
-func max(a, b float64) float64 {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b float64) float64 {
-	if a < b {
-		return a
-	}
-	return b
-}

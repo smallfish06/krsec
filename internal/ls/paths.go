@@ -14,7 +14,7 @@ const (
 )
 
 const (
-	PathOAuthToken      = "/oauth2/token"
+	PathOAuthToken      = "/oauth2/token" //nolint:gosec // G101: URL path constant, not a credential
 	PathStockMarket     = "/stock/market-data"
 	PathStockChart      = "/stock/chart"
 	PathStockAccount    = "/stock/accno"

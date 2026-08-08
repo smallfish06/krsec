@@ -1,3 +1,4 @@
+// Package token defines the broker-agnostic access-token manager contract.
 package token
 
 import "time"

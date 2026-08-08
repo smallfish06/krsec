@@ -1,3 +1,5 @@
+// Package specs holds the generated documented Kiwoom endpoint specs
+// and their shared runtime helpers.
 package specs
 
 import "strings"

@@ -1,3 +1,4 @@
+// Package toss exposes the public Toss Securities adapter.
 package toss
 
 import (

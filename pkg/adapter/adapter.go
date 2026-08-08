@@ -1,3 +1,4 @@
+// Package adapter defines shared construction options for broker adapters.
 package adapter
 
 import (

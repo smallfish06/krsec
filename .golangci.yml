@@ -8,3 +8,15 @@ linters:
     - unused
     - gocritic
     - misspell
+    - gosec
+    - revive
+  exclusions:
+    rules:
+      # Tests legitimately use fixed credentials and unchecked cleanup errors.
+      - path: _test\.go
+        linters:
+          - gosec
+      # Doc-comment discipline is enforced on the public API (pkg/) only.
+      - path: ^(internal|cmd)/
+        linters:
+          - revive

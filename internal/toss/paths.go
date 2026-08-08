@@ -6,7 +6,7 @@ const (
 )
 
 const (
-	PathOAuthToken       = "/oauth2/token"
+	PathOAuthToken       = "/oauth2/token" //nolint:gosec // G101: URL path constant, not a credential
 	PathAccounts         = "/api/v1/accounts"
 	PathPrices           = "/api/v1/prices"
 	PathCandles          = "/api/v1/candles"

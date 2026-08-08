@@ -1,3 +1,5 @@
+// Package specs holds the generated documented Toss endpoint specs
+// and their shared runtime helpers.
 package specs
 
 import "strings"

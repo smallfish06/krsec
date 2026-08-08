@@ -453,7 +453,7 @@ func normalizeVirtualTRID(v string) string {
 }
 
 func readSnapshot(path string) (*snapshot, error) {
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) //nolint:gosec // G304: path comes from a CLI flag
 	if err != nil {
 		return nil, err
 	}
@@ -511,6 +511,9 @@ func writeSnapshot(path string, snap *snapshot) error {
 	return writeFile(path, data)
 }
 
+// Generated artifacts are repo files; standard 0o755/0o644 permissions are intended.
+//
+//nolint:gosec // G301/G306: output paths come from CLI flags and land in the repo
 func writeFile(path string, data []byte) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
@@ -519,7 +522,7 @@ func writeFile(path string, data []byte) error {
 }
 
 func compareGenerated(path string, want []byte) error {
-	got, err := os.ReadFile(path)
+	got, err := os.ReadFile(path) //nolint:gosec // G304: path comes from a CLI flag
 	if err != nil {
 		return err
 	}

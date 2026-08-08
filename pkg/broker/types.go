@@ -84,6 +84,7 @@ type Balance struct {
 // AssetType represents the type of asset
 type AssetType string
 
+// Asset types reported in balances and positions.
 const (
 	AssetStock    AssetType = "stock"
 	AssetBond     AssetType = "bond"
@@ -157,6 +158,7 @@ type AccountInfo struct {
 // OrderSide represents buy or sell
 type OrderSide string
 
+// Order sides.
 const (
 	OrderSideBuy  OrderSide = "buy"
 	OrderSideSell OrderSide = "sell"
@@ -165,6 +167,7 @@ const (
 // OrderType represents order type
 type OrderType string
 
+// Order types.
 const (
 	OrderTypeLimit  OrderType = "limit"
 	OrderTypeMarket OrderType = "market"
@@ -173,6 +176,7 @@ const (
 // OrderStatus represents order status
 type OrderStatus string
 
+// Order lifecycle statuses.
 const (
 	OrderStatusPending   OrderStatus = "pending"
 	OrderStatusFilled    OrderStatus = "filled"

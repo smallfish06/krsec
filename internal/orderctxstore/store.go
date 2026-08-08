@@ -20,7 +20,7 @@ type state[T any] struct {
 // Load reads persisted order contexts from path into dst and compacts to limit.
 // It returns nil when the file does not exist.
 func Load[T any](path string, dst map[string]T, limit int, updatedAt func(T) time.Time) error {
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) //nolint:gosec // G304: path is the configured order-context store
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil

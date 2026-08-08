@@ -1,3 +1,4 @@
+// Example: fetch balances from every configured account at once.
 package main
 
 import (

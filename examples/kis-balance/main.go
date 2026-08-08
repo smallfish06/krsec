@@ -1,3 +1,4 @@
+// Example: fetch a KIS account balance through the public adapter.
 package main
 
 import (
