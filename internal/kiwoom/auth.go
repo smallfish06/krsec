@@ -27,11 +27,11 @@ const issueTimeout = 90 * time.Second
 
 // TokenResponse is Kiwoom OAuth token response.
 type TokenResponse struct {
-	ExpiresDT  string      `json:"expires_dt"`
-	TokenType  string      `json:"token_type"`
-	Token      string      `json:"token"`
-	ReturnCode interface{} `json:"return_code"`
-	ReturnMsg  string      `json:"return_msg"`
+	ExpiresDT  string `json:"expires_dt"`
+	TokenType  string `json:"token_type"`
+	Token      string `json:"token"`
+	ReturnCode any    `json:"return_code"`
+	ReturnMsg  string `json:"return_msg"`
 }
 
 // Authenticate issues or reuses an OAuth token.
@@ -55,7 +55,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	// Issue at most one token per appKey at a time. The issuance runs on a
 	// detached context so one canceled caller cannot poison the refresh for
 	// every other request waiting on it.
-	ch := authFlight.DoChan(appKey, func() (interface{}, error) {
+	ch := authFlight.DoChan(appKey, func() (any, error) {
 		return c.issueToken(tm, appKey, appSecret)
 	})
 	select {

@@ -9,7 +9,7 @@ import (
 )
 
 // DocumentedRequestFields normalizes documented request structs/maps into endpoint fields.
-func DocumentedRequestFields(v interface{}) (map[string]string, error) {
+func DocumentedRequestFields(v any) (map[string]string, error) {
 	if v == nil {
 		return map[string]string{}, nil
 	}
@@ -53,7 +53,7 @@ func DocumentedRequestFields(v interface{}) (map[string]string, error) {
 }
 
 // NewDocumentedEndpointRequest returns a typed request object for the endpoint path.
-func NewDocumentedEndpointRequest(path string) interface{} {
+func NewDocumentedEndpointRequest(path string) any {
 	return kisspecs.NewDocumentedEndpointRequest(strings.TrimSpace(path))
 }
 

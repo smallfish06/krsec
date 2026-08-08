@@ -22,7 +22,7 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -35,10 +35,10 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 				t.Fatalf("Decode body: %v", err)
 			}
 			gotExchange = body["t1102InBlock"]["exchgubun"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"t1102OutBlock": map[string]interface{}{
+				"t1102OutBlock": map[string]any{
 					"shcode": "078020",
 					"price":  "1234",
 				},
@@ -55,8 +55,8 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 		t.Fatalf("Authenticate error: %v", err)
 	}
 
-	resp, err := a.CallEndpoint(context.Background(), "", internalls.PathStockMarket, internalls.TRStockQuote, map[string]interface{}{
-		"t1102InBlock": map[string]interface{}{
+	resp, err := a.CallEndpoint(context.Background(), "", internalls.PathStockMarket, internalls.TRStockQuote, map[string]any{
+		"t1102InBlock": map[string]any{
 			"shcode":    "078020",
 			"exchgubun": "K",
 		},
@@ -73,11 +73,11 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 	if gotExchange != "K" {
 		t.Fatalf("exchgubun = %q, want K", gotExchange)
 	}
-	out, ok := resp.(map[string]interface{})
+	out, ok := resp.(map[string]any)
 	if !ok {
-		t.Fatalf("response type = %T, want map[string]interface{}", resp)
+		t.Fatalf("response type = %T, want map[string]any", resp)
 	}
-	if _, ok := out["t1102OutBlock"].(map[string]interface{}); !ok {
+	if _, ok := out["t1102OutBlock"].(map[string]any); !ok {
 		t.Fatalf("missing t1102OutBlock: %#v", out)
 	}
 }
@@ -90,23 +90,23 @@ func TestAdapterCallEndpoint_AllowsInitialOverseasChartContinuationFields(t *tes
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case internalls.PathOverseasStockChart:
-			var body map[string]map[string]interface{}
+			var body map[string]map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				t.Fatalf("Decode body: %v", err)
 			}
 			block := body["g3204InBlock"]
 			gotEndDate, _ = block["edate"].(string)
 			_, gotCTSDatePresent = block["cts_date"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"g3204OutBlock1": []map[string]interface{}{
+				"g3204OutBlock1": []map[string]any{
 					{"date": "20250601", "open": "100.0", "high": "110.0", "low": "99.0", "close": "108.0", "volume": "1000"},
 				},
 			})
@@ -122,8 +122,8 @@ func TestAdapterCallEndpoint_AllowsInitialOverseasChartContinuationFields(t *tes
 		t.Fatalf("Authenticate error: %v", err)
 	}
 
-	_, err := a.CallEndpoint(context.Background(), "", internalls.PathOverseasStockChart, internalls.TROverseasStockChart, map[string]interface{}{
-		"g3204InBlock": map[string]interface{}{
+	_, err := a.CallEndpoint(context.Background(), "", internalls.PathOverseasStockChart, internalls.TROverseasStockChart, map[string]any{
+		"g3204InBlock": map[string]any{
 			"delaygb":   "R",
 			"keysymbol": "82TSLA",
 			"exchcd":    "82",
@@ -150,8 +150,8 @@ func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 	t.Parallel()
 
 	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]interface{}{
-		"t1102InBlock": map[string]interface{}{
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]any{
+		"t1102InBlock": map[string]any{
 			"shcode": "078020",
 		},
 	})
@@ -170,7 +170,7 @@ func TestAdapterCallEndpoint_RejectsUndocumentedTR(t *testing.T) {
 	t.Parallel()
 
 	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, "NOPE", map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, "NOPE", map[string]any{})
 	if err == nil {
 		t.Fatal("expected unsupported endpoint error, got nil")
 	}
@@ -183,7 +183,7 @@ func TestAdapterCallEndpoint_RejectsWebSocketTRForRESTDispatch(t *testing.T) {
 	t.Parallel()
 
 	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/websocket/overseas-stock", internalls.TRRealtimeOverseasTrade, map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/websocket/overseas-stock", internalls.TRRealtimeOverseasTrade, map[string]any{})
 	if err == nil {
 		t.Fatal("expected websocket rejection, got nil")
 	}

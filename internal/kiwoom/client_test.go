@@ -57,7 +57,7 @@ func TestClientInquirePrice_UsesAuthAndAPIIDHeader(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -70,7 +70,7 @@ func TestClientInquirePrice_UsesAuthAndAPIIDHeader(t *testing.T) {
 			var body map[string]string
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			gotSymbol = body["stk_cd"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"stk_cd":      "005930",
 				"cur_prc":     "70000",
 				"open_pric":   "69500",
@@ -125,7 +125,7 @@ func TestClientInquirePrice_ReturnCodeError(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -133,7 +133,7 @@ func TestClientInquirePrice_ReturnCodeError(t *testing.T) {
 				"return_msg":  "ok",
 			})
 		case "/api/dostk/stkinfo":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"return_code": -301,
 				"return_msg":  "invalid symbol",
 			})
@@ -164,7 +164,7 @@ func TestClientPlaceStockOrder_SellUsesSellTR(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -173,7 +173,7 @@ func TestClientPlaceStockOrder_SellUsesSellTR(t *testing.T) {
 			})
 		case "/api/dostk/ordr":
 			gotAPIID = r.Header.Get("api-id")
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"ord_no":      "0001234",
 				"return_code": 0,
 				"return_msg":  "ok",
@@ -208,7 +208,7 @@ func TestClientPlaceStockOrder_SellUsesSellTR(t *testing.T) {
 func TestAuthenticate_InvalidCredentialsMapped(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		_ = json.NewEncoder(w).Encode(map[string]any{
 			"return_code": 401,
 			"return_msg":  "appkey invalid",
 		})
@@ -235,7 +235,7 @@ func TestCallDocumentedEndpoint_UsesGeneratedMethod(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -245,10 +245,10 @@ func TestCallDocumentedEndpoint_UsesGeneratedMethod(t *testing.T) {
 		case "/api/dostk/stkinfo":
 			gotMethod = r.Method
 			gotAPIID = r.Header.Get("api-id")
-			var body map[string]interface{}
+			var body map[string]any
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			gotSymbol = asString(body["stk_cd"])
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"return_code": 0,
 				"return_msg":  "ok",
 				"name":        "sample",

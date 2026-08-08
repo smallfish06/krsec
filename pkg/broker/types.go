@@ -228,6 +228,6 @@ type OrderFill struct {
 	Price     float64   `json:"price"`
 	Amount    float64   `json:"amount,omitempty"`
 	Currency  string    `json:"currency,omitempty"`
-	FilledAt  time.Time `json:"filled_at,omitempty"`
+	FilledAt  time.Time `json:"filled_at"`
 	RawStatus string    `json:"raw_status,omitempty"`
 }

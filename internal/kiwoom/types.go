@@ -13,7 +13,7 @@ const (
 	StockOrderSideSell StockOrderSide = "sell"
 )
 
-func asString(v interface{}) string {
+func asString(v any) string {
 	s := strings.TrimSpace(toString(v))
 	if s == "<nil>" {
 		return ""
@@ -21,7 +21,7 @@ func asString(v interface{}) string {
 	return s
 }
 
-func asFloat64(v interface{}) float64 {
+func asFloat64(v any) float64 {
 	s := asString(v)
 	s = strings.ReplaceAll(s, ",", "")
 	s = strings.TrimPrefix(s, "+")
@@ -35,7 +35,7 @@ func asFloat64(v interface{}) float64 {
 	return f
 }
 
-func asInt64(v interface{}) int64 {
+func asInt64(v any) int64 {
 	s := asString(v)
 	s = strings.ReplaceAll(s, ",", "")
 	s = strings.TrimPrefix(s, "+")

@@ -309,8 +309,8 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 		return nil, fmt.Errorf("%w: limit price must be greater than 0", broker.ErrInvalidOrderRequest)
 	}
 
-	resp, err := a.client.CallEndpoint(ctx, "POST", ls.PathStockOrder, ls.TRStockOrder, map[string]interface{}{
-		"CSPAT00601InBlock1": map[string]interface{}{
+	resp, err := a.client.CallEndpoint(ctx, "POST", ls.PathStockOrder, ls.TRStockOrder, map[string]any{
+		"CSPAT00601InBlock1": map[string]any{
 			"IsuNo":         symbol,
 			"OrdQty":        req.Quantity,
 			"OrdPrc":        req.Price,

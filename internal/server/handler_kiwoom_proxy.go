@@ -13,12 +13,12 @@ import (
 )
 
 type kiwoomProxyRequest struct {
-	AccountID string                 `json:"account_id,omitempty"`
-	Method    string                 `json:"method,omitempty"`
-	APIID     string                 `json:"api_id"`
-	Params    map[string]interface{} `json:"params,omitempty"`
-	Query     map[string]interface{} `json:"query,omitempty"`
-	Body      map[string]interface{} `json:"body,omitempty"`
+	AccountID string         `json:"account_id,omitempty"`
+	Method    string         `json:"method,omitempty"`
+	APIID     string         `json:"api_id"`
+	Params    map[string]any `json:"params,omitempty"`
+	Query     map[string]any `json:"query,omitempty"`
+	Body      map[string]any `json:"body,omitempty"`
 }
 
 type kiwoomEndpointCaller interface {
@@ -27,8 +27,8 @@ type kiwoomEndpointCaller interface {
 		method string,
 		path string,
 		apiID string,
-		request interface{},
-	) (interface{}, error)
+		request any,
+	) (any, error)
 }
 
 // handleKiwoomProxy handles POST /kiwoom/{path...}
@@ -83,10 +83,10 @@ func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) 
 	})
 }
 
-func (s *Server) handleKiwoomProxyStatic(path, apiID string) func(fuego.ContextWithBody[map[string]interface{}]) (Response, error) {
+func (s *Server) handleKiwoomProxyStatic(path, apiID string) func(fuego.ContextWithBody[map[string]any]) (Response, error) {
 	rawPath := normalizeKiwoomProxyPath(path)
 	fixedAPIID := strings.ToLower(strings.TrimSpace(apiID))
-	return func(c fuego.ContextWithBody[map[string]interface{}]) (Response, error) {
+	return func(c fuego.ContextWithBody[map[string]any]) (Response, error) {
 		if rawPath == "" || fixedAPIID == "" {
 			return respond(c, http.StatusBadRequest, Response{OK: false, Error: "path/api_id is required"})
 		}

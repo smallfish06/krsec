@@ -10,7 +10,7 @@ import (
 // Adapter is the public Kiwoom adapter contract.
 type Adapter interface {
 	adapter.Adapter
-	CallEndpoint(ctx context.Context, method, path, apiID string, request interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path, apiID string, request any) (any, error)
 }
 
 // NewAdapterWithOptions creates a Kiwoom adapter with injectable options.

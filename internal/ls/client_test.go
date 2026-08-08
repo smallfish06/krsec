@@ -70,7 +70,7 @@ func TestClientCallEndpoint_AuthenticatesAndSendsTRHeaders(t *testing.T) {
 			}
 			gotFormAppKey = r.Form.Get("appkey")
 			gotFormSecret = r.Form.Get("appsecretkey")
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"scope":        "oob",
 				"token_type":   "Bearer",
@@ -88,10 +88,10 @@ func TestClientCallEndpoint_AuthenticatesAndSendsTRHeaders(t *testing.T) {
 			}
 			gotSymbol = body["t1102InBlock"]["shcode"]
 
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"t1102OutBlock": map[string]interface{}{
+				"t1102OutBlock": map[string]any{
 					"shcode": "078020",
 					"price":  "1234",
 				},
@@ -111,7 +111,7 @@ func TestClientCallEndpoint_AuthenticatesAndSendsTRHeaders(t *testing.T) {
 		t.Fatalf("Authenticate error: %v", err)
 	}
 
-	resp, err := c.CallEndpoint(context.Background(), http.MethodPost, PathStockMarket, TRStockQuote, map[string]interface{}{
+	resp, err := c.CallEndpoint(context.Background(), http.MethodPost, PathStockMarket, TRStockQuote, map[string]any{
 		"t1102InBlock": map[string]string{
 			"shcode":    "078020",
 			"exchgubun": "K",
@@ -142,7 +142,7 @@ func TestClientCallEndpoint_AuthenticatesAndSendsTRHeaders(t *testing.T) {
 	if gotSymbol != "078020" {
 		t.Fatalf("symbol = %q, want 078020", gotSymbol)
 	}
-	if _, ok := resp["t1102OutBlock"].(map[string]interface{}); !ok {
+	if _, ok := resp["t1102OutBlock"].(map[string]any); !ok {
 		t.Fatalf("missing output block: %#v", resp)
 	}
 }
@@ -151,13 +151,13 @@ func TestClientCallEndpoint_MapsLSStatusError(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case PathStockMarket:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "Q0001",
 				"rsp_msg": "bad request",
 			})
@@ -186,13 +186,13 @@ func TestClientCallEndpoint_RejectsEmptyStatusOnlyResponse(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case PathOverseasStockMarket:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "",
 				"rsp_msg": "",
 			})
@@ -208,8 +208,8 @@ func TestClientCallEndpoint_RejectsEmptyStatusOnlyResponse(t *testing.T) {
 		t.Fatalf("Authenticate error: %v", err)
 	}
 
-	_, err := c.CallEndpoint(context.Background(), http.MethodPost, PathOverseasStockMarket, TROverseasStockQuote, map[string]interface{}{
-		"g3101InBlock": map[string]interface{}{
+	_, err := c.CallEndpoint(context.Background(), http.MethodPost, PathOverseasStockMarket, TROverseasStockQuote, map[string]any{
+		"g3101InBlock": map[string]any{
 			"delaygb":   "R",
 			"keysymbol": "82AAPL",
 			"exchcd":    "82",
@@ -232,7 +232,7 @@ func TestClientCallEndpoint_RetriesAfterInvalidCachedToken(t *testing.T) {
 		switch r.URL.Path {
 		case PathOAuthToken:
 			authCalls++
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "fresh-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -241,7 +241,7 @@ func TestClientCallEndpoint_RetriesAfterInvalidCachedToken(t *testing.T) {
 			quoteCalls++
 			if r.Header.Get("authorization") == "Bearer stale-token" {
 				w.WriteHeader(http.StatusInternalServerError)
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"rsp_msg": "유효하지 않은 token 입니다.",
 				})
 				return
@@ -249,7 +249,7 @@ func TestClientCallEndpoint_RetriesAfterInvalidCachedToken(t *testing.T) {
 			if r.Header.Get("authorization") != "Bearer fresh-token" {
 				t.Fatalf("authorization = %q", r.Header.Get("authorization"))
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
 			})

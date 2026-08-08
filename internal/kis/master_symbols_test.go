@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -13,11 +14,11 @@ func TestParseDomesticMSTRecords(t *testing.T) {
 	t.Parallel()
 
 	part1 := "A005930  KR7005930003SAMSUNG ELECTRONICS"
-	tail := ""
-	for i := 0; i < 228; i++ {
-		tail += " "
+	var tail strings.Builder
+	for range 228 {
+		tail.WriteString(" ")
 	}
-	raw := []byte(part1 + tail + "\n")
+	raw := []byte(part1 + tail.String() + "\n")
 
 	recs := parseDomesticMSTRecords(raw, 228, "KOSPI", "KRX")
 	if len(recs) != 1 {

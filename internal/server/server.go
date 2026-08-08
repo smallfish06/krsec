@@ -579,9 +579,9 @@ func (s *Server) App() *fuego.Server {
 }
 
 // handleHealth handles health check requests
-func (s *Server) handleHealth(c fuego.ContextNoBody) (map[string]interface{}, error) {
+func (s *Server) handleHealth(c fuego.ContextNoBody) (map[string]any, error) {
 	c.SetStatus(http.StatusOK)
-	return map[string]interface{}{
+	return map[string]any{
 		"status":   "ok",
 		"accounts": len(s.accounts),
 	}, nil
@@ -620,10 +620,10 @@ func (s *Server) getFirstBroker() broker.Broker {
 
 // Response represents a standard API response
 type Response struct {
-	OK     bool        `json:"ok"`
-	Data   interface{} `json:"data,omitempty"`
-	Error  string      `json:"error,omitempty"`
-	Broker string      `json:"broker,omitempty"`
+	OK     bool   `json:"ok"`
+	Data   any    `json:"data,omitempty"`
+	Error  string `json:"error,omitempty"`
+	Broker string `json:"broker,omitempty"`
 }
 
 func respond(c interface{ SetStatus(int) }, status int, data Response) (Response, error) {

@@ -11,16 +11,16 @@ import (
 )
 
 type lsProxyRequest struct {
-	AccountID string                 `json:"account_id,omitempty"`
-	Method    string                 `json:"method,omitempty"`
-	TRCD      string                 `json:"tr_cd"`
-	Params    map[string]interface{} `json:"params,omitempty"`
-	Query     map[string]interface{} `json:"query,omitempty"`
-	Body      map[string]interface{} `json:"body,omitempty"`
+	AccountID string         `json:"account_id,omitempty"`
+	Method    string         `json:"method,omitempty"`
+	TRCD      string         `json:"tr_cd"`
+	Params    map[string]any `json:"params,omitempty"`
+	Query     map[string]any `json:"query,omitempty"`
+	Body      map[string]any `json:"body,omitempty"`
 }
 
 type lsEndpointCaller interface {
-	CallEndpoint(ctx context.Context, method, path, trCD string, request interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path, trCD string, request any) (any, error)
 }
 
 // handleLSProxy handles POST /ls/{path...}.

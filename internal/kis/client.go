@@ -148,7 +148,7 @@ func (c *Client) isTokenValid() bool {
 
 // doRequest performs an HTTP request with authentication headers.
 // On 401 responses, it invalidates the cached token, re-authenticates, and retries once.
-func (c *Client) doRequest(ctx context.Context, method, path string, trID string, body interface{}, result interface{}) error {
+func (c *Client) doRequest(ctx context.Context, method, path string, trID string, body any, result any) error {
 	resp, err := c.doRequestOnce(ctx, method, path, trID, body)
 	if err != nil {
 		return err
@@ -188,7 +188,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 }
 
 // doRequestOnce sends a single HTTP request, refreshing the token beforehand if needed.
-func (c *Client) doRequestOnce(ctx context.Context, method, path string, trID string, body interface{}) (*http.Response, error) {
+func (c *Client) doRequestOnce(ctx context.Context, method, path string, trID string, body any) (*http.Response, error) {
 	if !c.isTokenValid() {
 		if err := c.refreshToken(ctx); err != nil {
 			return nil, fmt.Errorf("token refresh failed: %w", err)
@@ -308,7 +308,7 @@ func (c *Client) CallDocumentedEndpointInto(
 	path string,
 	trID string,
 	fields map[string]string,
-	result interface{},
+	result any,
 ) error {
 	m := strings.ToUpper(strings.TrimSpace(method))
 	if m == "" {
@@ -368,7 +368,7 @@ func (c *Client) ResolveTRID(realTRID, virtualTRID string) string {
 	return virtual
 }
 
-func checkEndpointResult(result interface{}) error {
+func checkEndpointResult(result any) error {
 	switch v := result.(type) {
 	case nil:
 		return nil

@@ -1410,7 +1410,7 @@ func callEndpointDecoded[T any](
 	method string,
 	path string,
 	trID string,
-	request interface{},
+	request any,
 ) (T, error) {
 	var zero T
 	payload, err := a.CallEndpoint(ctx, method, path, trID, request)
@@ -1534,7 +1534,7 @@ func (a *Adapter) strictInquireOverseasCcnl(
 	seenCursors := make(map[string]struct{})
 	const maxPages = 200
 
-	for i := 0; i < maxPages; i++ {
+	for range maxPages {
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()

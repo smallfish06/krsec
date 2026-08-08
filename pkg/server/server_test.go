@@ -50,7 +50,7 @@ func (fakeBroker) ModifyOrder(context.Context, string, broker.ModifyOrderRequest
 type fakeKISProxyBroker struct {
 	fakeBroker
 	calls int
-	resp  map[string]interface{}
+	resp  map[string]any
 }
 
 func (b *fakeKISProxyBroker) Name() string { return broker.NameKIS }
@@ -60,8 +60,8 @@ func (b *fakeKISProxyBroker) CallEndpoint(
 	string,
 	string,
 	string,
-	interface{},
-) (interface{}, error) {
+	any,
+) (any, error) {
 	b.calls++
 	return b.resp, nil
 }
@@ -115,7 +115,7 @@ func TestNew_HealthAndAccounts(t *testing.T) {
 
 func TestNew_KISProxyCachePolicyCanDisableDefaultCaching(t *testing.T) {
 	kisBroker := &fakeKISProxyBroker{
-		resp: map[string]interface{}{"rt_cd": "0", "price": "70000"},
+		resp: map[string]any{"rt_cd": "0", "price": "70000"},
 	}
 	policyCalled := false
 	s := New(Options{
@@ -148,7 +148,7 @@ func TestNew_KISProxyCachePolicyCanDisableDefaultCaching(t *testing.T) {
 	})
 
 	body := []byte(`{"tr_id":"FHKST01010100","params":{"FID_COND_MRKT_DIV_CODE":"J","FID_INPUT_ISCD":"005930"}}`)
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := httptest.NewRequest(http.MethodPost, "/kis/domestic-stock/v1/quotations/inquire-price", bytes.NewReader(body))
 		rr := httptest.NewRecorder()
 		s.App().Mux.ServeHTTP(rr, req)
@@ -191,40 +191,40 @@ func TestNew_OpenAPIEndpoints(t *testing.T) {
 		t.Fatalf("unexpected openapi spec body: %s", rr.Body.String())
 	}
 
-	var openapi map[string]interface{}
+	var openapi map[string]any
 	if err := json.Unmarshal(rr.Body.Bytes(), &openapi); err != nil {
 		t.Fatalf("unmarshal openapi spec: %v", err)
 	}
 
-	paths, ok := openapi["paths"].(map[string]interface{})
+	paths, ok := openapi["paths"].(map[string]any)
 	if !ok {
 		t.Fatalf("openapi paths not found")
 	}
-	pathItem, ok := paths["/kis/domestic-bond/v1/quotations/inquire-price"].(map[string]interface{})
+	pathItem, ok := paths["/kis/domestic-bond/v1/quotations/inquire-price"].(map[string]any)
 	if !ok {
 		t.Fatalf("expected static KIS endpoint in openapi spec")
 	}
 	if _, hasWildcard := paths["/kis/{path...}"]; hasWildcard {
 		t.Fatalf("unexpected wildcard KIS endpoint in openapi spec")
 	}
-	postOp, ok := pathItem["post"].(map[string]interface{})
+	postOp, ok := pathItem["post"].(map[string]any)
 	if !ok {
 		t.Fatalf("expected POST operation in static KIS endpoint")
 	}
 
-	reqBody, ok := postOp["requestBody"].(map[string]interface{})
+	reqBody, ok := postOp["requestBody"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody missing in static KIS endpoint")
 	}
-	reqContent, ok := reqBody["content"].(map[string]interface{})
+	reqContent, ok := reqBody["content"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody.content missing in static KIS endpoint")
 	}
-	reqAppJSON, ok := reqContent["application/json"].(map[string]interface{})
+	reqAppJSON, ok := reqContent["application/json"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody.content.application/json missing in static KIS endpoint")
 	}
-	reqSchema, ok := reqAppJSON["schema"].(map[string]interface{})
+	reqSchema, ok := reqAppJSON["schema"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody schema missing in static KIS endpoint")
 	}
@@ -232,23 +232,23 @@ func TestNew_OpenAPIEndpoints(t *testing.T) {
 		t.Fatalf("unexpected static request schema ref: %q", got)
 	}
 
-	responses, ok := postOp["responses"].(map[string]interface{})
+	responses, ok := postOp["responses"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses missing in static KIS endpoint")
 	}
-	resp200, ok := responses["200"].(map[string]interface{})
+	resp200, ok := responses["200"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200 missing in static KIS endpoint")
 	}
-	respContent, ok := resp200["content"].(map[string]interface{})
+	respContent, ok := resp200["content"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200.content missing in static KIS endpoint")
 	}
-	respAppJSON, ok := respContent["application/json"].(map[string]interface{})
+	respAppJSON, ok := respContent["application/json"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200.content.application/json missing in static KIS endpoint")
 	}
-	respSchema, ok := respAppJSON["schema"].(map[string]interface{})
+	respSchema, ok := respAppJSON["schema"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200 schema missing in static KIS endpoint")
 	}
@@ -256,89 +256,89 @@ func TestNew_OpenAPIEndpoints(t *testing.T) {
 		t.Fatalf("unexpected static response schema ref: %q", got)
 	}
 
-	kiwoomPathItem, ok := paths["/kiwoom/dostk/stkinfo/ka10001"].(map[string]interface{})
+	kiwoomPathItem, ok := paths["/kiwoom/dostk/stkinfo/ka10001"].(map[string]any)
 	if !ok {
 		t.Fatalf("expected static Kiwoom endpoint in openapi spec")
 	}
-	kiwoomPost, ok := kiwoomPathItem["post"].(map[string]interface{})
+	kiwoomPost, ok := kiwoomPathItem["post"].(map[string]any)
 	if !ok {
 		t.Fatalf("expected POST operation in static Kiwoom endpoint")
 	}
-	kiwoomReqBody, ok := kiwoomPost["requestBody"].(map[string]interface{})
+	kiwoomReqBody, ok := kiwoomPost["requestBody"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody missing in static Kiwoom endpoint")
 	}
-	kiwoomReqContent, ok := kiwoomReqBody["content"].(map[string]interface{})
+	kiwoomReqContent, ok := kiwoomReqBody["content"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody.content missing in static Kiwoom endpoint")
 	}
-	kiwoomReqAppJSON, ok := kiwoomReqContent["application/json"].(map[string]interface{})
+	kiwoomReqAppJSON, ok := kiwoomReqContent["application/json"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody.content.application/json missing in static Kiwoom endpoint")
 	}
-	kiwoomReqSchema, ok := kiwoomReqAppJSON["schema"].(map[string]interface{})
+	kiwoomReqSchema, ok := kiwoomReqAppJSON["schema"].(map[string]any)
 	if !ok {
 		t.Fatalf("requestBody schema missing in static Kiwoom endpoint")
 	}
 	if got, _ := kiwoomReqSchema["$ref"].(string); got != "#/components/schemas/KiwoomApiDostkStkinfoKa10001Request" {
 		t.Fatalf("unexpected static Kiwoom request schema ref: %q", got)
 	}
-	kiwoomResponses, ok := kiwoomPost["responses"].(map[string]interface{})
+	kiwoomResponses, ok := kiwoomPost["responses"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses missing in static Kiwoom endpoint")
 	}
-	kiwoomResp200, ok := kiwoomResponses["200"].(map[string]interface{})
+	kiwoomResp200, ok := kiwoomResponses["200"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200 missing in static Kiwoom endpoint")
 	}
-	kiwoomRespContent, ok := kiwoomResp200["content"].(map[string]interface{})
+	kiwoomRespContent, ok := kiwoomResp200["content"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200.content missing in static Kiwoom endpoint")
 	}
-	kiwoomRespAppJSON, ok := kiwoomRespContent["application/json"].(map[string]interface{})
+	kiwoomRespAppJSON, ok := kiwoomRespContent["application/json"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200.content.application/json missing in static Kiwoom endpoint")
 	}
-	kiwoomRespSchema, ok := kiwoomRespAppJSON["schema"].(map[string]interface{})
+	kiwoomRespSchema, ok := kiwoomRespAppJSON["schema"].(map[string]any)
 	if !ok {
 		t.Fatalf("responses.200 schema missing in static Kiwoom endpoint")
 	}
 	if got, _ := kiwoomRespSchema["$ref"].(string); got != "#/components/schemas/KiwoomApiDostkStkinfoKa10001Response" {
 		t.Fatalf("unexpected static Kiwoom response schema ref: %q", got)
 	}
-	components, ok := openapi["components"].(map[string]interface{})
+	components, ok := openapi["components"].(map[string]any)
 	if !ok {
 		t.Fatalf("openapi components not found")
 	}
-	schemas, ok := components["schemas"].(map[string]interface{})
+	schemas, ok := components["schemas"].(map[string]any)
 	if !ok {
 		t.Fatalf("openapi components.schemas not found")
 	}
-	mrkcondSchema, ok := schemas["KiwoomApiDostkMrkcondKa10066Response"].(map[string]interface{})
+	mrkcondSchema, ok := schemas["KiwoomApiDostkMrkcondKa10066Response"].(map[string]any)
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response schema not found")
 	}
-	mrkcondProps, ok := mrkcondSchema["properties"].(map[string]interface{})
+	mrkcondProps, ok := mrkcondSchema["properties"].(map[string]any)
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response.properties not found")
 	}
-	listProp, ok := mrkcondProps["opaf_invsr_trde"].(map[string]interface{})
+	listProp, ok := mrkcondProps["opaf_invsr_trde"].(map[string]any)
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response.opaf_invsr_trde not found")
 	}
-	listItems, ok := listProp["items"].(map[string]interface{})
+	listItems, ok := listProp["items"].(map[string]any)
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response.opaf_invsr_trde.items not found")
 	}
 	// Array item schemas are emitted as named $refs; resolve before inspecting.
 	if ref, _ := listItems["$ref"].(string); ref != "" {
 		name := strings.TrimPrefix(ref, "#/components/schemas/")
-		listItems, ok = schemas[name].(map[string]interface{})
+		listItems, ok = schemas[name].(map[string]any)
 		if !ok {
 			t.Fatalf("KiwoomApiDostkMrkcondKa10066Response item schema %q not found", name)
 		}
 	}
-	itemProps, ok := listItems["properties"].(map[string]interface{})
+	itemProps, ok := listItems["properties"].(map[string]any)
 	if !ok {
 		t.Fatalf("KiwoomApiDostkMrkcondKa10066Response item properties not found")
 	}

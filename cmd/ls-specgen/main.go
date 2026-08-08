@@ -407,15 +407,13 @@ func fetchProperties(client *http.Client, propertyURL string, endpoints []endpoi
 	jobs := make(chan job)
 	results := make(chan result)
 	var wg sync.WaitGroup
-	for i := 0; i < workers; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range workers {
+		wg.Go(func() {
 			for j := range jobs {
 				props, err := fetchTRProperties(client, propertyURL, j.id)
 				results <- result{endpoint: j.endpoint, tr: j.tr, properties: props, err: err}
 			}
-		}()
+		})
 	}
 
 	total := 0
@@ -487,7 +485,7 @@ func fetchTRProperties(client *http.Client, propertyURL, trID string) ([]propert
 	return props, nil
 }
 
-func getJSON(client *http.Client, url string, out interface{}) error {
+func getJSON(client *http.Client, url string, out any) error {
 	data, err := getBytes(client, url)
 	if err != nil {
 		return err

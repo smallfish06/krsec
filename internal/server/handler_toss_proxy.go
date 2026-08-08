@@ -14,15 +14,15 @@ import (
 )
 
 type tossProxyRequest struct {
-	AccountID string                 `json:"account_id,omitempty"`
-	Method    string                 `json:"method,omitempty"`
-	Query     map[string]interface{} `json:"query,omitempty"`
-	Params    map[string]interface{} `json:"params,omitempty"`
-	Body      map[string]interface{} `json:"body,omitempty"`
+	AccountID string         `json:"account_id,omitempty"`
+	Method    string         `json:"method,omitempty"`
+	Query     map[string]any `json:"query,omitempty"`
+	Params    map[string]any `json:"params,omitempty"`
+	Body      map[string]any `json:"body,omitempty"`
 }
 
 type tossEndpointCaller interface {
-	CallEndpoint(ctx context.Context, method, path string, query map[string]interface{}, body interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path string, query map[string]any, body any) (any, error)
 }
 
 // handleTossProxy handles POST /toss/{path...}.

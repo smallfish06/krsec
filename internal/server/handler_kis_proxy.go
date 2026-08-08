@@ -17,12 +17,12 @@ import (
 )
 
 type kisProxyRequest struct {
-	AccountID string                 `json:"account_id,omitempty"`
-	Method    string                 `json:"method,omitempty"`
-	TRID      string                 `json:"tr_id"`
-	Params    map[string]interface{} `json:"params,omitempty"`
-	Query     map[string]interface{} `json:"query,omitempty"`
-	Body      map[string]interface{} `json:"body,omitempty"`
+	AccountID string         `json:"account_id,omitempty"`
+	Method    string         `json:"method,omitempty"`
+	TRID      string         `json:"tr_id"`
+	Params    map[string]any `json:"params,omitempty"`
+	Query     map[string]any `json:"query,omitempty"`
+	Body      map[string]any `json:"body,omitempty"`
 }
 
 func (r *kisProxyRequest) UnmarshalJSON(data []byte) error {
@@ -32,7 +32,7 @@ func (r *kisProxyRequest) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var flat map[string]interface{}
+	var flat map[string]any
 	if err := json.Unmarshal(data, &flat); err != nil {
 		return err
 	}
@@ -55,8 +55,8 @@ type kisEndpointCaller interface {
 		method string,
 		path string,
 		trID string,
-		request interface{},
-	) (interface{}, error)
+		request any,
+	) (any, error)
 }
 
 func (s *Server) handleKISProxyStatic(path string) func(fuego.ContextWithBody[kisProxyRequest]) (Response, error) {
@@ -122,7 +122,7 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 		}
 	}
 
-	callEndpoint := func() (interface{}, error) {
+	callEndpoint := func() (any, error) {
 		waited, err := s.kisRateLimiter.wait(c.Context(), rawPath, trID)
 		if err != nil {
 			return nil, fmt.Errorf("kis proxy rate limit wait: %w", err)
@@ -138,7 +138,7 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 		return impl.CallEndpoint(c.Context(), method, rawPath, trID, request)
 	}
 
-	var result interface{}
+	var result any
 	var endpointErr error
 	if cacheable {
 		result, endpointErr, _ = s.kisCache.do(cacheKey, callEndpoint)
@@ -231,7 +231,7 @@ func normalizeKISProxyPath(path string) string {
 	return endpointpath.Normalize(path, kis.PathPrefixUAPI, kis.PathPrefixUAPISlash)
 }
 
-func toStringMap(src map[string]interface{}) map[string]string {
+func toStringMap(src map[string]any) map[string]string {
 	if len(src) == 0 {
 		return nil
 	}
@@ -262,13 +262,13 @@ func mergeStringMaps(base map[string]string, override map[string]string) map[str
 	return out
 }
 
-func mergeInterfaceMaps(base map[string]interface{}, override map[string]interface{}) map[string]interface{} {
+func mergeInterfaceMaps(base map[string]any, override map[string]any) map[string]any {
 	if len(base) == 0 && len(override) == 0 {
 		return nil
 	}
 	out := maps.Clone(base)
 	if out == nil {
-		out = make(map[string]interface{}, len(override))
+		out = make(map[string]any, len(override))
 	}
 	maps.Copy(out, override)
 	return out

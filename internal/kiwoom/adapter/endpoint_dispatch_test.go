@@ -33,7 +33,7 @@ func TestCallEndpoint_RequiresAPIID(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "", map[string]interface{}{"stk_cd": "005930"})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "", map[string]any{"stk_cd": "005930"})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -46,7 +46,7 @@ func TestCallEndpoint_UnsupportedPath(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/api/unknown/path", "ka10001", map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/api/unknown/path", "ka10001", map[string]any{})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -59,7 +59,7 @@ func TestCallEndpoint_UnsupportedPathMethodValidation(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodGet, "/api/unknown/path", "zz99999", map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), http.MethodGet, "/api/unknown/path", "zz99999", map[string]any{})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -72,7 +72,7 @@ func TestCallEndpoint_UnsupportedAPIIDOnKnownPath(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "zz99999", map[string]interface{}{"stk_cd": "005930"})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "zz99999", map[string]any{"stk_cd": "005930"})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -85,7 +85,7 @@ func TestCallEndpoint_DocumentedRouteRequiresClient(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "ka10002", map[string]interface{}{"stk_cd": "005930"})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, kiwoom.PathStockInfo, "ka10002", map[string]any{"stk_cd": "005930"})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -98,7 +98,7 @@ func TestCallEndpoint_DocumentedRouteMissingRequiredField(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), "", kiwoom.PathStockInfo, "ka10002", map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), "", kiwoom.PathStockInfo, "ka10002", map[string]any{})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -111,7 +111,7 @@ func TestCallEndpoint_MethodValidation(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), http.MethodGet, kiwoom.PathStockInfo, "ka10001", map[string]interface{}{"stk_cd": "005930"})
+	_, err := a.CallEndpoint(context.Background(), http.MethodGet, kiwoom.PathStockInfo, "ka10001", map[string]any{"stk_cd": "005930"})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -124,7 +124,7 @@ func TestCallEndpoint_ValidRouteMissingSymbol(t *testing.T) {
 	t.Parallel()
 	a := &Adapter{}
 
-	_, err := a.CallEndpoint(context.Background(), "", kiwoom.PathStockInfo, "ka10001", map[string]interface{}{})
+	_, err := a.CallEndpoint(context.Background(), "", kiwoom.PathStockInfo, "ka10001", map[string]any{})
 	if err == nil {
 		t.Fatalf("expected error")
 	}
@@ -136,13 +136,13 @@ func TestCallEndpoint_ValidRouteMissingSymbol(t *testing.T) {
 func TestApplyDocumentedCustomDefaults_TicScope(t *testing.T) {
 	t.Parallel()
 
-	payload := map[string]interface{}{}
+	payload := map[string]any{}
 	applyDocumentedDefaults("ka50079", payload)
 	if payload["tic_scope"] != "1" {
 		t.Fatalf("tic_scope = %#v, want \"1\"", payload["tic_scope"])
 	}
 
-	payload2 := map[string]interface{}{"tic_scope": "5"}
+	payload2 := map[string]any{"tic_scope": "5"}
 	applyDocumentedDefaults("ka50080", payload2)
 	if payload2["tic_scope"] != "5" {
 		t.Fatalf("tic_scope = %#v, want \"5\"", payload2["tic_scope"])

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"net/http"
 	"strings"
 
@@ -13,7 +14,7 @@ import (
 )
 
 // CallEndpoint executes a documented LS REST endpoint by path and tr_cd.
-func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, request interface{}) (interface{}, error) {
+func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, request any) (any, error) {
 	path = normalizeEndpointPath(path)
 	trCD = strings.TrimSpace(trCD)
 	if path == "" {
@@ -58,7 +59,7 @@ func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, r
 	return a.client.CallEndpoint(ctx, effectiveMethod, path, trCD, payload)
 }
 
-func validateDocumentedRequestFields(spec lsspecs.LSEndpointSpec, payload map[string]interface{}) error {
+func validateDocumentedRequestFields(spec lsspecs.LSEndpointSpec, payload map[string]any) error {
 	for _, field := range spec.RequestFields {
 		if !field.Required {
 			continue
@@ -86,14 +87,14 @@ func isOptionalContinuationField(code string) bool {
 	}
 }
 
-func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
+func requestPayloadMap(request any) (map[string]any, error) {
 	switch t := request.(type) {
 	case nil:
-		return map[string]interface{}{}, nil
-	case map[string]interface{}:
+		return map[string]any{}, nil
+	case map[string]any:
 		return clonePayloadMap(t), nil
 	case map[string]string:
-		out := make(map[string]interface{}, len(t))
+		out := make(map[string]any, len(t))
 		for k, v := range t {
 			out[k] = v
 		}
@@ -105,37 +106,35 @@ func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
 		}
 		data = bytes.TrimSpace(data)
 		if len(data) == 0 || bytes.Equal(data, []byte("null")) {
-			return map[string]interface{}{}, nil
+			return map[string]any{}, nil
 		}
-		var out map[string]interface{}
+		var out map[string]any
 		if err := json.Unmarshal(data, &out); err != nil {
 			return nil, fmt.Errorf("decode request payload: %w", err)
 		}
 		if out == nil {
-			out = map[string]interface{}{}
+			out = map[string]any{}
 		}
 		return out, nil
 	}
 }
 
-func clonePayloadMap(in map[string]interface{}) map[string]interface{} {
+func clonePayloadMap(in map[string]any) map[string]any {
 	if len(in) == 0 {
-		return map[string]interface{}{}
+		return map[string]any{}
 	}
-	out := make(map[string]interface{}, len(in))
-	for k, v := range in {
-		out[k] = v
-	}
+	out := make(map[string]any, len(in))
+	maps.Copy(out, in)
 	return out
 }
 
-func payloadHasField(value interface{}, key string) bool {
+func payloadHasField(value any, key string) bool {
 	key = strings.TrimSpace(key)
 	if key == "" {
 		return true
 	}
 	switch t := value.(type) {
-	case map[string]interface{}:
+	case map[string]any:
 		for k, v := range t {
 			if strings.EqualFold(strings.TrimSpace(k), key) {
 				return v != nil
@@ -150,7 +149,7 @@ func payloadHasField(value interface{}, key string) bool {
 				return true
 			}
 		}
-	case []interface{}:
+	case []any:
 		for _, item := range t {
 			if payloadHasField(item, key) {
 				return true

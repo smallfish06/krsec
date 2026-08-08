@@ -47,7 +47,7 @@ func TestAdapterGetQuote_MapsT1102Response(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -56,10 +56,10 @@ func TestAdapterGetQuote_MapsT1102Response(t *testing.T) {
 			if got := r.Header.Get("tr_cd"); got != internalls.TRStockQuote {
 				t.Fatalf("tr_cd = %q, want %s", got, internalls.TRStockQuote)
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"t1102OutBlock": map[string]interface{}{
+				"t1102OutBlock": map[string]any{
 					"shcode":     "078020",
 					"price":      "1234",
 					"open":       "1200",
@@ -111,7 +111,7 @@ func TestAdapterGetQuote_MapsOverseasG3101Response(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -126,10 +126,10 @@ func TestAdapterGetQuote_MapsOverseasG3101Response(t *testing.T) {
 			}
 			gotSymbol = body["g3101InBlock"]["symbol"]
 			gotExchange = body["g3101InBlock"]["exchcd"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"g3101OutBlock": map[string]interface{}{
+				"g3101OutBlock": map[string]any{
 					"delaygb":   "R",
 					"keysymbol": "82AAPL",
 					"exchcd":    "82",
@@ -181,13 +181,13 @@ func TestAdapterGetQuote_ReturnsErrorWhenG3101OutputMissing(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case internalls.PathOverseasStockMarket:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "해당 자료가 없습니다.",
 			})
@@ -220,7 +220,7 @@ func TestAdapterGetOHLCV_UsesHistoricalStartForT8410FromOnly(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -229,7 +229,7 @@ func TestAdapterGetOHLCV_UsesHistoricalStartForT8410FromOnly(t *testing.T) {
 			if got := r.Header.Get("tr_cd"); got != internalls.TRStockChart {
 				t.Fatalf("tr_cd = %q, want %s", got, internalls.TRStockChart)
 			}
-			var payload map[string]map[string]interface{}
+			var payload map[string]map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 				t.Fatalf("decode request: %v", err)
 			}
@@ -240,10 +240,10 @@ func TestAdapterGetOHLCV_UsesHistoricalStartForT8410FromOnly(t *testing.T) {
 			if block["cts_date"] != "" || block["comp_yn"] != "N" || block["sujung"] != "Y" {
 				t.Fatalf("unexpected chart block: %#v", block)
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"t8410OutBlock1": []map[string]interface{}{
+				"t8410OutBlock1": []map[string]any{
 					{"date": "20250203", "open": "1000", "high": "1100", "low": "990", "close": "1080", "jdiff_vol": "10000"},
 				},
 			})
@@ -288,23 +288,23 @@ func TestAdapterGetOHLCV_UsesOpenEndedEndForT8410Latest(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case internalls.PathStockChart:
-			var payload map[string]map[string]interface{}
+			var payload map[string]map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 				t.Fatalf("decode request: %v", err)
 			}
 			block := payload["t8410InBlock"]
 			gotStartDate, _ = block["sdate"].(string)
 			gotEndDate, _ = block["edate"].(string)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"t8410OutBlock1": []map[string]interface{}{
+				"t8410OutBlock1": []map[string]any{
 					{"date": "20260601", "open": "1000", "high": "1100", "low": "990", "close": "1080", "jdiff_vol": "10000"},
 				},
 			})
@@ -343,7 +343,7 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -352,17 +352,17 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 			if got := r.Header.Get("tr_cd"); got != internalls.TROverseasStockChart {
 				t.Fatalf("tr_cd = %q, want %s", got, internalls.TROverseasStockChart)
 			}
-			var body map[string]map[string]interface{}
+			var body map[string]map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				t.Fatalf("Decode body: %v", err)
 			}
 			gotSymbol, _ = body["g3204InBlock"]["symbol"].(string)
 			gotLimit, _ = body["g3204InBlock"]["qrycnt"].(float64)
 			gotEndDate, _ = body["g3204InBlock"]["edate"].(string)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"g3204OutBlock1": []map[string]interface{}{
+				"g3204OutBlock1": []map[string]any{
 					{"date": "20250601", "open": "100.0", "high": "110.0", "low": "99.0", "close": "108.0", "volume": "1000"},
 					{"date": "20250602", "open": "108.0", "high": "112.0", "low": "107.0", "close": "109.0", "volume": "2000"},
 				},
@@ -404,13 +404,13 @@ func TestAdapterGetOHLCV_ReturnsErrorWhenG3204OutputMissing(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
 			})
 		case internalls.PathOverseasStockChart:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "해당 자료가 없습니다.",
 			})
@@ -439,7 +439,7 @@ func TestAdapterGetInstrument_MapsOverseasG3104Response(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case internalls.PathOAuthToken:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
@@ -448,10 +448,10 @@ func TestAdapterGetInstrument_MapsOverseasG3104Response(t *testing.T) {
 			if got := r.Header.Get("tr_cd"); got != internalls.TROverseasStockInstrument {
 				t.Fatalf("tr_cd = %q, want %s", got, internalls.TROverseasStockInstrument)
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"rsp_cd":  "00000",
 				"rsp_msg": "ok",
-				"g3104OutBlock": map[string]interface{}{
+				"g3104OutBlock": map[string]any{
 					"keysymbol":     "82AAPL",
 					"exchcd":        "82",
 					"symbol":        "AAPL",

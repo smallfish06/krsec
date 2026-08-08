@@ -41,7 +41,7 @@ type RealtimeSubscription struct {
 }
 
 // InquirePrice returns raw t1102 response fields for a stock.
-func (c *Client) InquirePrice(ctx context.Context, symbol, exchange string) (map[string]interface{}, error) {
+func (c *Client) InquirePrice(ctx context.Context, symbol, exchange string) (map[string]any, error) {
 	symbol = normalizeSymbol(symbol)
 	if symbol == "" {
 		return nil, broker.ErrInvalidSymbol
@@ -50,8 +50,8 @@ func (c *Client) InquirePrice(ctx context.Context, symbol, exchange string) (map
 	if exchange == "" {
 		exchange = "K"
 	}
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockMarket, TRStockQuote, map[string]interface{}{
-		"t1102InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockMarket, TRStockQuote, map[string]any{
+		"t1102InBlock": map[string]any{
 			"shcode":    symbol,
 			"exchgubun": exchange,
 		},
@@ -67,7 +67,7 @@ func (c *Client) InquirePrice(ctx context.Context, symbol, exchange string) (map
 }
 
 // InquireChart fetches t8410 day/week/month chart rows.
-func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from, to time.Time, limit int) ([]map[string]interface{}, error) {
+func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from, to time.Time, limit int) ([]map[string]any, error) {
 	symbol = normalizeSymbol(symbol)
 	if symbol == "" {
 		return nil, broker.ErrInvalidSymbol
@@ -83,8 +83,8 @@ func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from
 		limit = 500
 	}
 	fromDate, toDate := chartRequestDates(gubun, from, to, limit)
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockChart, TRStockChart, map[string]interface{}{
-		"t8410InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockChart, TRStockChart, map[string]any{
+		"t8410InBlock": map[string]any{
 			"shcode":   symbol,
 			"gubun":    gubun,
 			"qrycnt":   limit,
@@ -110,13 +110,13 @@ func (c *Client) InquireChart(ctx context.Context, symbol, interval string, from
 }
 
 // InquireOverseasPrice returns raw g3101 response fields for an overseas stock.
-func (c *Client) InquireOverseasPrice(ctx context.Context, symbol, exchange string) (map[string]interface{}, error) {
+func (c *Client) InquireOverseasPrice(ctx context.Context, symbol, exchange string) (map[string]any, error) {
 	symbol, exchange, keySymbol, err := normalizeOverseasRequestSymbol(symbol, exchange)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockQuote, map[string]interface{}{
-		"g3101InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockQuote, map[string]any{
+		"g3101InBlock": map[string]any{
 			"delaygb":   "R",
 			"keysymbol": keySymbol,
 			"exchcd":    exchange,
@@ -138,13 +138,13 @@ func (c *Client) InquireOverseasPrice(ctx context.Context, symbol, exchange stri
 }
 
 // InquireOverseasInstrument returns raw g3104 response fields for an overseas stock.
-func (c *Client) InquireOverseasInstrument(ctx context.Context, symbol, exchange string) (map[string]interface{}, error) {
+func (c *Client) InquireOverseasInstrument(ctx context.Context, symbol, exchange string) (map[string]any, error) {
 	symbol, exchange, keySymbol, err := normalizeOverseasRequestSymbol(symbol, exchange)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockInstrument, map[string]interface{}{
-		"g3104InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockInstrument, map[string]any{
+		"g3104InBlock": map[string]any{
 			"delaygb":   "R",
 			"keysymbol": keySymbol,
 			"exchcd":    exchange,
@@ -162,7 +162,7 @@ func (c *Client) InquireOverseasInstrument(ctx context.Context, symbol, exchange
 }
 
 // InquireOverseasChart fetches g3204 day/week/month/year chart rows.
-func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, interval string, from, to time.Time, limit int) ([]map[string]interface{}, error) {
+func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, interval string, from, to time.Time, limit int) ([]map[string]any, error) {
 	symbol, exchange, keySymbol, err := normalizeOverseasRequestSymbol(symbol, exchange)
 	if err != nil {
 		return nil, err
@@ -187,8 +187,8 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 	if !from.IsZero() {
 		fromDate = from.Format("20060102")
 	}
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockChart, TROverseasStockChart, map[string]interface{}{
-		"g3204InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockChart, TROverseasStockChart, map[string]any{
+		"g3204InBlock": map[string]any{
 			"delaygb":   "R",
 			"keysymbol": keySymbol,
 			"exchcd":    exchange,
@@ -218,9 +218,9 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 }
 
 // InquireBalance fetches t0424 account summary and position rows.
-func (c *Client) InquireBalance(ctx context.Context) (map[string]interface{}, []map[string]interface{}, error) {
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockAccount, TRStockBalance, map[string]interface{}{
-		"t0424InBlock": map[string]interface{}{
+func (c *Client) InquireBalance(ctx context.Context) (map[string]any, []map[string]any, error) {
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockAccount, TRStockBalance, map[string]any{
+		"t0424InBlock": map[string]any{
 			"prcgb":       "1",
 			"chegb":       "2",
 			"dangb":       "0",
@@ -241,8 +241,8 @@ func (c *Client) ListStockMaster(ctx context.Context, gubun string) ([]StockMast
 	if gubun == "" {
 		gubun = "0"
 	}
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockMisc, TRStockMaster, map[string]interface{}{
-		"t8436InBlock": map[string]interface{}{
+	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockMisc, TRStockMaster, map[string]any{
+		"t8436InBlock": map[string]any{
 			"gubun": gubun,
 		},
 	})
@@ -287,8 +287,8 @@ func (c *Client) ListOverseasStockMaster(ctx context.Context, nation, exchangeGr
 	out := make([]OverseasStockMaster, 0)
 	cts := ""
 	for {
-		resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockMaster, map[string]interface{}{
-			"g3190InBlock": map[string]interface{}{
+		resp, err := c.CallEndpoint(ctx, httpMethodPost, PathOverseasStockMarket, TROverseasStockMaster, map[string]any{
+			"g3190InBlock": map[string]any{
 				"delaygb":   "R",
 				"natcode":   nation,
 				"exgubun":   exchangeGroup,
@@ -406,10 +406,7 @@ func chartRequestDates(gubun string, from, to time.Time, limit int) (string, str
 }
 
 func chartEndDateFromStart(gubun string, from time.Time, limit int) string {
-	steps := limit - 1
-	if steps < 0 {
-		steps = 0
-	}
+	steps := max(limit-1, 0)
 	switch gubun {
 	case "2":
 		return addWeekdays(from, steps).Format("20060102")
@@ -503,36 +500,36 @@ func padOverseasRealtimeKey(key string) string {
 	return key + strings.Repeat(" ", 18-len(key))
 }
 
-func mapValue(m map[string]interface{}, key string) (map[string]interface{}, bool) {
+func mapValue(m map[string]any, key string) (map[string]any, bool) {
 	v, ok := m[key]
 	if !ok {
 		return nil, false
 	}
 	switch t := v.(type) {
-	case map[string]interface{}:
+	case map[string]any:
 		return t, true
 	default:
 		return nil, false
 	}
 }
 
-func sliceValue(m map[string]interface{}, key string) []map[string]interface{} {
+func sliceValue(m map[string]any, key string) []map[string]any {
 	rows, _ := sliceValueOK(m, key)
 	return rows
 }
 
-func sliceValueOK(m map[string]interface{}, key string) ([]map[string]interface{}, bool) {
+func sliceValueOK(m map[string]any, key string) ([]map[string]any, bool) {
 	v, ok := m[key]
 	if !ok {
 		return nil, false
 	}
 	switch t := v.(type) {
-	case []map[string]interface{}:
+	case []map[string]any:
 		return t, true
-	case []interface{}:
-		out := make([]map[string]interface{}, 0, len(t))
+	case []any:
+		out := make([]map[string]any, 0, len(t))
 		for _, item := range t {
-			if row, ok := item.(map[string]interface{}); ok {
+			if row, ok := item.(map[string]any); ok {
 				out = append(out, row)
 			}
 		}
@@ -542,11 +539,11 @@ func sliceValueOK(m map[string]interface{}, key string) ([]map[string]interface{
 	}
 }
 
-func anyString(v interface{}) string {
+func anyString(v any) string {
 	return strings.TrimSpace(asString(v))
 }
 
-func anyFloat(v interface{}) float64 {
+func anyFloat(v any) float64 {
 	switch t := v.(type) {
 	case float64:
 		return t

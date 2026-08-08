@@ -15,7 +15,7 @@ import (
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 )
 
-type endpointDispatchFunc func(ctx context.Context, request interface{}) (interface{}, error)
+type endpointDispatchFunc func(ctx context.Context, request any) (any, error)
 
 type endpointRouteKey struct {
 	path  string
@@ -366,7 +366,7 @@ func (d *endpointDispatcher) dispatchDocumentedEndpoint(
 	apiID string,
 	spec kiwoomspecs.KiwoomEndpointSpec,
 ) endpointDispatchFunc {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(ctx context.Context, request any) (any, error) {
 		payload, err := requestPayloadMap(request)
 		if err != nil {
 			return nil, fmt.Errorf("%w: %v", broker.ErrInvalidOrderRequest, err)
@@ -392,7 +392,7 @@ func (d *endpointDispatcher) dispatchDocumentedEndpoint(
 	}
 }
 
-func applyDocumentedDefaults(apiID string, payload map[string]interface{}) {
+func applyDocumentedDefaults(apiID string, payload map[string]any) {
 	switch strings.ToLower(strings.TrimSpace(apiID)) {
 	case "ka50079", "ka50080":
 		if payloadFieldEmpty(payload, "tic_scope") {
@@ -401,7 +401,7 @@ func applyDocumentedDefaults(apiID string, payload map[string]interface{}) {
 	}
 }
 
-func payloadFieldEmpty(payload map[string]interface{}, key string) bool {
+func payloadFieldEmpty(payload map[string]any, key string) bool {
 	if payload == nil {
 		return true
 	}
@@ -418,8 +418,8 @@ func (a *Adapter) CallEndpoint(
 	method string,
 	path string,
 	apiID string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	dispatcher := a.dispatcher
 	if dispatcher == nil {
 		dispatcher = newEndpointDispatcher(a)
@@ -432,8 +432,8 @@ func (d *endpointDispatcher) callEndpoint(
 	method string,
 	path string,
 	apiID string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	m := strings.ToUpper(strings.TrimSpace(method))
 
 	normalizedPath := normalizeEndpointPath(path)
@@ -470,9 +470,9 @@ func normalizeEndpointAPIID(apiID string) string {
 	return strings.ToLower(strings.TrimSpace(apiID))
 }
 
-func normalizeEndpointRequest(path, apiID string, request interface{}) (interface{}, error) {
+func normalizeEndpointRequest(path, apiID string, request any) (any, error) {
 	switch request.(type) {
-	case nil, map[string]interface{}:
+	case nil, map[string]any:
 		payload, err := requestPayloadMap(request)
 		if err != nil {
 			return nil, err
@@ -483,11 +483,11 @@ func normalizeEndpointRequest(path, apiID string, request interface{}) (interfac
 	}
 }
 
-func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
+func requestPayloadMap(request any) (map[string]any, error) {
 	switch t := request.(type) {
 	case nil:
-		return map[string]interface{}{}, nil
-	case map[string]interface{}:
+		return map[string]any{}, nil
+	case map[string]any:
 		return normalizePayloadMap(t), nil
 	default:
 		data, err := json.Marshal(t)
@@ -495,9 +495,9 @@ func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
 			return nil, fmt.Errorf("marshal request payload: %w", err)
 		}
 		if len(bytes.TrimSpace(data)) == 0 || bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
-			return map[string]interface{}{}, nil
+			return map[string]any{}, nil
 		}
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if err := json.Unmarshal(data, &out); err != nil {
 			return nil, fmt.Errorf("decode request payload: %w", err)
 		}
@@ -505,7 +505,7 @@ func requestPayloadMap(request interface{}) (map[string]interface{}, error) {
 	}
 }
 
-func buildDocumentedEndpointRequest(path, apiID string, payload map[string]interface{}) (interface{}, error) {
+func buildDocumentedEndpointRequest(path, apiID string, payload map[string]any) (any, error) {
 	req := kiwoomspecs.NewDocumentedEndpointRequest(strings.TrimSpace(path), strings.TrimSpace(apiID))
 	if req == nil {
 		return clonePayloadMap(payload), nil
@@ -524,18 +524,18 @@ func buildDocumentedEndpointRequest(path, apiID string, payload map[string]inter
 	return req, nil
 }
 
-func clonePayloadMap(payload map[string]interface{}) map[string]interface{} {
+func clonePayloadMap(payload map[string]any) map[string]any {
 	if payload == nil {
-		return map[string]interface{}{}
+		return map[string]any{}
 	}
 	return maps.Clone(payload)
 }
 
-func normalizePayloadMap(in map[string]interface{}) map[string]interface{} {
+func normalizePayloadMap(in map[string]any) map[string]any {
 	if len(in) == 0 {
-		return map[string]interface{}{}
+		return map[string]any{}
 	}
-	out := make(map[string]interface{}, len(in))
+	out := make(map[string]any, len(in))
 	for k, v := range in {
 		key := strings.ToLower(strings.TrimSpace(k))
 		if key == "" {
@@ -558,7 +558,7 @@ func newRequestDispatchPrepared[TReq any, TResp any](
 	prepare func(*TReq) error,
 	call func(client *kiwoom.Client, ctx context.Context, req TReq) (TResp, error),
 ) endpointDispatchFunc {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(ctx context.Context, request any) (any, error) {
 		return dispatchWithRequestPrepared(d, ctx, request, prepare, call)
 	}
 }
@@ -566,10 +566,10 @@ func newRequestDispatchPrepared[TReq any, TResp any](
 func dispatchWithRequestPrepared[TReq any, TResp any](
 	d *endpointDispatcher,
 	ctx context.Context,
-	request interface{},
+	request any,
 	prepare func(*TReq) error,
 	call func(client *kiwoom.Client, ctx context.Context, req TReq) (TResp, error),
-) (interface{}, error) {
+) (any, error) {
 	req, err := decodeDispatchRequestAs[TReq](request)
 	if err != nil {
 		return nil, err
@@ -592,7 +592,7 @@ func dispatchWithRequestPrepared[TReq any, TResp any](
 	return resp, nil
 }
 
-func decodeDispatchRequestAs[T any](request interface{}) (T, error) {
+func decodeDispatchRequestAs[T any](request any) (T, error) {
 	var req T
 	if err := decodeDispatchRequest(request, &req); err != nil {
 		var zero T
@@ -601,7 +601,7 @@ func decodeDispatchRequestAs[T any](request interface{}) (T, error) {
 	return req, nil
 }
 
-func decodeDispatchRequest(request interface{}, out interface{}) error {
+func decodeDispatchRequest(request any, out any) error {
 	if out == nil {
 		return fmt.Errorf("%w: request target is nil", broker.ErrInvalidOrderRequest)
 	}

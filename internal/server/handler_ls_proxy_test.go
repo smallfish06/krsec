@@ -17,8 +17,8 @@ type proxyLSBroker struct {
 	gotMethod string
 	gotPath   string
 	gotTRCD   string
-	gotReq    interface{}
-	resp      interface{}
+	gotReq    any
+	resp      any
 	err       error
 }
 
@@ -27,8 +27,8 @@ func (b *proxyLSBroker) CallEndpoint(
 	method string,
 	path string,
 	trCD string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	b.called = true
 	b.gotMethod = method
 	b.gotPath = path
@@ -42,7 +42,7 @@ func TestHandleLSProxy_DefaultRouteAndFirstLSAccount(t *testing.T) {
 
 	lsBroker := &proxyLSBroker{
 		proxyStubBroker: proxyStubBroker{name: "LS"},
-		resp:            map[string]interface{}{"rsp_cd": "00000", "rsp_msg": "ok"},
+		resp:            map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 
@@ -83,11 +83,11 @@ func TestHandleLSProxy_DefaultRouteAndFirstLSAccount(t *testing.T) {
 	if lsBroker.gotTRCD != "t1102" {
 		t.Fatalf("tr_cd = %q, want t1102", lsBroker.gotTRCD)
 	}
-	reqMap, ok := lsBroker.gotReq.(map[string]interface{})
+	reqMap, ok := lsBroker.gotReq.(map[string]any)
 	if !ok {
-		t.Fatalf("request type = %T, want map[string]interface{}", lsBroker.gotReq)
+		t.Fatalf("request type = %T, want map[string]any", lsBroker.gotReq)
 	}
-	if _, ok := reqMap["t1102InBlock"].(map[string]interface{}); !ok {
+	if _, ok := reqMap["t1102InBlock"].(map[string]any); !ok {
 		t.Fatalf("request missing t1102InBlock: %#v", reqMap)
 	}
 }
@@ -136,7 +136,7 @@ func TestHandleLSProxy_MethodNormalizedToUpper(t *testing.T) {
 
 	lsBroker := &proxyLSBroker{
 		proxyStubBroker: proxyStubBroker{name: "LS"},
-		resp:            map[string]interface{}{"rsp_cd": "00000", "rsp_msg": "ok"},
+		resp:            map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"ls-acc": lsBroker},

@@ -25,10 +25,10 @@ const (
 
 type openAPISnapshot struct {
 	OpenAPI    string                          `json:"openapi"`
-	Info       map[string]interface{}          `json:"info"`
-	Servers    []map[string]interface{}        `json:"servers,omitempty"`
+	Info       map[string]any                  `json:"info"`
+	Servers    []map[string]any                `json:"servers,omitempty"`
 	Paths      map[string]map[string]operation `json:"paths"`
-	Components map[string]interface{}          `json:"components,omitempty"`
+	Components map[string]any                  `json:"components,omitempty"`
 }
 
 type operation struct {
@@ -326,16 +326,16 @@ func collectEndpointSpecs(snap *openAPISnapshot) []endpointSpec {
 
 func extractRateLimitGroup(description string) string {
 	marker := "Rate Limits Group**: `"
-	idx := strings.Index(description, marker)
-	if idx < 0 {
+	_, after, ok := strings.Cut(description, marker)
+	if !ok {
 		return ""
 	}
-	rest := description[idx+len(marker):]
-	end := strings.Index(rest, "`")
-	if end < 0 {
+	rest := after
+	before, _, ok := strings.Cut(rest, "`")
+	if !ok {
 		return ""
 	}
-	return strings.TrimSpace(rest[:end])
+	return strings.TrimSpace(before)
 }
 
 func operationRequiresAccount(op operation) bool {

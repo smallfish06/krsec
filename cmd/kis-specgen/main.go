@@ -260,15 +260,13 @@ func fetchSnapshot(client *http.Client, portalURL, detailURL string, workers int
 	resCh := make(chan result, len(paths))
 
 	var wg sync.WaitGroup
-	for i := 0; i < workers; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range workers {
+		wg.Go(func() {
 			for p := range pathCh {
 				ep, err := fetchEndpointDetail(ctx, client, detailURL, p)
 				resCh <- result{endpoint: ep, err: err}
 			}
-		}()
+		})
 	}
 
 	for _, p := range paths {
@@ -749,7 +747,7 @@ func isSliceContainer(p snapshotProp, code string) bool {
 func goTypeForProp(p snapshotProp) string {
 	switch strings.ToUpper(strings.TrimSpace(p.Type)) {
 	case "A0005":
-		return "[]map[string]interface{}"
+		return "[]map[string]any"
 	default:
 		// KIS response values are often encoded as strings regardless of display type.
 		return "string"

@@ -101,7 +101,7 @@ func normalizeOrderSymbol(symbol string, sandbox bool) string {
 	return symbol
 }
 
-func normalizeOutputMarket(input string, row map[string]interface{}) string {
+func normalizeOutputMarket(input string, row map[string]any) string {
 	if jang := strings.ToUpper(strings.TrimSpace(anyString(row["janginfo"]))); jang != "" {
 		return jang
 	}
@@ -115,7 +115,7 @@ func normalizeOutputMarket(input string, row map[string]interface{}) string {
 	}
 }
 
-func normalizeOverseasOutputMarket(input string, row map[string]interface{}) string {
+func normalizeOverseasOutputMarket(input string, row map[string]any) string {
 	switch strings.TrimSpace(anyString(row["exchcd"])) {
 	case "82":
 		return "US-NASDAQ"
@@ -136,7 +136,7 @@ func normalizeOverseasOutputMarket(input string, row map[string]interface{}) str
 	}
 }
 
-func normalizeOverseasExchangeName(input string, row map[string]interface{}) string {
+func normalizeOverseasExchangeName(input string, row map[string]any) string {
 	if name := strings.TrimSpace(anyString(row["exchange_name"])); name != "" {
 		return name
 	}
@@ -189,16 +189,16 @@ func marketFromMasterCode(code string) string {
 	}
 }
 
-func mapValue(m map[string]interface{}, key string) (map[string]interface{}, bool) {
+func mapValue(m map[string]any, key string) (map[string]any, bool) {
 	v, ok := m[key]
 	if !ok {
 		return nil, false
 	}
-	row, ok := v.(map[string]interface{})
+	row, ok := v.(map[string]any)
 	return row, ok
 }
 
-func anyString(v interface{}) string {
+func anyString(v any) string {
 	switch t := v.(type) {
 	case nil:
 		return ""
@@ -211,7 +211,7 @@ func anyString(v interface{}) string {
 	}
 }
 
-func anyFloat(v interface{}) float64 {
+func anyFloat(v any) float64 {
 	switch t := v.(type) {
 	case float64:
 		return t
@@ -233,7 +233,7 @@ func anyFloat(v interface{}) float64 {
 	}
 }
 
-func anyInt64(v interface{}) int64 {
+func anyInt64(v any) int64 {
 	switch t := v.(type) {
 	case int64:
 		return t

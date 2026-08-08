@@ -18,8 +18,8 @@ const (
 
 // RealtimeMessage is one decoded LS WebSocket message.
 type RealtimeMessage struct {
-	Header map[string]interface{} `json:"header,omitempty"`
-	Body   map[string]interface{} `json:"body,omitempty"`
+	Header map[string]any `json:"header,omitempty"`
+	Body   map[string]any `json:"body,omitempty"`
 }
 
 // RealtimeConn is an active LS realtime WebSocket connection.
@@ -88,12 +88,12 @@ func (r *RealtimeConn) send(ctx context.Context, trType, trCD, trKey string) err
 	if strings.TrimSpace(key) == "" {
 		key = ""
 	}
-	payload := map[string]interface{}{
-		"header": map[string]interface{}{
+	payload := map[string]any{
+		"header": map[string]any{
 			"token":   r.token,
 			"tr_type": trType,
 		},
-		"body": map[string]interface{}{
+		"body": map[string]any{
 			"tr_cd":  trCD,
 			"tr_key": key,
 		},

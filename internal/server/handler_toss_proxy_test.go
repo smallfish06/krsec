@@ -16,9 +16,9 @@ type proxyTossBroker struct {
 	called    bool
 	gotMethod string
 	gotPath   string
-	gotQuery  map[string]interface{}
-	gotBody   interface{}
-	resp      interface{}
+	gotQuery  map[string]any
+	gotBody   any
+	resp      any
 	err       error
 }
 
@@ -26,9 +26,9 @@ func (b *proxyTossBroker) CallEndpoint(
 	_ context.Context,
 	method string,
 	path string,
-	query map[string]interface{},
-	body interface{},
-) (interface{}, error) {
+	query map[string]any,
+	body any,
+) (any, error) {
 	b.called = true
 	b.gotMethod = method
 	b.gotPath = path
@@ -42,7 +42,7 @@ func TestHandleTossProxy_DefaultMethodAndFirstTossAccount(t *testing.T) {
 
 	tossBroker := &proxyTossBroker{
 		proxyStubBroker: proxyStubBroker{name: "TOSS"},
-		resp:            map[string]interface{}{"result": []interface{}{}},
+		resp:            map[string]any{"result": []any{}},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 	s := newOrderTestServer(
@@ -102,7 +102,7 @@ func TestHandleTossProxy_TemplatePathAndAccountScopedPost(t *testing.T) {
 
 	tossBroker := &proxyTossBroker{
 		proxyStubBroker: proxyStubBroker{name: "TOSS"},
-		resp:            map[string]interface{}{"result": map[string]interface{}{"orderId": "new-id"}},
+		resp:            map[string]any{"result": map[string]any{"orderId": "new-id"}},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"toss-acc": tossBroker},
@@ -122,7 +122,7 @@ func TestHandleTossProxy_TemplatePathAndAccountScopedPost(t *testing.T) {
 	if tossBroker.gotPath != "/api/v1/orders/order-1/modify" {
 		t.Fatalf("path = %q", tossBroker.gotPath)
 	}
-	bodyMap, ok := tossBroker.gotBody.(map[string]interface{})
+	bodyMap, ok := tossBroker.gotBody.(map[string]any)
 	if !ok || bodyMap["price"] != "71000" {
 		t.Fatalf("body = %#v", tossBroker.gotBody)
 	}

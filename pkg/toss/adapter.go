@@ -10,7 +10,7 @@ import (
 // Adapter is the public Toss adapter contract.
 type Adapter interface {
 	adapter.Adapter
-	CallEndpoint(ctx context.Context, method, path string, query map[string]interface{}, body interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path string, query map[string]any, body any) (any, error)
 }
 
 // NewAdapterWithOptions creates a Toss adapter with injectable options.

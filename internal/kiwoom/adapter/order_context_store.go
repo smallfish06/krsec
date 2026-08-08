@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"time"
@@ -31,9 +32,7 @@ func (a *Adapter) persistOrderContexts() error {
 
 	a.mu.RLock()
 	snapshot := make(map[string]orderContext, len(a.orders))
-	for orderID, meta := range a.orders {
-		snapshot[orderID] = meta
-	}
+	maps.Copy(snapshot, a.orders)
 	a.mu.RUnlock()
 	return orderctxstore.Persist(path, snapshot)
 }

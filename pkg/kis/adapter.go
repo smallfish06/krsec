@@ -10,7 +10,7 @@ import (
 // Adapter is the public KIS adapter contract.
 type Adapter interface {
 	adapter.Adapter
-	CallEndpoint(ctx context.Context, method, path, trID string, request interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path, trID string, request any) (any, error)
 	BootstrapSymbols(ctx context.Context) (int, error)
 	ReloadSymbols(ctx context.Context) (int, error)
 }

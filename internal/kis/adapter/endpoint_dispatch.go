@@ -12,7 +12,7 @@ import (
 	kisspecs "github.com/smallfish06/krsec/pkg/kis/specs"
 )
 
-type endpointDispatchFunc func(ctx context.Context, method string, trID string, fields map[string]string) (interface{}, error)
+type endpointDispatchFunc func(ctx context.Context, method string, trID string, fields map[string]string) (any, error)
 
 type endpointDispatcher struct {
 	adapter *Adapter
@@ -67,7 +67,7 @@ func (d *endpointDispatcher) registerDocumentedKISRoutes() {
 }
 
 func (d *endpointDispatcher) dispatchDocumentedKISEndpoint(path string, spec kisspecs.KISEndpointSpec) endpointDispatchFunc {
-	return func(ctx context.Context, method string, trID string, fields map[string]string) (interface{}, error) {
+	return func(ctx context.Context, method string, trID string, fields map[string]string) (any, error) {
 		for _, req := range spec.RequiredFields {
 			k := strings.ToUpper(strings.TrimSpace(req))
 			if k == "" {
@@ -103,8 +103,8 @@ func (d *endpointDispatcher) callEndpoint(
 	method string,
 	path string,
 	trID string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	m := strings.ToUpper(strings.TrimSpace(method))
 
 	normalizedPath := normalizeEndpointPath(path)
@@ -134,8 +134,8 @@ func (a *Adapter) CallEndpoint(
 	method string,
 	path string,
 	trID string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	dispatcher := a.dispatcher
 	if dispatcher == nil {
 		dispatcher = newEndpointDispatcher(a)

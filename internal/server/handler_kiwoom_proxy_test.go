@@ -17,8 +17,8 @@ type proxyKiwoomBroker struct {
 	gotMethod string
 	gotPath   string
 	gotAPIID  string
-	gotReq    interface{}
-	resp      interface{}
+	gotReq    any
+	resp      any
 	err       error
 }
 
@@ -27,8 +27,8 @@ func (b *proxyKiwoomBroker) CallEndpoint(
 	method string,
 	path string,
 	apiID string,
-	request interface{},
-) (interface{}, error) {
+	request any,
+) (any, error) {
 	b.called = true
 	b.gotMethod = method
 	b.gotPath = path
@@ -42,7 +42,7 @@ func TestHandleKiwoomProxy_DefaultRouteAndFirstKiwoomAccount(t *testing.T) {
 
 	kiwoomBroker := &proxyKiwoomBroker{
 		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]interface{}{"return_code": 0, "return_msg": "ok"},
+		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 
@@ -83,9 +83,9 @@ func TestHandleKiwoomProxy_DefaultRouteAndFirstKiwoomAccount(t *testing.T) {
 	if kiwoomBroker.gotAPIID != "ka10001" {
 		t.Fatalf("api_id = %q, want ka10001", kiwoomBroker.gotAPIID)
 	}
-	reqMap, ok := kiwoomBroker.gotReq.(map[string]interface{})
+	reqMap, ok := kiwoomBroker.gotReq.(map[string]any)
 	if !ok {
-		t.Fatalf("request type = %T, want map[string]interface{}", kiwoomBroker.gotReq)
+		t.Fatalf("request type = %T, want map[string]any", kiwoomBroker.gotReq)
 	}
 	if got, ok := reqMap["stk_cd"].(string); !ok || got != "005930" {
 		t.Fatalf("params stk_cd = %#v, want 005930", reqMap["stk_cd"])
@@ -151,7 +151,7 @@ func TestHandleKiwoomProxy_StaticRoute(t *testing.T) {
 
 	kiwoomBroker := &proxyKiwoomBroker{
 		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]interface{}{"return_code": 0, "return_msg": "ok"},
+		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
@@ -177,9 +177,9 @@ func TestHandleKiwoomProxy_StaticRoute(t *testing.T) {
 	if kiwoomBroker.gotAPIID != "ka10001" {
 		t.Fatalf("api_id = %q, want ka10001", kiwoomBroker.gotAPIID)
 	}
-	reqMap, ok := kiwoomBroker.gotReq.(map[string]interface{})
+	reqMap, ok := kiwoomBroker.gotReq.(map[string]any)
 	if !ok {
-		t.Fatalf("request type = %T, want map[string]interface{}", kiwoomBroker.gotReq)
+		t.Fatalf("request type = %T, want map[string]any", kiwoomBroker.gotReq)
 	}
 	if got, ok := reqMap["stk_cd"].(string); !ok || got != "005930" {
 		t.Fatalf("request stk_cd = %#v, want 005930", reqMap["stk_cd"])
@@ -191,7 +191,7 @@ func TestHandleKiwoomProxy_MethodNormalizedToUpper(t *testing.T) {
 
 	kiwoomBroker := &proxyKiwoomBroker{
 		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]interface{}{"return_code": 0, "return_msg": "ok"},
+		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},

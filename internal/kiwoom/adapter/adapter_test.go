@@ -48,7 +48,7 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "kiwoom-token",
@@ -58,7 +58,7 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 		case "/api/dostk/stkinfo":
 			switch r.Header.Get("api-id") {
 			case "ka10001":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"stk_cd":      "005930",
 					"stk_nm":      "삼성전자",
 					"cur_prc":     "70000",
@@ -75,7 +75,7 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 					"return_msg":  "ok",
 				})
 			case "ka10100":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"code":             "005930",
 					"name":             "삼성전자",
 					"listCount":        "5969782550",
@@ -92,9 +92,9 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 				http.NotFound(w, r)
 			}
 		case "/api/dostk/chart":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"stk_cd": "005930",
-				"stk_dt_pole_chart_qry": []map[string]interface{}{
+				"stk_dt_pole_chart_qry": []map[string]any{
 					{"dt": "20260227", "open_pric": "70000", "high_pric": "71000", "low_pric": "69500", "cur_prc": "70500", "trde_qty": "1000"},
 					{"dt": "20260226", "open_pric": "69000", "high_pric": "70000", "low_pric": "68500", "cur_prc": "69800", "trde_qty": "2000"},
 				},
@@ -104,7 +104,7 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 		case "/api/dostk/acnt":
 			switch r.Header.Get("api-id") {
 			case "kt00005":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"entr":               "1000000",
 					"entr_d1":            "950000",
 					"entr_d2":            "900000",
@@ -121,12 +121,12 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 					"return_msg":         "ok",
 				})
 			case "kt00018":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"tot_pur_amt":  "3000000",
 					"tot_evlt_amt": "3400000",
 					"tot_evlt_pl":  "400000",
 					"tot_prft_rt":  "13.33",
-					"acnt_evlt_remn_indv_tot": []map[string]interface{}{
+					"acnt_evlt_remn_indv_tot": []map[string]any{
 						{
 							"stk_cd":        "A005930",
 							"stk_nm":        "삼성전자",
@@ -148,16 +148,16 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 					"return_msg":  "ok",
 				})
 			case "ka10075":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
-					"oso": []map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
+					"oso": []map[string]any{
 						{"ord_no": orderID, "stk_cd": "005930", "ord_stt": "접수", "ord_qty": "5", "oso_qty": "5", "ord_pric": "70000", "io_tp_nm": "+매수", "stex_tp": "1", "stex_tp_txt": "KRX"},
 					},
 					"return_code": 0,
 					"return_msg":  "ok",
 				})
 			case "ka10076":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
-					"cntr": []map[string]interface{}{
+				_ = json.NewEncoder(w).Encode(map[string]any{
+					"cntr": []map[string]any{
 						{"ord_no": fillOrderID, "stk_cd": "005930", "io_tp_nm": "+매수", "cntr_pric": "70100", "cntr_qty": "2", "ord_tm": "101010", "ord_stt": "체결", "stex_tp": "1", "stex_tp_txt": "KRX"},
 						{"ord_no": fillOrderID, "stk_cd": "005930", "io_tp_nm": "+매수", "cntr_pric": "70200", "cntr_qty": "1", "ord_tm": "101110", "ord_stt": "체결", "stex_tp": "1", "stex_tp_txt": "KRX"},
 					},
@@ -170,9 +170,9 @@ func TestAdapter_IntegratedCoreFlows(t *testing.T) {
 		case "/api/dostk/ordr":
 			switch r.Header.Get("api-id") {
 			case "kt10000":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{"ord_no": orderID, "return_code": 0, "return_msg": "ok"})
+				_ = json.NewEncoder(w).Encode(map[string]any{"ord_no": orderID, "return_code": 0, "return_msg": "ok"})
 			case "kt10003":
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{"ord_no": "0001002", "return_code": 0, "return_msg": "ok"})
+				_ = json.NewEncoder(w).Encode(map[string]any{"ord_no": "0001002", "return_code": 0, "return_msg": "ok"})
 			default:
 				http.NotFound(w, r)
 			}
@@ -274,7 +274,7 @@ func TestAdapter_GetOrderFills_OrderNotFound(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "kiwoom-token",
@@ -283,8 +283,8 @@ func TestAdapter_GetOrderFills_OrderNotFound(t *testing.T) {
 			})
 		case "/api/dostk/acnt":
 			if r.Header.Get("api-id") == "ka10076" {
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
-					"cntr":        []map[string]interface{}{},
+				_ = json.NewEncoder(w).Encode(map[string]any{
+					"cntr":        []map[string]any{},
 					"return_code": 0,
 					"return_msg":  "ok",
 				})

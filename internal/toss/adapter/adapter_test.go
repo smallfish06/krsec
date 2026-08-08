@@ -65,15 +65,15 @@ func TestGetQuote_MapsPriceAndDailyCandle(t *testing.T) {
 		case toss.PathOAuthToken:
 			_ = json.NewEncoder(w).Encode(toss.TokenResponse{AccessToken: "token", TokenType: "Bearer", ExpiresIn: 3600})
 		case toss.PathPrices:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
-				"result": []map[string]interface{}{{
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": []map[string]any{{
 					"symbol": "005930", "timestamp": "2026-03-25T09:30:00+09:00", "lastPrice": "72000", "currency": "KRW",
 				}},
 			})
 		case toss.PathCandles:
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
-				"result": map[string]interface{}{
-					"candles": []map[string]interface{}{{
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": map[string]any{
+					"candles": []map[string]any{{
 						"timestamp": "2026-03-25T09:00:00+09:00",
 						"openPrice": "71600", "highPrice": "72300", "lowPrice": "71500", "closePrice": "71800", "volume": "3521000", "currency": "KRW",
 					}},
@@ -112,23 +112,23 @@ func TestGetPositions_PreservesFractionalQuantity(t *testing.T) {
 			if got := r.Header.Get("X-Tossinvest-Account"); got != "7" {
 				t.Fatalf("account header = %q, want 7", got)
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
-				"result": map[string]interface{}{
-					"totalPurchaseAmount": map[string]interface{}{"krw": "0", "usd": "1553"},
-					"marketValue": map[string]interface{}{
-						"amount":          map[string]interface{}{"krw": "0", "usd": "1785"},
-						"amountAfterCost": map[string]interface{}{"krw": "0", "usd": "1771.43"},
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": map[string]any{
+					"totalPurchaseAmount": map[string]any{"krw": "0", "usd": "1553"},
+					"marketValue": map[string]any{
+						"amount":          map[string]any{"krw": "0", "usd": "1785"},
+						"amountAfterCost": map[string]any{"krw": "0", "usd": "1771.43"},
 					},
-					"profitLoss": map[string]interface{}{
-						"amount": map[string]interface{}{"krw": "0", "usd": "232"}, "amountAfterCost": map[string]interface{}{"krw": "0", "usd": "218.43"}, "rate": "0.1494", "rateAfterCost": "0.1406",
+					"profitLoss": map[string]any{
+						"amount": map[string]any{"krw": "0", "usd": "232"}, "amountAfterCost": map[string]any{"krw": "0", "usd": "218.43"}, "rate": "0.1494", "rateAfterCost": "0.1406",
 					},
-					"dailyProfitLoss": map[string]interface{}{"amount": map[string]interface{}{"krw": "0", "usd": "25"}, "rate": "0.0142"},
-					"items": []map[string]interface{}{{
+					"dailyProfitLoss": map[string]any{"amount": map[string]any{"krw": "0", "usd": "25"}, "rate": "0.0142"},
+					"items": []map[string]any{{
 						"symbol": "AAPL", "name": "Apple Inc.", "marketCountry": "US", "currency": "USD", "quantity": "5.5", "lastPrice": "178.5", "averagePurchasePrice": "155.3",
-						"marketValue":     map[string]interface{}{"purchaseAmount": "854.15", "amount": "981.75", "amountAfterCost": "979.5"},
-						"profitLoss":      map[string]interface{}{"amount": "127.6", "amountAfterCost": "125.35", "rate": "0.1494", "rateAfterCost": "0.1406"},
-						"dailyProfitLoss": map[string]interface{}{"amount": "25", "rate": "0.0142"},
-						"cost":            map[string]interface{}{"commission": "1.5", "tax": nil},
+						"marketValue":     map[string]any{"purchaseAmount": "854.15", "amount": "981.75", "amountAfterCost": "979.5"},
+						"profitLoss":      map[string]any{"amount": "127.6", "amountAfterCost": "125.35", "rate": "0.1494", "rateAfterCost": "0.1406"},
+						"dailyProfitLoss": map[string]any{"amount": "25", "rate": "0.0142"},
+						"cost":            map[string]any{"commission": "1.5", "tax": nil},
 					}},
 				},
 			})
@@ -159,7 +159,7 @@ func TestGetPositions_PreservesFractionalQuantity(t *testing.T) {
 func TestPlaceOrder_MapsCommonRequest(t *testing.T) {
 	t.Parallel()
 
-	var orderBody map[string]interface{}
+	var orderBody map[string]any
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case toss.PathOAuthToken:
@@ -174,7 +174,7 @@ func TestPlaceOrder_MapsCommonRequest(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&orderBody); err != nil {
 				t.Fatalf("decode body: %v", err)
 			}
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{"result": map[string]interface{}{"orderId": "ord-1", "clientOrderId": "cid-1"}})
+			_ = json.NewEncoder(w).Encode(map[string]any{"result": map[string]any{"orderId": "ord-1", "clientOrderId": "cid-1"}})
 		default:
 			t.Fatalf("unexpected path: %s", r.URL.Path)
 		}

@@ -2,6 +2,7 @@ package orderctxstore
 
 import (
 	"encoding/json"
+	"maps"
 	"os"
 	"path/filepath"
 	"sort"
@@ -35,9 +36,7 @@ func Load[T any](path string, dst map[string]T, limit int, updatedAt func(T) tim
 		return nil
 	}
 
-	for orderID, meta := range st.Orders {
-		dst[orderID] = meta
-	}
+	maps.Copy(dst, st.Orders)
 	Compact(dst, limit, updatedAt)
 	return nil
 }
@@ -45,9 +44,7 @@ func Load[T any](path string, dst map[string]T, limit int, updatedAt func(T) tim
 // Persist atomically writes order contexts to disk.
 func Persist[T any](path string, src map[string]T) error {
 	snapshot := make(map[string]T, len(src))
-	for orderID, meta := range src {
-		snapshot[orderID] = meta
-	}
+	maps.Copy(snapshot, src)
 
 	st := state[T]{
 		Version:   stateVersion,

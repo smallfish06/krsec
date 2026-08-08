@@ -10,10 +10,10 @@ import (
 
 type errorEnvelope struct {
 	Error struct {
-		RequestID string                 `json:"requestId"`
-		Code      string                 `json:"code"`
-		Message   string                 `json:"message"`
-		Data      map[string]interface{} `json:"data"`
+		RequestID string         `json:"requestId"`
+		Code      string         `json:"code"`
+		Message   string         `json:"message"`
+		Data      map[string]any `json:"data"`
 	} `json:"error"`
 }
 

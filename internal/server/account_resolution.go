@@ -27,8 +27,8 @@ func normalizeBrokerCode(name string) string {
 
 func normalizeAccountIDAlias(accountID string) string {
 	accountID = strings.TrimSpace(accountID)
-	if strings.HasSuffix(accountID, "-01") {
-		return strings.TrimSuffix(accountID, "-01")
+	if before, ok := strings.CutSuffix(accountID, "-01"); ok {
+		return before
 	}
 	return accountID
 }

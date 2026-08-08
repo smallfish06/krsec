@@ -52,9 +52,9 @@ type callOptions struct {
 	Headers map[string]string
 }
 
-func cloneBody(body map[string]interface{}) map[string]interface{} {
+func cloneBody(body map[string]any) map[string]any {
 	if body == nil {
-		return map[string]interface{}{}
+		return map[string]any{}
 	}
 	return maps.Clone(body)
 }
@@ -164,9 +164,9 @@ func documentedEndpointMethod(path, apiID string) (string, error) {
 func (c *Client) CallDocumentedEndpoint(
 	ctx context.Context,
 	apiID, path string,
-	body interface{},
+	body any,
 	allowedCodes ...int,
-) (interface{}, error) {
+) (any, error) {
 	method, err := documentedEndpointMethod(path, apiID)
 	if err != nil {
 		return nil, err
@@ -185,7 +185,7 @@ func (c *Client) CallDocumentedEndpoint(
 	}
 	resp := kiwoomspecs.NewDocumentedEndpointResponse(strings.TrimSpace(path), strings.TrimSpace(apiID))
 	if resp == nil {
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if len(bytes.TrimSpace(bodyBytes)) == 0 {
 			return out, nil
 		}
@@ -199,7 +199,7 @@ func (c *Client) CallDocumentedEndpoint(
 	}
 	if err := json.Unmarshal(bodyBytes, resp); err != nil {
 		// Documented schema can diverge from runtime response shape.
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if err := json.Unmarshal(bodyBytes, &out); err != nil {
 			return nil, fmt.Errorf("decode response: %w", err)
 		}
@@ -212,9 +212,9 @@ func containsCode(codes []int, target int) bool {
 	return slices.Contains(codes, target)
 }
 
-func validateDocumentedRequestBody(body interface{}) error {
+func validateDocumentedRequestBody(body any) error {
 	switch body.(type) {
-	case map[string]interface{}, map[string]string:
+	case map[string]any, map[string]string:
 		return fmt.Errorf("documented endpoint request must use generated request type (map body is not allowed)")
 	default:
 		return nil
@@ -226,8 +226,8 @@ func decodeReturnStatus(bodyBytes []byte) (int, string) {
 		return 0, ""
 	}
 	var payload struct {
-		ReturnCode interface{} `json:"return_code"`
-		ReturnMsg  string      `json:"return_msg"`
+		ReturnCode any    `json:"return_code"`
+		ReturnMsg  string `json:"return_msg"`
 	}
 	if err := json.Unmarshal(bodyBytes, &payload); err != nil {
 		return 0, ""
@@ -235,14 +235,14 @@ func decodeReturnStatus(bodyBytes []byte) (int, string) {
 	return parseReturnCode(payload.ReturnCode), strings.TrimSpace(payload.ReturnMsg)
 }
 
-func responseBodyMap(v interface{}) (map[string]interface{}, error) {
+func responseBodyMap(v any) (map[string]any, error) {
 	switch t := v.(type) {
 	case nil:
-		return map[string]interface{}{}, nil
-	case map[string]interface{}:
+		return map[string]any{}, nil
+	case map[string]any:
 		return cloneBody(t), nil
 	case map[string]string:
-		out := make(map[string]interface{}, len(t))
+		out := make(map[string]any, len(t))
 		for k, val := range t {
 			out[k] = val
 		}
@@ -252,7 +252,7 @@ func responseBodyMap(v interface{}) (map[string]interface{}, error) {
 		if err != nil {
 			return nil, fmt.Errorf("marshal response: %w", err)
 		}
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if len(bytes.TrimSpace(data)) == 0 || bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
 			return out, nil
 		}
@@ -263,7 +263,7 @@ func responseBodyMap(v interface{}) (map[string]interface{}, error) {
 	}
 }
 
-func bindResponseObject(v interface{}, out interface{}) error {
+func bindResponseObject(v any, out any) error {
 	if out == nil {
 		return fmt.Errorf("response target is nil")
 	}
@@ -280,7 +280,7 @@ func bindResponseObject(v interface{}, out interface{}) error {
 	return nil
 }
 
-func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body interface{}, opts callOptions) ([]byte, error) {
+func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body any, opts callOptions) ([]byte, error) {
 	if err := c.apiLimiter.Wait(ctx); err != nil {
 		return nil, err
 	}
@@ -357,7 +357,7 @@ func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body
 	return bodyBytes, nil
 }
 
-func (c *Client) newHTTPRequest(ctx context.Context, method string, requestURL string, body interface{}) (*http.Request, error) {
+func (c *Client) newHTTPRequest(ctx context.Context, method string, requestURL string, body any) (*http.Request, error) {
 	switch method {
 	case http.MethodGet, http.MethodHead, http.MethodDelete:
 		bodyMap, err := bodyToMap(body)
@@ -395,21 +395,21 @@ func (c *Client) newHTTPRequest(ctx context.Context, method string, requestURL s
 	}
 }
 
-func normalizeRequestBody(body interface{}) interface{} {
+func normalizeRequestBody(body any) any {
 	if body == nil {
-		return map[string]interface{}{}
+		return map[string]any{}
 	}
 	return body
 }
 
-func bodyToMap(body interface{}) (map[string]interface{}, error) {
+func bodyToMap(body any) (map[string]any, error) {
 	switch t := body.(type) {
 	case nil:
-		return map[string]interface{}{}, nil
-	case map[string]interface{}:
+		return map[string]any{}, nil
+	case map[string]any:
 		return cloneBody(t), nil
 	case map[string]string:
-		out := make(map[string]interface{}, len(t))
+		out := make(map[string]any, len(t))
 		for k, v := range t {
 			out[k] = v
 		}
@@ -420,9 +420,9 @@ func bodyToMap(body interface{}) (map[string]interface{}, error) {
 			return nil, err
 		}
 		if len(bytes.TrimSpace(data)) == 0 || bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
-			return map[string]interface{}{}, nil
+			return map[string]any{}, nil
 		}
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if err := json.Unmarshal(data, &out); err != nil {
 			return nil, err
 		}
@@ -430,7 +430,7 @@ func bodyToMap(body interface{}) (map[string]interface{}, error) {
 	}
 }
 
-func parseReturnCode(v interface{}) int {
+func parseReturnCode(v any) int {
 	switch t := v.(type) {
 	case nil:
 		return 0
@@ -471,7 +471,7 @@ func parseReturnCode(v interface{}) int {
 	}
 }
 
-func toString(v interface{}) string {
+func toString(v any) string {
 	switch t := v.(type) {
 	case nil:
 		return ""

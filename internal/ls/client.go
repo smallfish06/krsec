@@ -175,26 +175,26 @@ func (c *Client) ensureToken(ctx context.Context) error {
 }
 
 // CallEndpoint executes an LS REST endpoint using a TR code and raw request body.
-func (c *Client) CallEndpoint(ctx context.Context, method, path, trCD string, request interface{}) (map[string]interface{}, error) {
+func (c *Client) CallEndpoint(ctx context.Context, method, path, trCD string, request any) (map[string]any, error) {
 	return c.callEndpoint(ctx, method, path, trCD, request, callOptions{})
 }
 
 func (c *Client) callEndpoint(
 	ctx context.Context,
 	method, path, trCD string,
-	request interface{},
+	request any,
 	opts callOptions,
-) (map[string]interface{}, error) {
+) (map[string]any, error) {
 	return c.callEndpointAttempt(ctx, method, path, trCD, request, opts, true)
 }
 
 func (c *Client) callEndpointAttempt(
 	ctx context.Context,
 	method, path, trCD string,
-	request interface{},
+	request any,
 	opts callOptions,
 	retryUnauthorized bool,
-) (map[string]interface{}, error) {
+) (map[string]any, error) {
 	trCD = strings.TrimSpace(trCD)
 	if trCD == "" {
 		return nil, fmt.Errorf("%w: tr_cd is required", broker.ErrUpstreamBadRequest)
@@ -274,7 +274,7 @@ func (c *Client) callEndpointAttempt(
 		return nil, err
 	}
 
-	out := make(map[string]interface{})
+	out := make(map[string]any)
 	if len(bytes.TrimSpace(bodyBytes)) > 0 {
 		if err := json.Unmarshal(bodyBytes, &out); err != nil {
 			return nil, fmt.Errorf("decode LS response: %w", err)
@@ -353,14 +353,14 @@ func normalizePath(path string) string {
 	return path
 }
 
-func normalizeRequestBody(request interface{}) (map[string]interface{}, error) {
+func normalizeRequestBody(request any) (map[string]any, error) {
 	switch v := request.(type) {
 	case nil:
-		return map[string]interface{}{}, nil
-	case map[string]interface{}:
+		return map[string]any{}, nil
+	case map[string]any:
 		return maps.Clone(v), nil
 	case map[string]string:
-		out := make(map[string]interface{}, len(v))
+		out := make(map[string]any, len(v))
 		for k, val := range v {
 			out[k] = val
 		}
@@ -370,7 +370,7 @@ func normalizeRequestBody(request interface{}) (map[string]interface{}, error) {
 		if err != nil {
 			return nil, fmt.Errorf("marshal request body: %w", err)
 		}
-		out := make(map[string]interface{})
+		out := make(map[string]any)
 		if len(bytes.TrimSpace(data)) == 0 || bytes.Equal(bytes.TrimSpace(data), []byte("null")) {
 			return out, nil
 		}
@@ -382,7 +382,7 @@ func normalizeRequestBody(request interface{}) (map[string]interface{}, error) {
 }
 
 func mapHTTPError(status int, body []byte) error {
-	var payload map[string]interface{}
+	var payload map[string]any
 	_ = json.Unmarshal(body, &payload)
 	code := strings.TrimSpace(asString(payload["error_code"]))
 	msg := strings.TrimSpace(asString(payload["error_description"]))
@@ -407,7 +407,7 @@ func mapHTTPError(status int, body []byte) error {
 	}
 }
 
-func isEmptyLSResponse(out map[string]interface{}) bool {
+func isEmptyLSResponse(out map[string]any) bool {
 	if len(out) == 0 {
 		return true
 	}
@@ -456,7 +456,7 @@ func isUnauthorizedMessage(code, msg string) bool {
 		strings.Contains(text, "토큰")
 }
 
-func asString(v interface{}) string {
+func asString(v any) string {
 	switch t := v.(type) {
 	case nil:
 		return ""

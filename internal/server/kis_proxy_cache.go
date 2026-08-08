@@ -50,7 +50,7 @@ type kisProxyCache struct {
 }
 
 type kisProxyCacheEntry struct {
-	value         interface{}
+	value         any
 	cachedAt      time.Time
 	softExpiresAt time.Time
 }
@@ -79,7 +79,7 @@ func newKISProxyCache(opts KISProxyCacheOptions) *kisProxyCache {
 	return c
 }
 
-func (c *kisProxyCache) getFresh(key string) (interface{}, bool) {
+func (c *kisProxyCache) getFresh(key string) (any, bool) {
 	if c == nil || key == "" {
 		return nil, false
 	}
@@ -95,7 +95,7 @@ func (c *kisProxyCache) getFresh(key string) (interface{}, bool) {
 	return entry.value, true
 }
 
-func (c *kisProxyCache) getStale(key string) (interface{}, bool) {
+func (c *kisProxyCache) getStale(key string) (any, bool) {
 	if c == nil || key == "" {
 		return nil, false
 	}
@@ -107,7 +107,7 @@ func (c *kisProxyCache) getStale(key string) (interface{}, bool) {
 	return item.Value().value, true
 }
 
-func (c *kisProxyCache) set(key string, value interface{}, ttl time.Duration) {
+func (c *kisProxyCache) set(key string, value any, ttl time.Duration) {
 	if c == nil || key == "" || ttl <= 0 || value == nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (c *kisProxyCache) set(key string, value interface{}, ttl time.Duration) {
 	}, ttl+c.staleRetention)
 }
 
-func (c *kisProxyCache) do(key string, fn func() (interface{}, error)) (interface{}, error, bool) {
+func (c *kisProxyCache) do(key string, fn func() (any, error)) (any, error, bool) {
 	if c == nil || key == "" {
 		value, err := fn()
 		return value, err, false

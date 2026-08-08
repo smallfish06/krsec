@@ -17,7 +17,7 @@ func TestWait_respectsRate(t *testing.T) {
 	}
 
 	start := time.Now()
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		if err := lim.Wait(ctx); err != nil {
 			t.Fatal(err)
 		}
@@ -36,7 +36,7 @@ func TestWait_burst(t *testing.T) {
 
 	ctx := context.Background()
 	start := time.Now()
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		if err := lim.Wait(ctx); err != nil {
 			t.Fatal(err)
 		}
@@ -104,7 +104,7 @@ func TestShared_serializesIndependentCallers(t *testing.T) {
 	}
 
 	start := time.Now()
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		lim := a
 		if i%2 == 1 {
 			lim = b

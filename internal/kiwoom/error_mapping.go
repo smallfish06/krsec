@@ -98,7 +98,7 @@ func parseErrorPayload(body []byte) (int, string, bool) {
 	if len(bytes.TrimSpace(body)) == 0 {
 		return 0, "", false
 	}
-	var obj map[string]interface{}
+	var obj map[string]any
 	if err := json.Unmarshal(body, &obj); err != nil {
 		return 0, "", false
 	}

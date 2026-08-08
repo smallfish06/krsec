@@ -14,7 +14,7 @@ func (c *Client) GetAccounts(ctx context.Context) ([]Account, error) {
 
 func (c *Client) GetPrices(ctx context.Context, symbols ...string) ([]PriceResponse, error) {
 	var env apiEnvelope[[]PriceResponse]
-	err := c.callJSON(ctx, http.MethodGet, PathPrices, "", map[string]interface{}{
+	err := c.callJSON(ctx, http.MethodGet, PathPrices, "", map[string]any{
 		"symbols": strings.Join(cleanSymbols(symbols), ","),
 	}, nil, &env)
 	return env.Result, err
@@ -27,7 +27,7 @@ func (c *Client) GetCandles(ctx context.Context, symbol, interval string, count 
 	if count > 200 {
 		count = 200
 	}
-	query := map[string]interface{}{
+	query := map[string]any{
 		"symbol":   strings.TrimSpace(symbol),
 		"interval": strings.TrimSpace(interval),
 		"count":    count,
@@ -43,14 +43,14 @@ func (c *Client) GetCandles(ctx context.Context, symbol, interval string, count 
 
 func (c *Client) GetStocks(ctx context.Context, symbols ...string) ([]StockInfo, error) {
 	var env apiEnvelope[[]StockInfo]
-	err := c.callJSON(ctx, http.MethodGet, PathStocks, "", map[string]interface{}{
+	err := c.callJSON(ctx, http.MethodGet, PathStocks, "", map[string]any{
 		"symbols": strings.Join(cleanSymbols(symbols), ","),
 	}, nil, &env)
 	return env.Result, err
 }
 
 func (c *Client) GetHoldings(ctx context.Context, accountSeq, symbol string) (HoldingsOverview, error) {
-	query := map[string]interface{}{}
+	query := map[string]any{}
 	if strings.TrimSpace(symbol) != "" {
 		query["symbol"] = strings.TrimSpace(symbol)
 	}
@@ -61,7 +61,7 @@ func (c *Client) GetHoldings(ctx context.Context, accountSeq, symbol string) (Ho
 
 func (c *Client) GetBuyingPower(ctx context.Context, accountSeq, currency string) (BuyingPowerResponse, error) {
 	var env apiEnvelope[BuyingPowerResponse]
-	err := c.callJSON(ctx, http.MethodGet, PathBuyingPower, accountSeq, map[string]interface{}{
+	err := c.callJSON(ctx, http.MethodGet, PathBuyingPower, accountSeq, map[string]any{
 		"currency": strings.ToUpper(strings.TrimSpace(currency)),
 	}, nil, &env)
 	return env.Result, err
@@ -69,7 +69,7 @@ func (c *Client) GetBuyingPower(ctx context.Context, accountSeq, currency string
 
 func (c *Client) GetSellableQuantity(ctx context.Context, accountSeq, symbol string) (SellableQuantityResponse, error) {
 	var env apiEnvelope[SellableQuantityResponse]
-	err := c.callJSON(ctx, http.MethodGet, PathSellableQuantity, accountSeq, map[string]interface{}{
+	err := c.callJSON(ctx, http.MethodGet, PathSellableQuantity, accountSeq, map[string]any{
 		"symbol": strings.TrimSpace(symbol),
 	}, nil, &env)
 	return env.Result, err
@@ -81,13 +81,13 @@ func (c *Client) GetCommissions(ctx context.Context, accountSeq string) ([]Commi
 	return env.Result, err
 }
 
-func (c *Client) CreateOrder(ctx context.Context, accountSeq string, body map[string]interface{}) (OrderResponse, error) {
+func (c *Client) CreateOrder(ctx context.Context, accountSeq string, body map[string]any) (OrderResponse, error) {
 	var env apiEnvelope[OrderResponse]
 	err := c.callJSON(ctx, http.MethodPost, PathOrders, accountSeq, nil, body, &env)
 	return env.Result, err
 }
 
-func (c *Client) ModifyOrder(ctx context.Context, accountSeq, orderID string, body map[string]interface{}) (OrderOperationResponse, error) {
+func (c *Client) ModifyOrder(ctx context.Context, accountSeq, orderID string, body map[string]any) (OrderOperationResponse, error) {
 	var env apiEnvelope[OrderOperationResponse]
 	err := c.callJSON(ctx, http.MethodPost, PathOrders+"/"+strings.TrimSpace(orderID)+"/modify", accountSeq, nil, body, &env)
 	return env.Result, err
@@ -95,7 +95,7 @@ func (c *Client) ModifyOrder(ctx context.Context, accountSeq, orderID string, bo
 
 func (c *Client) CancelOrder(ctx context.Context, accountSeq, orderID string) (OrderOperationResponse, error) {
 	var env apiEnvelope[OrderOperationResponse]
-	err := c.callJSON(ctx, http.MethodPost, PathOrders+"/"+strings.TrimSpace(orderID)+"/cancel", accountSeq, nil, map[string]interface{}{}, &env)
+	err := c.callJSON(ctx, http.MethodPost, PathOrders+"/"+strings.TrimSpace(orderID)+"/cancel", accountSeq, nil, map[string]any{}, &env)
 	return env.Result, err
 }
 
@@ -105,7 +105,7 @@ func (c *Client) GetOrder(ctx context.Context, accountSeq, orderID string) (Orde
 	return env.Result, err
 }
 
-func (c *Client) GetOrders(ctx context.Context, accountSeq string, query map[string]interface{}) (PaginatedOrderResponse, error) {
+func (c *Client) GetOrders(ctx context.Context, accountSeq string, query map[string]any) (PaginatedOrderResponse, error) {
 	var env apiEnvelope[PaginatedOrderResponse]
 	err := c.callJSON(ctx, http.MethodGet, PathOrders, accountSeq, query, nil, &env)
 	return env.Result, err

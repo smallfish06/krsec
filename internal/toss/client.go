@@ -229,7 +229,7 @@ func (c *Client) invalidateAndRefresh(ctx context.Context) error {
 	return c.ensureToken(ctx)
 }
 
-func (c *Client) callJSON(ctx context.Context, method, path, accountSeq string, query map[string]interface{}, body interface{}, result interface{}) error {
+func (c *Client) callJSON(ctx context.Context, method, path, accountSeq string, query map[string]any, body any, result any) error {
 	resp, err := c.callOnce(ctx, method, path, accountSeq, query, body)
 	if err != nil {
 		return err
@@ -264,7 +264,7 @@ func (c *Client) callJSON(ctx context.Context, method, path, accountSeq string, 
 	return nil
 }
 
-func (c *Client) callOnce(ctx context.Context, method, path, accountSeq string, query map[string]interface{}, body interface{}) (*http.Response, error) {
+func (c *Client) callOnce(ctx context.Context, method, path, accountSeq string, query map[string]any, body any) (*http.Response, error) {
 	method = strings.ToUpper(strings.TrimSpace(method))
 	if method == "" {
 		method = http.MethodGet
@@ -295,7 +295,7 @@ func (c *Client) callOnce(ctx context.Context, method, path, accountSeq string, 
 			for _, one := range vv {
 				q.Add(key, strings.TrimSpace(one))
 			}
-		case []interface{}:
+		case []any:
 			for _, one := range vv {
 				q.Add(key, fmt.Sprint(one))
 			}
@@ -336,13 +336,13 @@ func (c *Client) callOnce(ctx context.Context, method, path, accountSeq string, 
 }
 
 // CallEndpoint executes a Toss endpoint and decodes the response as an untyped object.
-func (c *Client) CallEndpoint(ctx context.Context, method, path, accountSeq string, query map[string]interface{}, body interface{}) (map[string]interface{}, error) {
-	var out map[string]interface{}
+func (c *Client) CallEndpoint(ctx context.Context, method, path, accountSeq string, query map[string]any, body any) (map[string]any, error) {
+	var out map[string]any
 	if err := c.callJSON(ctx, method, path, accountSeq, query, body, &out); err != nil {
 		return nil, err
 	}
 	if out == nil {
-		out = map[string]interface{}{}
+		out = map[string]any{}
 	}
 	return out, nil
 }

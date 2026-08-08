@@ -71,7 +71,7 @@ func TestAuthenticate_ConcurrentCallersShareSingleTokenCall(t *testing.T) {
 	var wg sync.WaitGroup
 	errs := make([]error, callers)
 	tokens := make([]string, callers)
-	for i := 0; i < callers; i++ {
+	for i := range callers {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
@@ -87,7 +87,7 @@ func TestAuthenticate_ConcurrentCallersShareSingleTokenCall(t *testing.T) {
 	}
 	wg.Wait()
 
-	for i := 0; i < callers; i++ {
+	for i := range callers {
 		if errs[i] != nil {
 			t.Fatalf("caller %d error: %v", i, errs[i])
 		}

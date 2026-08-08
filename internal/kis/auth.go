@@ -62,7 +62,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	// Issue at most one token per appKey at a time. The issuance runs on a
 	// detached context so one canceled caller cannot poison the refresh for
 	// every other request waiting on it.
-	ch := authFlight.DoChan(appKey, func() (interface{}, error) {
+	ch := authFlight.DoChan(appKey, func() (any, error) {
 		return issueToken(tm, c.httpClient, c.baseURL, creds)
 	})
 

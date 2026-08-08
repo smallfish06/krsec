@@ -60,7 +60,7 @@ func (c *Client) InquireInstrumentInfo(
 	})
 }
 
-func firstValue(m map[string]interface{}, keys ...string) interface{} {
+func firstValue(m map[string]any, keys ...string) any {
 	for _, key := range keys {
 		if v, ok := m[key]; ok {
 			return v

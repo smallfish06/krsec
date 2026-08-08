@@ -150,7 +150,7 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 	}
 
 	var (
-		rows []map[string]interface{}
+		rows []map[string]any
 		err  error
 	)
 
@@ -456,10 +456,7 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 			}
 			ordQty := asAnyInt(row["ord_qty"])
 			remaining := asAnyInt(row["oso_qty"])
-			filled := ordQty - remaining
-			if filled < 0 {
-				filled = 0
-			}
+			filled := max(ordQty-remaining, 0)
 			status := mapOrderStatus(asAnyString(row["ord_stt"]), remaining)
 			result := &broker.OrderResult{
 				OrderID:        orderID,
@@ -609,7 +606,7 @@ func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*br
 	}, nil
 }
 
-func (a *Adapter) fetchUnsettled(ctx context.Context, symbol string) ([]map[string]interface{}, error) {
+func (a *Adapter) fetchUnsettled(ctx context.Context, symbol string) ([]map[string]any, error) {
 	resp, err := a.client.InquireUnsettledOrders(ctx, symbol)
 	if err != nil {
 		return nil, err
@@ -743,7 +740,7 @@ func mapOrderStatus(raw string, remaining int64) broker.OrderStatus {
 	}
 }
 
-func exchangeFromUnsettledRow(row map[string]interface{}) string {
+func exchangeFromUnsettledRow(row map[string]any) string {
 	if txt := strings.ToUpper(strings.TrimSpace(asAnyString(row["stex_tp_txt"]))); txt != "" {
 		switch txt {
 		case "KRX", "NXT", "SOR":
@@ -822,7 +819,7 @@ func parseIntString(raw string) int64 {
 	return int64(f)
 }
 
-func asAnyString(v interface{}) string {
+func asAnyString(v any) string {
 	switch t := v.(type) {
 	case nil:
 		return ""
@@ -833,11 +830,11 @@ func asAnyString(v interface{}) string {
 	}
 }
 
-func asAnyFloat(v interface{}) float64 {
+func asAnyFloat(v any) float64 {
 	return parseFloatString(asAnyString(v))
 }
 
-func asAnyInt(v interface{}) int64 {
+func asAnyInt(v any) int64 {
 	return parseIntString(asAnyString(v))
 }
 
@@ -853,7 +850,7 @@ func parseDateYYYYMMDDString(value string) (time.Time, bool) {
 	return t, true
 }
 
-func decodeObjectArray(raw interface{}) []map[string]interface{} {
+func decodeObjectArray(raw any) []map[string]any {
 	switch t := raw.(type) {
 	case nil:
 		return nil
@@ -861,7 +858,7 @@ func decodeObjectArray(raw interface{}) []map[string]interface{} {
 		return decodeObjectArrayFromJSON(t)
 	case []byte:
 		return decodeObjectArrayFromJSON(t)
-	case []map[string]interface{}:
+	case []map[string]any:
 		return t
 	}
 
@@ -873,18 +870,18 @@ func decodeObjectArray(raw interface{}) []map[string]interface{} {
 		return nil
 	}
 
-	out := make([]map[string]interface{}, 0, rv.Len())
+	out := make([]map[string]any, 0, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		item := rv.Index(i).Interface()
 		switch row := item.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			out = append(out, row)
 		default:
 			encoded, err := json.Marshal(item)
 			if err != nil || len(encoded) == 0 {
 				continue
 			}
-			m := make(map[string]interface{})
+			m := make(map[string]any)
 			if err := json.Unmarshal(encoded, &m); err != nil {
 				continue
 			}
@@ -894,21 +891,21 @@ func decodeObjectArray(raw interface{}) []map[string]interface{} {
 	return out
 }
 
-func decodeObjectArrayFromJSON(raw []byte) []map[string]interface{} {
+func decodeObjectArrayFromJSON(raw []byte) []map[string]any {
 	if len(raw) == 0 {
 		return nil
 	}
-	items := make([]map[string]interface{}, 0)
+	items := make([]map[string]any, 0)
 	if err := json.Unmarshal(raw, &items); err == nil {
 		return items
 	}
-	generic := make([]interface{}, 0)
+	generic := make([]any, 0)
 	if err := json.Unmarshal(raw, &generic); err != nil {
 		return nil
 	}
-	out := make([]map[string]interface{}, 0, len(generic))
+	out := make([]map[string]any, 0, len(generic))
 	for _, item := range generic {
-		row, ok := item.(map[string]interface{})
+		row, ok := item.(map[string]any)
 		if !ok {
 			continue
 		}

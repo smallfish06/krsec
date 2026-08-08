@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"maps"
 	"math"
 	"strconv"
 	"strings"
@@ -61,7 +62,7 @@ func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*
 }
 
 // CallEndpoint dispatches a raw Toss Open API endpoint using this adapter's account_seq.
-func (a *Adapter) CallEndpoint(ctx context.Context, method, path string, query map[string]interface{}, body interface{}) (interface{}, error) {
+func (a *Adapter) CallEndpoint(ctx context.Context, method, path string, query map[string]any, body any) (any, error) {
 	return a.client.CallEndpoint(ctx, method, path, a.accountSeq, query, body)
 }
 
@@ -361,7 +362,7 @@ func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.O
 	}}, nil
 }
 
-func (a *Adapter) GetOrders(ctx context.Context, query map[string]interface{}) (toss.PaginatedOrderResponse, error) {
+func (a *Adapter) GetOrders(ctx context.Context, query map[string]any) (toss.PaginatedOrderResponse, error) {
 	return a.client.GetOrders(ctx, a.accountSeq, query)
 }
 
@@ -377,7 +378,7 @@ func (a *Adapter) GetCommissions(ctx context.Context) ([]toss.Commission, error)
 	return a.client.GetCommissions(ctx, a.accountSeq)
 }
 
-func buildCreateOrderBody(req broker.OrderRequest) (map[string]interface{}, error) {
+func buildCreateOrderBody(req broker.OrderRequest) (map[string]any, error) {
 	symbol := strings.TrimSpace(req.Symbol)
 	if symbol == "" {
 		return nil, broker.ErrInvalidSymbol
@@ -390,7 +391,7 @@ func buildCreateOrderBody(req broker.OrderRequest) (map[string]interface{}, erro
 	if err != nil {
 		return nil, err
 	}
-	body := map[string]interface{}{
+	body := map[string]any{
 		"symbol":    symbol,
 		"side":      side,
 		"orderType": orderType,
@@ -423,7 +424,7 @@ func buildCreateOrderBody(req broker.OrderRequest) (map[string]interface{}, erro
 	return body, nil
 }
 
-func buildModifyOrderBody(req broker.ModifyOrderRequest) (map[string]interface{}, error) {
+func buildModifyOrderBody(req broker.ModifyOrderRequest) (map[string]any, error) {
 	orderType := req.Type
 	if orderType == "" {
 		if req.Price > 0 {
@@ -436,7 +437,7 @@ func buildModifyOrderBody(req broker.ModifyOrderRequest) (map[string]interface{}
 	if err != nil {
 		return nil, err
 	}
-	body := map[string]interface{}{
+	body := map[string]any{
 		"orderType": tossType,
 	}
 	if qty := firstNonEmpty(req.QuantityDecimal, positiveIntString(req.Quantity)); qty != "" {
@@ -476,10 +477,7 @@ func tossOrderType(orderType broker.OrderType) (string, error) {
 func orderToResult(order toss.Order) *broker.OrderResult {
 	quantity := decimalToInt64(order.Quantity)
 	filledQty := decimalToInt64(order.Execution.FilledQuantity)
-	remaining := quantity - filledQty
-	if remaining < 0 {
-		remaining = 0
-	}
+	remaining := max(quantity-filledQty, 0)
 	return &broker.OrderResult{
 		OrderID:        order.OrderID,
 		Status:         mapOrderStatus(order.Status),
@@ -675,9 +673,7 @@ func cloneCurrencyMap(src map[string]float64) map[string]float64 {
 		return nil
 	}
 	out := make(map[string]float64, len(src))
-	for k, v := range src {
-		out[k] = v
-	}
+	maps.Copy(out, src)
 	return out
 }
 

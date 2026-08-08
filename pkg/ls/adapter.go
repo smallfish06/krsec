@@ -11,7 +11,7 @@ import (
 // Adapter is the public LS adapter contract.
 type Adapter interface {
 	adapter.Adapter
-	CallEndpoint(ctx context.Context, method, path, trCD string, request interface{}) (interface{}, error)
+	CallEndpoint(ctx context.Context, method, path, trCD string, request any) (any, error)
 	ConnectRealtime(ctx context.Context) (*RealtimeConn, error)
 	BuildTradeSubscriptions(ctx context.Context) ([]RealtimeSubscription, error)
 	BuildOverseasTradeSubscriptions(ctx context.Context, market string, maxRows int) ([]RealtimeSubscription, error)

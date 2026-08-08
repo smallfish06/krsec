@@ -19,7 +19,7 @@ func TestCallDocumentedEndpoint_OrderBook_UsesKa10004AndMrkcondPath(t *testing.T
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -31,7 +31,7 @@ func TestCallDocumentedEndpoint_OrderBook_UsesKa10004AndMrkcondPath(t *testing.T
 			var body map[string]string
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			gotSymbol = body["stk_cd"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{"return_code": 0, "return_msg": "ok", "ask1": "70010"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"return_code": 0, "return_msg": "ok", "ask1": "70010"})
 		default:
 			http.NotFound(w, r)
 		}
@@ -67,7 +67,7 @@ func TestCallDocumentedEndpoint_VolumeRank_UsesKa10030AndRkinfoPath(t *testing.T
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -76,7 +76,7 @@ func TestCallDocumentedEndpoint_VolumeRank_UsesKa10030AndRkinfoPath(t *testing.T
 			})
 		case "/api/dostk/rkinfo":
 			gotAPIID = r.Header.Get("api-id")
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{"return_code": 0, "return_msg": "ok", "output": []map[string]interface{}{{"stk_cd": "005930"}}})
+			_ = json.NewEncoder(w).Encode(map[string]any{"return_code": 0, "return_msg": "ok", "output": []map[string]any{{"stk_cd": "005930"}}})
 		default:
 			http.NotFound(w, r)
 		}
@@ -115,7 +115,7 @@ func TestCallDocumentedEndpoint_SectorCurrentAndDepositDetail(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -124,10 +124,10 @@ func TestCallDocumentedEndpoint_SectorCurrentAndDepositDetail(t *testing.T) {
 			})
 		case "/api/dostk/sect":
 			sectorAPIID = r.Header.Get("api-id")
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{"return_code": 0, "return_msg": "ok"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"return_code": 0, "return_msg": "ok"})
 		case "/api/dostk/acnt":
 			accountAPIID = r.Header.Get("api-id")
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{"return_code": 0, "return_msg": "ok"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"return_code": 0, "return_msg": "ok"})
 		default:
 			http.NotFound(w, r)
 		}
@@ -172,7 +172,7 @@ func TestInquireOrderExecutionsByExchange_UsesExchangeBody(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/oauth2/token":
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"expires_dt":  "20991231235959",
 				"token_type":  "bearer",
 				"token":       "test-token",
@@ -184,10 +184,10 @@ func TestInquireOrderExecutionsByExchange_UsesExchangeBody(t *testing.T) {
 			var body map[string]string
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			gotExchange = body["stex_tp"]
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"return_code": 0,
 				"return_msg":  "ok",
-				"cntr": []map[string]interface{}{
+				"cntr": []map[string]any{
 					{"ord_no": "1", "stk_cd": "005930", "cntr_qty": "1", "cntr_pric": "70000"},
 				},
 			})

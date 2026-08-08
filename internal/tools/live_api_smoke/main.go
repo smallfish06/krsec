@@ -62,7 +62,6 @@ func main() {
 	tossTokenManager := pkgtoss.NewFileTokenManagerWithDir(cfg.Storage.TokenDir)
 
 	for _, acc := range cfg.Accounts {
-		acc := acc
 		switch acc.Broker {
 		case broker.CodeKIS:
 			runKISAccount(&results, acc, kisTokenManager, cfg.Storage.OrderContextDir)
@@ -147,7 +146,6 @@ func runKISAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencac
 	cano, acntPrdtCd := splitKISAccountID(acc.AccountID)
 
 	for _, tc := range buildKISEndpointCases(fromDate, toDate, cano, acntPrdtCd) {
-		tc := tc
 		runCase(results, "KIS", acc.AccountID, "CallEndpoint "+tc.Name, tc.ExpectError, func(ctx context.Context) error {
 			_, err := a.CallEndpoint(ctx, tc.Method, tc.Path, tc.TRID, cloneMap(tc.Fields))
 			return err
@@ -217,7 +215,6 @@ func runKiwoomAccount(results *[]smokeResult, acc config.AccountConfig, tm token
 
 	// CallEndpoint tests for all Kiwoom API_IDs
 	for _, tc := range buildKiwoomEndpointCases(acc.Sandbox) {
-		tc := tc
 		runKiwoomCase("CallEndpoint "+tc.Name, tc.ExpectError, func(ctx context.Context) error {
 			_, err := a.CallEndpoint(ctx, tc.Method, tc.Path, tc.TRID, cloneMap(tc.Fields))
 			return err
@@ -290,8 +287,8 @@ func runLSAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencach
 		return err
 	})
 	runCase(results, "LS", acc.AccountID, "CallEndpoint t1102", false, func(ctx context.Context) error {
-		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]interface{}{
-			"t1102InBlock": map[string]interface{}{
+		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]any{
+			"t1102InBlock": map[string]any{
 				"shcode":    "078020",
 				"exchgubun": "K",
 			},
@@ -299,8 +296,8 @@ func runLSAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencach
 		return err
 	})
 	runCase(results, "LS", acc.AccountID, "CallEndpoint g3101", false, func(ctx context.Context) error {
-		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathOverseasStockMarket, internalls.TROverseasStockQuote, map[string]interface{}{
-			"g3101InBlock": map[string]interface{}{
+		_, err := a.CallEndpoint(ctx, http.MethodPost, internalls.PathOverseasStockMarket, internalls.TROverseasStockQuote, map[string]any{
+			"g3101InBlock": map[string]any{
 				"delaygb":   "R",
 				"keysymbol": "82AAPL",
 				"exchcd":    "82",
@@ -390,13 +387,13 @@ func runTossAccount(results *[]smokeResult, acc config.AccountConfig, tm tokenca
 		return err
 	})
 	runCase(results, "TOSS", acc.AccountID, "CallEndpoint prices(005930,AAPL)", false, func(ctx context.Context) error {
-		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/prices", map[string]interface{}{
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/prices", map[string]any{
 			"symbols": "005930,AAPL",
 		}, nil)
 		return err
 	})
 	runCase(results, "TOSS", acc.AccountID, "CallEndpoint stocks(005930,AAPL)", false, func(ctx context.Context) error {
-		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/stocks", map[string]interface{}{
+		_, err := a.CallEndpoint(ctx, http.MethodGet, "/api/v1/stocks", map[string]any{
 			"symbols": "005930,AAPL",
 		}, nil)
 		return err
