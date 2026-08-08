@@ -192,12 +192,18 @@ func (s *Server) App() *fuego.Server {
 	return s.router
 }
 
+// HealthResponse is the response body for the health check endpoint.
+type HealthResponse struct {
+	Status   string `json:"status"`
+	Accounts int    `json:"accounts"`
+}
+
 // handleHealth handles health check requests
-func (s *Server) handleHealth(c fuego.ContextNoBody) (map[string]any, error) {
+func (s *Server) handleHealth(c fuego.ContextNoBody) (HealthResponse, error) {
 	c.SetStatus(http.StatusOK)
-	return map[string]any{
-		"status":   "ok",
-		"accounts": len(s.accounts),
+	return HealthResponse{
+		Status:   "ok",
+		Accounts: len(s.accounts),
 	}, nil
 }
 

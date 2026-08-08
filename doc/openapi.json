@@ -1,9 +1,6 @@
 {
 	"components": {
 		"schemas": {
-			"": {
-				"description": " schema"
-			},
 			"AuthTokenRequest": {
 				"description": "AuthTokenRequest schema",
 				"properties": {
@@ -99,6 +96,22 @@
 						"type": "string"
 					}
 				},
+				"type": "object"
+			},
+			"HealthResponse": {
+				"description": "HealthResponse schema",
+				"properties": {
+					"accounts": {
+						"type": "integer"
+					},
+					"status": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"accounts",
+					"status"
+				],
 				"type": "object"
 			},
 			"KISDomesticBondV1QuotationsAvgUnit": {
@@ -68972,12 +68985,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/"
+									"$ref": "#/components/schemas/HealthResponse"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/"
+									"$ref": "#/components/schemas/HealthResponse"
 								}
 							}
 						},
