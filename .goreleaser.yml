@@ -31,8 +31,60 @@ archives:
 checksum:
   name_template: "checksums.txt"
 
+dockers:
+  - image_templates:
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-amd64
+    use: buildx
+    goarch: amd64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title=krsec
+      - --label=org.opencontainers.image.source=https://github.com/smallfish06/krsec
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+  - image_templates:
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-arm64
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.title=krsec
+      - --label=org.opencontainers.image.source=https://github.com/smallfish06/krsec
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+
+docker_manifests:
+  - name_template: ghcr.io/smallfish06/krsec:{{ .Version }}
+    image_templates:
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-amd64
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-arm64
+  - name_template: ghcr.io/smallfish06/krsec:latest
+    image_templates:
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-amd64
+      - ghcr.io/smallfish06/krsec:{{ .Version }}-arm64
+
 changelog:
   sort: asc
+  groups:
+    - title: Features
+      regexp: '^feat(\(.+\))?!?:'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^fix(\(.+\))?!?:'
+      order: 1
+    - title: Performance
+      regexp: '^perf(\(.+\))?!?:'
+      order: 2
+    - title: Refactoring
+      regexp: '^refactor(\(.+\))?!?:'
+      order: 3
+    - title: Build & Specs
+      regexp: '^build(\(.+\))?!?:'
+      order: 4
+    - title: Other
+      order: 999
   filters:
     exclude:
       - "^docs:"
