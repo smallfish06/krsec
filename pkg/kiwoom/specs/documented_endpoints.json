@@ -18701,14 +18701,22 @@
       "path": "/api/us/acnt",
       "api_id": "ust21100",
       "method": "POST",
+      "required_fields": [
+        "end_dt",
+        "krw_repl_skip_yn",
+        "strt_dt",
+        "tp"
+      ],
       "request_fields": [
         {
           "code": "end_dt",
-          "type": "String"
+          "type": "String",
+          "required": true
         },
         {
           "code": "krw_repl_skip_yn",
-          "type": "String"
+          "type": "String",
+          "required": true
         },
         {
           "code": "stex_tp",
@@ -18720,11 +18728,13 @@
         },
         {
           "code": "strt_dt",
-          "type": "String"
+          "type": "String",
+          "required": true
         },
         {
           "code": "tp",
-          "type": "String"
+          "type": "String",
+          "required": true
         }
       ],
       "response_fields": [
