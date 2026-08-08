@@ -22,14 +22,8 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
-      - name: Check Generated KIS Specs
-        run: make kis-spec-check
-
-      - name: Check Generated Kiwoom Specs
-        run: make kiwoom-spec-check
-
-      - name: Check Generated LS Specs
-        run: make ls-spec-check
+      - name: Check generated specs (all brokers)
+        run: make spec-check-all
 
       - name: Vet
         run: go vet ./...

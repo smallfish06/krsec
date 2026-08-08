@@ -27,10 +27,7 @@ jobs:
         run: go mod download
 
       - name: Refresh documented specs
-        run: |
-          make kis-spec-refresh
-          make kiwoom-spec-refresh
-          make ls-spec-refresh
+        run: make spec-refresh-all
 
       - name: Detect spec drift
         id: drift
@@ -46,6 +43,8 @@ jobs:
             pkg/kiwoom/specs/documented_endpoint_types_generated.go
             pkg/ls/specs/documented_endpoints.json
             pkg/ls/specs/documented_specs_generated.go
+            pkg/toss/specs/documented_endpoints.json
+            pkg/toss/specs/documented_specs_generated.go
           )
 
           if git diff --quiet -- "${TRACKED_FILES[@]}"; then

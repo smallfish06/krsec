@@ -1,8 +1,8 @@
-.PHONY: build run test clean deps mock \
-	kis-spec-fetch kis-spec-generate kis-spec-refresh kis-spec-check kis-spec-all \
-	kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check kiwoom-spec-all \
-	ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check ls-spec-all \
-	toss-spec-fetch toss-spec-generate toss-spec-refresh toss-spec-check toss-spec-all
+SPEC_BROKERS := kis kiwoom ls toss
+
+.PHONY: build run test clean deps dev-tools lint fmt vet mock \
+	spec-fetch-all spec-generate-all spec-refresh-all spec-check-all \
+	$(foreach b,$(SPEC_BROKERS),$(b)-spec-fetch $(b)-spec-generate $(b)-spec-refresh $(b)-spec-check $(b)-spec-all)
 
 # Build the application
 build:
@@ -45,78 +45,37 @@ fmt:
 vet:
 	go vet ./...
 
-# Fetch latest documented KIS snapshot from portal (network required)
-kis-spec-fetch:
-	go run ./cmd/kis-specgen fetch --out pkg/kis/specs/documented_endpoints.json
+# --- Documented spec workflow (per broker) ---------------------------------
+# Each broker follows the same layout:
+#   snapshot:  pkg/<broker>/specs/documented_endpoints.json
+#   spec out:  pkg/<broker>/specs/documented_specs_generated.go
+#   types out: pkg/<broker>/specs/documented_endpoint_types_generated.go (KIS/Kiwoom only)
+# Targets: <broker>-spec-{fetch,generate,refresh,check,all}, e.g. `make kis-spec-refresh`.
 
-# Generate KIS documented spec/type Go files from snapshot
-kis-spec-generate:
-	go run ./cmd/kis-specgen generate --in pkg/kis/specs/documented_endpoints.json --spec-out pkg/kis/specs/documented_specs_generated.go --types-out pkg/kis/specs/documented_endpoint_types_generated.go
+spec_types_out_kis    = --types-out pkg/kis/specs/documented_endpoint_types_generated.go
+spec_types_out_kiwoom = --types-out pkg/kiwoom/specs/documented_endpoint_types_generated.go
 
-# Refresh snapshot + regenerate KIS documented Go files
-kis-spec-refresh:
-	go run ./cmd/kis-specgen refresh --snapshot pkg/kis/specs/documented_endpoints.json --spec-out pkg/kis/specs/documented_specs_generated.go --types-out pkg/kis/specs/documented_endpoint_types_generated.go
+# spec_rules(broker): expands to fetch/generate/refresh/check/all targets.
+define spec_rules
+$(1)-spec-fetch:
+	go run ./cmd/$(1)-specgen fetch --out pkg/$(1)/specs/documented_endpoints.json
 
-# Verify generated KIS documented files are up to date
-kis-spec-check:
-	go run ./cmd/kis-specgen check --in pkg/kis/specs/documented_endpoints.json --spec-out pkg/kis/specs/documented_specs_generated.go --types-out pkg/kis/specs/documented_endpoint_types_generated.go
+$(1)-spec-generate:
+	go run ./cmd/$(1)-specgen generate --in pkg/$(1)/specs/documented_endpoints.json --spec-out pkg/$(1)/specs/documented_specs_generated.go $(spec_types_out_$(1))
 
-# Run full KIS spec workflow end-to-end
-kis-spec-all: kis-spec-fetch kis-spec-generate kis-spec-refresh kis-spec-check
+$(1)-spec-refresh:
+	go run ./cmd/$(1)-specgen refresh --snapshot pkg/$(1)/specs/documented_endpoints.json --spec-out pkg/$(1)/specs/documented_specs_generated.go $(spec_types_out_$(1))
 
-# Fetch latest documented Kiwoom snapshot from portal (network required)
-kiwoom-spec-fetch:
-	go run ./cmd/kiwoom-specgen fetch --out pkg/kiwoom/specs/documented_endpoints.json
+$(1)-spec-check:
+	go run ./cmd/$(1)-specgen check --in pkg/$(1)/specs/documented_endpoints.json --spec-out pkg/$(1)/specs/documented_specs_generated.go $(spec_types_out_$(1))
 
-# Generate Kiwoom documented spec Go file from snapshot
-kiwoom-spec-generate:
-	go run ./cmd/kiwoom-specgen generate --in pkg/kiwoom/specs/documented_endpoints.json --spec-out pkg/kiwoom/specs/documented_specs_generated.go --types-out pkg/kiwoom/specs/documented_endpoint_types_generated.go
+$(1)-spec-all: $(1)-spec-fetch $(1)-spec-generate $(1)-spec-refresh $(1)-spec-check
+endef
 
-# Refresh snapshot + regenerate Kiwoom documented Go files
-kiwoom-spec-refresh:
-	go run ./cmd/kiwoom-specgen refresh --snapshot pkg/kiwoom/specs/documented_endpoints.json --spec-out pkg/kiwoom/specs/documented_specs_generated.go --types-out pkg/kiwoom/specs/documented_endpoint_types_generated.go
+$(foreach b,$(SPEC_BROKERS),$(eval $(call spec_rules,$(b))))
 
-# Verify generated Kiwoom documented files are up to date
-kiwoom-spec-check:
-	go run ./cmd/kiwoom-specgen check --in pkg/kiwoom/specs/documented_endpoints.json --spec-out pkg/kiwoom/specs/documented_specs_generated.go --types-out pkg/kiwoom/specs/documented_endpoint_types_generated.go
-
-# Run full Kiwoom spec workflow end-to-end
-kiwoom-spec-all: kiwoom-spec-fetch kiwoom-spec-generate kiwoom-spec-refresh kiwoom-spec-check
-
-# Fetch latest documented LS snapshot from portal (network required)
-ls-spec-fetch:
-	go run ./cmd/ls-specgen fetch --out pkg/ls/specs/documented_endpoints.json
-
-# Generate LS documented spec Go file from snapshot
-ls-spec-generate:
-	go run ./cmd/ls-specgen generate --in pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
-
-# Refresh snapshot + regenerate LS documented Go files
-ls-spec-refresh:
-	go run ./cmd/ls-specgen refresh --snapshot pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
-
-# Verify generated LS documented files are up to date
-ls-spec-check:
-	go run ./cmd/ls-specgen check --in pkg/ls/specs/documented_endpoints.json --spec-out pkg/ls/specs/documented_specs_generated.go
-
-# Run full LS spec workflow end-to-end
-ls-spec-all: ls-spec-fetch ls-spec-generate ls-spec-refresh ls-spec-check
-
-# Fetch latest documented Toss snapshot from official OpenAPI JSON (network required)
-toss-spec-fetch:
-	go run ./cmd/toss-specgen fetch --out pkg/toss/specs/documented_endpoints.json
-
-# Generate Toss documented spec Go file from snapshot
-toss-spec-generate:
-	go run ./cmd/toss-specgen generate --in pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
-
-# Refresh snapshot + regenerate Toss documented Go files
-toss-spec-refresh:
-	go run ./cmd/toss-specgen refresh --snapshot pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
-
-# Verify generated Toss documented files are up to date
-toss-spec-check:
-	go run ./cmd/toss-specgen check --in pkg/toss/specs/documented_endpoints.json --spec-out pkg/toss/specs/documented_specs_generated.go
-
-# Run full Toss spec workflow end-to-end
-toss-spec-all: toss-spec-fetch toss-spec-generate toss-spec-refresh toss-spec-check
+# Aggregates across every broker
+spec-fetch-all: $(addsuffix -spec-fetch,$(SPEC_BROKERS))
+spec-generate-all: $(addsuffix -spec-generate,$(SPEC_BROKERS))
+spec-refresh-all: $(addsuffix -spec-refresh,$(SPEC_BROKERS))
+spec-check-all: $(addsuffix -spec-check,$(SPEC_BROKERS))
