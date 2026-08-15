@@ -690,6 +690,51 @@ type KiwoomApiDostkOrdrKt50003Request struct {
 	StkCd     string `json:"stk_cd,omitempty"`
 }
 
+type KiwoomApiDostkRkinfoKa00190Request struct {
+	CasePricTp          string `json:"case_pric_tp,omitempty"`
+	CrdTp               string `json:"crd_tp,omitempty"`
+	MacCndMax           string `json:"mac_cnd_max,omitempty"`
+	MacCndMaxSign       string `json:"mac_cnd_max_sign,omitempty"`
+	MacCndMin           string `json:"mac_cnd_min,omitempty"`
+	MacCndMinSign       string `json:"mac_cnd_min_sign,omitempty"`
+	MacCndTp            string `json:"mac_cnd_tp,omitempty"`
+	MacTp               string `json:"mac_tp,omitempty"`
+	MrktTp              string `json:"mrkt_tp,omitempty"`
+	PricTp              string `json:"pric_tp,omitempty"`
+	PriceCndMax         string `json:"price_cnd_max,omitempty"`
+	PriceCndMaxSign     string `json:"price_cnd_max_sign,omitempty"`
+	PriceCndMin         string `json:"price_cnd_min,omitempty"`
+	PriceCndMinSign     string `json:"price_cnd_min_sign,omitempty"`
+	PriceCndTp          string `json:"price_cnd_tp,omitempty"`
+	SortTp              string `json:"sort_tp,omitempty"`
+	StexTp              string `json:"stex_tp,omitempty"`
+	StkTp               string `json:"stk_tp,omitempty"`
+	TrdePricaCndMax     string `json:"trde_prica_cnd_max,omitempty"`
+	TrdePricaCndMaxSign string `json:"trde_prica_cnd_max_sign,omitempty"`
+	TrdePricaCndMin     string `json:"trde_prica_cnd_min,omitempty"`
+	TrdePricaCndMinSgin string `json:"trde_prica_cnd_min_sgin,omitempty"`
+	TrdePricaCndTp      string `json:"trde_prica_cnd_tp,omitempty"`
+	TrdePricaTp         string `json:"trde_prica_tp,omitempty"`
+	TrdeQtyCndMax       string `json:"trde_qty_cnd_max,omitempty"`
+	TrdeQtyCndMaxSign   string `json:"trde_qty_cnd_max_sign,omitempty"`
+	TrdeQtyCndMin       string `json:"trde_qty_cnd_min,omitempty"`
+	TrdeQtyCndMinSign   string `json:"trde_qty_cnd_min_sign,omitempty"`
+	TrdeQtyCndTp        string `json:"trde_qty_cnd_tp,omitempty"`
+	TrdeQtyTp           string `json:"trde_qty_tp,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa00196Request struct {
+	StkCd string `json:"stk_cd,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa04196Request struct {
+	EdDt   string `json:"ed_dt,omitempty"`
+	QryTp  string `json:"qry_tp,omitempty"`
+	StDt   string `json:"st_dt,omitempty"`
+	StexTp string `json:"stex_tp,omitempty"`
+	StkCd  string `json:"stk_cd,omitempty"`
+}
+
 type KiwoomApiDostkRkinfoKa10020Request struct {
 	CrdCnd    string `json:"crd_cnd,omitempty"`
 	MrktTp    string `json:"mrkt_tp,omitempty"`
@@ -1142,6 +1187,11 @@ type KiwoomApiDostkStkinfoKa10101Request struct {
 }
 
 type KiwoomApiDostkStkinfoKa10102Request struct {
+}
+
+type KiwoomApiDostkStkinfoKa10103Request struct {
+	StkCd     string `json:"- stk_cd,omitempty"`
+	InputList string `json:"input_list,omitempty"`
 }
 
 type KiwoomApiDostkStkinfoKa90003Request struct {
@@ -1873,6 +1923,12 @@ type KiwoomApiUsStkinfoUsa10101Request struct {
 
 type KiwoomApiUsStkinfoUsa10102Request struct {
 	IndexQryTp string `json:"index_qry_tp,omitempty"`
+}
+
+type KiwoomApiUsStkinfoUsa10103Request struct {
+	StexTp    string `json:"- stex_tp,omitempty"`
+	StkCd     string `json:"- stk_cd,omitempty"`
+	InputList string `json:"input_list,omitempty"`
 }
 
 type KiwoomApiUsStkinfoUsa10104Request struct {
@@ -4783,6 +4839,69 @@ type KiwoomApiDostkOrdrKt50003Response struct {
 	OrdNo         string `json:"ord_no,omitempty"`
 }
 
+type KiwoomApiDostkRkinfoKa00190Response struct {
+	ResultList []KiwoomApiDostkRkinfoKa00190ResponseItem `json:"result_list,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa00190ResponseItem struct {
+	BuyCnt     string `json:"buy_cnt,omitempty"`
+	CurPrc     string `json:"cur_prc,omitempty"`
+	FluRt      string `json:"flu_rt,omitempty"`
+	Pre        string `json:"pre,omitempty"`
+	PredPre    string `json:"pred_pre,omitempty"`
+	PredPreSig string `json:"pred_pre_sig,omitempty"`
+	SelCnt     string `json:"sel_cnt,omitempty"`
+	StkCd      string `json:"stk_cd,omitempty"`
+	StkNm      string `json:"stk_nm,omitempty"`
+	TrdePrica  string `json:"trde_prica,omitempty"`
+	TrdeQty    string `json:"trde_qty,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa00196Response struct {
+	ResultList []KiwoomApiDostkRkinfoKa00196ResponseItem `json:"result_list,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa00196ResponseItem struct {
+	BuyAvgPric  string `json:"buy_avg_pric,omitempty"`
+	BuyCnt      string `json:"buy_cnt,omitempty"`
+	BuyRt       string `json:"buy_rt,omitempty"`
+	BuyTrdeQty  string `json:"buy_trde_qty,omitempty"`
+	MontCntrAmt string `json:"mont_cntr_amt,omitempty"`
+	SelAvgPric  string `json:"sel_avg_pric,omitempty"`
+	SelCnt      string `json:"sel_cnt,omitempty"`
+	SelRt       string `json:"sel_rt,omitempty"`
+	SelTrdeQty  string `json:"sel_trde_qty,omitempty"`
+	TotAvgPric  string `json:"tot_avg_pric,omitempty"`
+	TotNetCnt   string `json:"tot_net_cnt,omitempty"`
+	TotNetRt    string `json:"tot_net_rt,omitempty"`
+	TotTrdeQty  string `json:"tot_trde_qty,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa04196Response struct {
+	ResultList []KiwoomApiDostkRkinfoKa04196ResponseItem `json:"result_list,omitempty"`
+}
+
+type KiwoomApiDostkRkinfoKa04196ResponseItem struct {
+	AcctQty    string `json:"acct_qty,omitempty"`
+	AvgPurPric string `json:"avg_pur_pric,omitempty"`
+	BuyAmt     string `json:"buy_amt,omitempty"`
+	BuyQty     string `json:"buy_qty,omitempty"`
+	CurPric    string `json:"cur_pric,omitempty"`
+	FluRt      string `json:"flu_rt,omitempty"`
+	NetprpsAmt string `json:"netprps_amt,omitempty"`
+	NetprpsQty string `json:"netprps_qty,omitempty"`
+	PredPre    string `json:"pred_pre,omitempty"`
+	PredPreSig string `json:"pred_pre_sig,omitempty"`
+	PrftRt     string `json:"prft_rt,omitempty"`
+	Qty        string `json:"qty,omitempty"`
+	Rank       string `json:"rank,omitempty"`
+	SelQty     string `json:"sel_qty,omitempty"`
+	SellAmt    string `json:"sell_amt,omitempty"`
+	StkCd      string `json:"stk_cd,omitempty"`
+	StkNm      string `json:"stk_nm,omitempty"`
+	TrdeQty    string `json:"trde_qty,omitempty"`
+}
+
 type KiwoomApiDostkRkinfoKa10020Response struct {
 	BidReqUpper []KiwoomApiDostkRkinfoKa10020ResponseItem `json:"bid_req_upper,omitempty"`
 }
@@ -6090,6 +6209,16 @@ type KiwoomApiDostkStkinfoKa10102ResponseItem struct {
 	Code string `json:"code,omitempty"`
 	Gb   string `json:"gb,omitempty"`
 	Name string `json:"name,omitempty"`
+}
+
+type KiwoomApiDostkStkinfoKa10103Response struct {
+	ResultList []KiwoomApiDostkStkinfoKa10103ResponseItem `json:"result_list,omitempty"`
+	Rtcd       string                                     `json:"rtcd,omitempty"`
+}
+
+type KiwoomApiDostkStkinfoKa10103ResponseItem struct {
+	Memo  string `json:"memo,omitempty"`
+	StkCd string `json:"stk_cd,omitempty"`
 }
 
 type KiwoomApiDostkStkinfoKa90003Response struct {
@@ -8188,6 +8317,17 @@ type KiwoomApiUsStkinfoUsa10102ResponseItem struct {
 	IndexNm  string `json:"index_nm,omitempty"`
 }
 
+type KiwoomApiUsStkinfoUsa10103Response struct {
+	ResultList []KiwoomApiUsStkinfoUsa10103ResponseItem `json:"result_list,omitempty"`
+	Rtcd       string                                   `json:"rtcd,omitempty"`
+}
+
+type KiwoomApiUsStkinfoUsa10103ResponseItem struct {
+	Memo   string `json:"memo,omitempty"`
+	StexTp string `json:"stex_tp,omitempty"`
+	StkCd  string `json:"stk_cd,omitempty"`
+}
+
 type KiwoomApiUsStkinfoUsa10104Response struct {
 	List []KiwoomApiUsStkinfoUsa10104ResponseItem `json:"list,omitempty"`
 }
@@ -8906,6 +9046,9 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/api/dostk/ordr|kt50001":      func() any { return &KiwoomApiDostkOrdrKt50001Request{} },
 	"/api/dostk/ordr|kt50002":      func() any { return &KiwoomApiDostkOrdrKt50002Request{} },
 	"/api/dostk/ordr|kt50003":      func() any { return &KiwoomApiDostkOrdrKt50003Request{} },
+	"/api/dostk/rkinfo|ka00190":    func() any { return &KiwoomApiDostkRkinfoKa00190Request{} },
+	"/api/dostk/rkinfo|ka00196":    func() any { return &KiwoomApiDostkRkinfoKa00196Request{} },
+	"/api/dostk/rkinfo|ka04196":    func() any { return &KiwoomApiDostkRkinfoKa04196Request{} },
 	"/api/dostk/rkinfo|ka10020":    func() any { return &KiwoomApiDostkRkinfoKa10020Request{} },
 	"/api/dostk/rkinfo|ka10021":    func() any { return &KiwoomApiDostkRkinfoKa10021Request{} },
 	"/api/dostk/rkinfo|ka10022":    func() any { return &KiwoomApiDostkRkinfoKa10022Request{} },
@@ -8967,6 +9110,7 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/api/dostk/stkinfo|ka10100":   func() any { return &KiwoomApiDostkStkinfoKa10100Request{} },
 	"/api/dostk/stkinfo|ka10101":   func() any { return &KiwoomApiDostkStkinfoKa10101Request{} },
 	"/api/dostk/stkinfo|ka10102":   func() any { return &KiwoomApiDostkStkinfoKa10102Request{} },
+	"/api/dostk/stkinfo|ka10103":   func() any { return &KiwoomApiDostkStkinfoKa10103Request{} },
 	"/api/dostk/stkinfo|ka90003":   func() any { return &KiwoomApiDostkStkinfoKa90003Request{} },
 	"/api/dostk/stkinfo|ka90004":   func() any { return &KiwoomApiDostkStkinfoKa90004Request{} },
 	"/api/dostk/stkinfo|kt20016":   func() any { return &KiwoomApiDostkStkinfoKt20016Request{} },
@@ -9066,6 +9210,7 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/api/us/stkinfo|usa10100":     func() any { return &KiwoomApiUsStkinfoUsa10100Request{} },
 	"/api/us/stkinfo|usa10101":     func() any { return &KiwoomApiUsStkinfoUsa10101Request{} },
 	"/api/us/stkinfo|usa10102":     func() any { return &KiwoomApiUsStkinfoUsa10102Request{} },
+	"/api/us/stkinfo|usa10103":     func() any { return &KiwoomApiUsStkinfoUsa10103Request{} },
 	"/api/us/stkinfo|usa10104":     func() any { return &KiwoomApiUsStkinfoUsa10104Request{} },
 	"/api/us/stkinfo|usa10105":     func() any { return &KiwoomApiUsStkinfoUsa10105Request{} },
 	"/api/us/stkinfo|usa20520":     func() any { return &KiwoomApiUsStkinfoUsa20520Request{} },
@@ -9213,6 +9358,9 @@ var documentedEndpointResponseFactories = map[string]func() any{
 	"/api/dostk/ordr|kt50001":      func() any { return &KiwoomApiDostkOrdrKt50001Response{} },
 	"/api/dostk/ordr|kt50002":      func() any { return &KiwoomApiDostkOrdrKt50002Response{} },
 	"/api/dostk/ordr|kt50003":      func() any { return &KiwoomApiDostkOrdrKt50003Response{} },
+	"/api/dostk/rkinfo|ka00190":    func() any { return &KiwoomApiDostkRkinfoKa00190Response{} },
+	"/api/dostk/rkinfo|ka00196":    func() any { return &KiwoomApiDostkRkinfoKa00196Response{} },
+	"/api/dostk/rkinfo|ka04196":    func() any { return &KiwoomApiDostkRkinfoKa04196Response{} },
 	"/api/dostk/rkinfo|ka10020":    func() any { return &KiwoomApiDostkRkinfoKa10020Response{} },
 	"/api/dostk/rkinfo|ka10021":    func() any { return &KiwoomApiDostkRkinfoKa10021Response{} },
 	"/api/dostk/rkinfo|ka10022":    func() any { return &KiwoomApiDostkRkinfoKa10022Response{} },
@@ -9274,6 +9422,7 @@ var documentedEndpointResponseFactories = map[string]func() any{
 	"/api/dostk/stkinfo|ka10100":   func() any { return &KiwoomApiDostkStkinfoKa10100Response{} },
 	"/api/dostk/stkinfo|ka10101":   func() any { return &KiwoomApiDostkStkinfoKa10101Response{} },
 	"/api/dostk/stkinfo|ka10102":   func() any { return &KiwoomApiDostkStkinfoKa10102Response{} },
+	"/api/dostk/stkinfo|ka10103":   func() any { return &KiwoomApiDostkStkinfoKa10103Response{} },
 	"/api/dostk/stkinfo|ka90003":   func() any { return &KiwoomApiDostkStkinfoKa90003Response{} },
 	"/api/dostk/stkinfo|ka90004":   func() any { return &KiwoomApiDostkStkinfoKa90004Response{} },
 	"/api/dostk/stkinfo|kt20016":   func() any { return &KiwoomApiDostkStkinfoKt20016Response{} },
@@ -9373,6 +9522,7 @@ var documentedEndpointResponseFactories = map[string]func() any{
 	"/api/us/stkinfo|usa10100":     func() any { return &KiwoomApiUsStkinfoUsa10100Response{} },
 	"/api/us/stkinfo|usa10101":     func() any { return &KiwoomApiUsStkinfoUsa10101Response{} },
 	"/api/us/stkinfo|usa10102":     func() any { return &KiwoomApiUsStkinfoUsa10102Response{} },
+	"/api/us/stkinfo|usa10103":     func() any { return &KiwoomApiUsStkinfoUsa10103Response{} },
 	"/api/us/stkinfo|usa10104":     func() any { return &KiwoomApiUsStkinfoUsa10104Response{} },
 	"/api/us/stkinfo|usa10105":     func() any { return &KiwoomApiUsStkinfoUsa10105Response{} },
 	"/api/us/stkinfo|usa20520":     func() any { return &KiwoomApiUsStkinfoUsa20520Response{} },

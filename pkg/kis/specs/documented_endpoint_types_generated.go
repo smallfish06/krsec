@@ -9935,6 +9935,9 @@ type KISOverseasPriceV1QuotationsSearchInfoOutputItem struct {
 	OvrsNowPric1           string `json:"ovrs_now_pric1"`
 	SgleItemLvrgEtpYn      string `json:"sgle_item_lvrg_etp_yn"`
 	LastRcvgDtime          string `json:"last_rcvg_dtime"`
+	EtpBastLclsCd          string `json:"etp_bast_lcls_cd"`
+	EtpBastMclsCd          string `json:"etp_bast_mcls_cd"`
+	EtpBastSclsCd          string `json:"etp_bast_scls_cd"`
 }
 
 type KISOverseasPriceV1QuotationsSearchInfoRequest struct {

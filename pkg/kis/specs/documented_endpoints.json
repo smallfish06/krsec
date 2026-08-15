@@ -36677,6 +36677,21 @@
           "code": "last_rcvg_dtime",
           "type": "A0001",
           "order": "004.056"
+        },
+        {
+          "code": "etp_bast_lcls_cd",
+          "type": "A0001",
+          "order": "004.057"
+        },
+        {
+          "code": "etp_bast_mcls_cd",
+          "type": "A0001",
+          "order": "004.058"
+        },
+        {
+          "code": "etp_bast_scls_cd",
+          "type": "A0001",
+          "order": "004.059"
         }
       ]
     },
