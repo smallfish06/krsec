@@ -260,6 +260,9 @@
 					"avg_evlu_amt": {
 						"type": "string"
 					},
+					"avg_evlu_rf_unpr": {
+						"type": "string"
+					},
 					"chng_yn": {
 						"type": "string"
 					},
@@ -272,10 +275,19 @@
 					"kbp_evlu_amt": {
 						"type": "string"
 					},
+					"kbp_rf_unpr": {
+						"type": "string"
+					},
 					"kis_evlu_amt": {
 						"type": "string"
 					},
+					"kis_rf_unpr": {
+						"type": "string"
+					},
 					"nice_evlu_amt": {
+						"type": "string"
+					},
+					"nice_evlu_rf_unpr": {
 						"type": "string"
 					},
 					"pdno": {
@@ -290,12 +302,16 @@
 				},
 				"required": [
 					"avg_evlu_amt",
+					"avg_evlu_rf_unpr",
 					"chng_yn",
 					"evlu_dt",
 					"fnp_evlu_amt",
 					"kbp_evlu_amt",
+					"kbp_rf_unpr",
 					"kis_evlu_amt",
+					"kis_rf_unpr",
 					"nice_evlu_amt",
+					"nice_evlu_rf_unpr",
 					"pdno",
 					"prdt_name",
 					"prdt_type_cd"
@@ -8781,16 +8797,31 @@
 					"bcdt_code": {
 						"type": "string"
 					},
+					"bond_cntg_ert": {
+						"type": "string"
+					},
 					"bond_mnrt_prdy_vrss": {
 						"type": "string"
 					},
 					"bond_mnrt_prpr": {
 						"type": "string"
 					},
+					"bond_stnd_iscd": {
+						"type": "string"
+					},
+					"date_time": {
+						"type": "string"
+					},
 					"hts_kor_isnm": {
 						"type": "string"
 					},
+					"indicator_nm": {
+						"type": "string"
+					},
 					"prdy_ctrt": {
+						"type": "string"
+					},
+					"prdy_vrss": {
 						"type": "string"
 					},
 					"prdy_vrss_sign": {
@@ -8802,10 +8833,15 @@
 				},
 				"required": [
 					"bcdt_code",
+					"bond_cntg_ert",
 					"bond_mnrt_prdy_vrss",
 					"bond_mnrt_prpr",
+					"bond_stnd_iscd",
+					"date_time",
 					"hts_kor_isnm",
+					"indicator_nm",
 					"prdy_ctrt",
+					"prdy_vrss",
 					"prdy_vrss_sign",
 					"stck_bsop_date"
 				],
@@ -8849,6 +8885,9 @@
 			"KISDomesticStockV1QuotationsCompInterestRequest": {
 				"description": "KISDomesticStockV1QuotationsCompInterestRequest schema",
 				"properties": {
+					"DATA_GB": {
+						"type": "string"
+					},
 					"FID_COND_MRKT_DIV_CODE": {
 						"type": "string"
 					},
@@ -8863,6 +8902,7 @@
 					}
 				},
 				"required": [
+					"DATA_GB",
 					"FID_COND_MRKT_DIV_CODE",
 					"FID_COND_SCR_DIV_CODE",
 					"FID_DIV_CLS_CODE",
@@ -62142,6 +62182,331 @@
 				},
 				"type": "object"
 			},
+			"KiwoomApiUsOrdrUst21200Request": {
+				"description": "KiwoomApiUsOrdrUst21200Request schema",
+				"properties": {
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_end_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_strt_dt": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21200Response": {
+				"description": "KiwoomApiUsOrdrUst21200Response schema",
+				"properties": {
+					"frcs_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_no": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21201Request": {
+				"description": "KiwoomApiUsOrdrUst21201Request schema",
+				"properties": {
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_end_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_strt_dt": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stop_pric": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21201Response": {
+				"description": "KiwoomApiUsOrdrUst21201Response schema",
+				"properties": {
+					"frcs_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_no": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21203Request": {
+				"description": "KiwoomApiUsOrdrUst21203Request schema",
+				"properties": {
+					"rsrv_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_no": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21203Response": {
+				"description": "KiwoomApiUsOrdrUst21203Response schema",
+				"properties": {
+					"filler": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21204Request": {
+				"description": "KiwoomApiUsOrdrUst21204Request schema",
+				"properties": {
+					"ord_send_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21204Response": {
+				"description": "KiwoomApiUsOrdrUst21204Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21204ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21204ResponseItem": {
+				"properties": {
+					"accm_cntr_qty": {
+						"type": "string"
+					},
+					"am_pm_tp": {
+						"type": "string"
+					},
+					"err_cntn": {
+						"type": "string"
+					},
+					"ord_no": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_send_dt": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"orig_ord_qty": {
+						"type": "string"
+					},
+					"rsrv_dt": {
+						"type": "string"
+					},
+					"rsrv_end_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_nm": {
+						"type": "string"
+					},
+					"rsrv_ord_no": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_strt_dt": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"stex_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"trde_nm": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21205Request": {
+				"description": "KiwoomApiUsOrdrUst21205Request schema",
+				"properties": {
+					"base_dt_tp": {
+						"type": "string"
+					},
+					"fr_rsrv_dt": {
+						"type": "string"
+					},
+					"fr_rsrv_ord_no": {
+						"type": "string"
+					},
+					"rsrv_cncl_yn": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_proc_tp": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"to_rsrv_dt": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21205Response": {
+				"description": "KiwoomApiUsOrdrUst21205Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21205ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiUsOrdrUst21205ResponseItem": {
+				"properties": {
+					"accm_cntr_qty": {
+						"type": "string"
+					},
+					"am_pm_tp": {
+						"type": "string"
+					},
+					"err_cntn": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"orig_ord_qty": {
+						"type": "string"
+					},
+					"proc_tp": {
+						"type": "string"
+					},
+					"rsrv_cncl_yn": {
+						"type": "string"
+					},
+					"rsrv_dt": {
+						"type": "string"
+					},
+					"rsrv_end_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_nm": {
+						"type": "string"
+					},
+					"rsrv_ord_no": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_strt_dt": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"stex_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"stop_pric": {
+						"type": "string"
+					},
+					"trde_nm": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
 			"KiwoomApiUsOrdrUst31490Request": {
 				"description": "KiwoomApiUsOrdrUst31490Request schema",
 				"properties": {
@@ -110342,6 +110707,406 @@
 					}
 				},
 				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust20003",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/us/ordr/ust21200": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/us/ordr (api_id=ust21200).",
+				"operationId": "POST_/kiwoom/us/ordr/ust21200",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21200Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiUsOrdrUst21200Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21200Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust21200",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/us/ordr/ust21201": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/us/ordr (api_id=ust21201).",
+				"operationId": "POST_/kiwoom/us/ordr/ust21201",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21201Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiUsOrdrUst21201Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21201Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust21201",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/us/ordr/ust21203": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/us/ordr (api_id=ust21203).",
+				"operationId": "POST_/kiwoom/us/ordr/ust21203",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21203Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiUsOrdrUst21203Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21203Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust21203",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/us/ordr/ust21204": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/us/ordr (api_id=ust21204).",
+				"operationId": "POST_/kiwoom/us/ordr/ust21204",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21204Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiUsOrdrUst21204Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21204Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust21204",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/us/ordr/ust21205": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/us/ordr (api_id=ust21205).",
+				"operationId": "POST_/kiwoom/us/ordr/ust21205",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21205Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiUsOrdrUst21205Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiUsOrdrUst21205Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/us/ordr/ust21205",
 				"tags": [
 					"Kiwoom"
 				]
