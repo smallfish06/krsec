@@ -38,16 +38,20 @@ type KISDomesticBondV1QuotationsAvgUnitOutput1Item struct {
 }
 
 type KISDomesticBondV1QuotationsAvgUnitOutput2Item struct {
-	EvluDt      string `json:"evlu_dt"`
-	Pdno        string `json:"pdno"`
-	PrdtTypeCd  string `json:"prdt_type_cd"`
-	PrdtName    string `json:"prdt_name"`
-	KisEvluAmt  string `json:"kis_evlu_amt"`
-	KbpEvluAmt  string `json:"kbp_evlu_amt"`
-	NiceEvluAmt string `json:"nice_evlu_amt"`
-	FnpEvluAmt  string `json:"fnp_evlu_amt"`
-	AvgEvluAmt  string `json:"avg_evlu_amt"`
-	ChngYn      string `json:"chng_yn"`
+	EvluDt         string `json:"evlu_dt"`
+	Pdno           string `json:"pdno"`
+	PrdtTypeCd     string `json:"prdt_type_cd"`
+	PrdtName       string `json:"prdt_name"`
+	KisEvluAmt     string `json:"kis_evlu_amt"`
+	KbpEvluAmt     string `json:"kbp_evlu_amt"`
+	NiceEvluAmt    string `json:"nice_evlu_amt"`
+	FnpEvluAmt     string `json:"fnp_evlu_amt"`
+	AvgEvluAmt     string `json:"avg_evlu_amt"`
+	ChngYn         string `json:"chng_yn"`
+	KisRfUnpr      string `json:"kis_rf_unpr"`
+	KbpRfUnpr      string `json:"kbp_rf_unpr"`
+	NiceEvluRfUnpr string `json:"nice_evlu_rf_unpr"`
+	AvgEvluRfUnpr  string `json:"avg_evlu_rf_unpr"`
 }
 
 type KISDomesticBondV1QuotationsAvgUnitOutput3Item struct {
@@ -2261,6 +2265,11 @@ type KISDomesticStockV1QuotationsCompInterestOutput1Item struct {
 	BondMnrtPrdyVrss string `json:"bond_mnrt_prdy_vrss"`
 	PrdyCtrt         string `json:"prdy_ctrt"`
 	StckBsopDate     string `json:"stck_bsop_date"`
+	IndicatorNm      string `json:"indicator_nm"`
+	BondCntgErt      string `json:"bond_cntg_ert"`
+	PrdyVrss         string `json:"prdy_vrss"`
+	DateTime         string `json:"date_time"`
+	BondStndIscd     string `json:"bond_stnd_iscd"`
 }
 
 type KISDomesticStockV1QuotationsCompInterestOutput2Item struct {
@@ -2274,6 +2283,7 @@ type KISDomesticStockV1QuotationsCompInterestOutput2Item struct {
 }
 
 type KISDomesticStockV1QuotationsCompInterestRequest struct {
+	DataGb             string `json:"DATA_GB"`
 	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
 	FidCondScrDivCode  string `json:"FID_COND_SCR_DIV_CODE"`
 	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`

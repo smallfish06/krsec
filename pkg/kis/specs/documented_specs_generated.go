@@ -376,9 +376,9 @@ var DocumentedKISEndpointSpecs = map[string]KISEndpointSpec{
 	},
 	"/uapi/domestic-stock/v1/quotations/comp-interest": {
 		Method:         "GET",
-		RealTRID:       "FHPST07020000",
+		RealTRID:       "(구) FHPST07020000 (신)HHPST070200C0",
 		VirtualTRID:    "",
-		RequiredFields: []string{"FID_COND_MRKT_DIV_CODE", "FID_COND_SCR_DIV_CODE", "FID_DIV_CLS_CODE", "FID_DIV_CLS_CODE1"},
+		RequiredFields: []string{"DATA_GB", "FID_COND_MRKT_DIV_CODE", "FID_COND_SCR_DIV_CODE", "FID_DIV_CLS_CODE", "FID_DIV_CLS_CODE1"},
 	},
 	"/uapi/domestic-stock/v1/quotations/comp-program-trade-daily": {
 		Method:         "GET",

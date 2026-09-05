@@ -206,6 +206,26 @@
           "order": "005.010"
         },
         {
+          "code": "kis_rf_unpr",
+          "type": "A0001",
+          "order": "005.011"
+        },
+        {
+          "code": "kbp_rf_unpr",
+          "type": "A0001",
+          "order": "005.012"
+        },
+        {
+          "code": "nice_evlu_rf_unpr",
+          "type": "A0001",
+          "order": "005.013"
+        },
+        {
+          "code": "avg_evlu_rf_unpr",
+          "type": "A0001",
+          "order": "005.014"
+        },
+        {
           "code": "output3",
           "type": "A0005",
           "order": "006"
@@ -8571,9 +8591,10 @@
     {
       "path": "/uapi/domestic-stock/v1/quotations/comp-interest",
       "method": "GET",
-      "real_trid": "FHPST07020000",
+      "real_trid": "(구) FHPST07020000 (신)HHPST070200C0",
       "virtual_trid": "",
       "required_fields": [
+        "DATA_GB",
         "FID_COND_MRKT_DIV_CODE",
         "FID_COND_SCR_DIV_CODE",
         "FID_DIV_CLS_CODE",
@@ -8634,6 +8655,46 @@
           "code": "stck_bsop_date",
           "type": "A0001",
           "order": "004.007"
+        },
+        {
+          "code": "indicator_nm",
+          "type": "A0001",
+          "order": "004.008"
+        },
+        {
+          "code": "indicator_nm",
+          "type": "A0001",
+          "order": "004.009"
+        },
+        {
+          "code": "bond_cntg_ert",
+          "type": "A0001",
+          "order": "004.010"
+        },
+        {
+          "code": "prdy_vrss_sign",
+          "type": "A0001",
+          "order": "004.011"
+        },
+        {
+          "code": "prdy_vrss",
+          "type": "A0001",
+          "order": "004.012"
+        },
+        {
+          "code": "prdy_ctrt",
+          "type": "A0001",
+          "order": "004.013"
+        },
+        {
+          "code": "date_time",
+          "type": "A0001",
+          "order": "004.014"
+        },
+        {
+          "code": "bond_stnd_iscd",
+          "type": "A0001",
+          "order": "004.015"
         },
         {
           "code": "output2",

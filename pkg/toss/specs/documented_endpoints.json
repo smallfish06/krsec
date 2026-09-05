@@ -1,6 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
+    "description": "토스증권 트레이딩 Open API 의 REST 스펙입니다. 실시간 체결·호가·본인 주문 이벤트 스트리밍은 REST 가 아닌 웹소켓 API(`wss://openapi-ws.tossinvest.com/ws/v1`)로 제공되며, 별도의 AsyncAPI 3.0 문서 (https://openapi.tossinvest.com/openapi-docs/latest/asyncapi.json)가 실시간 스펙의 source of truth 입니다.",
     "title": "토스증권 Open API",
     "version": "1.2.14"
   },
@@ -2940,7 +2941,7 @@
           },
           "orderedAt": {
             "description": "주문 시간 (ISO 8601, KST)",
-            "example": "2026-03-29T09:30:00+09:00",
+            "example": "2026-03-29T09:30:00.000+09:00",
             "format": "date-time",
             "type": "string"
           },
@@ -2979,7 +2980,7 @@
             "type": "string"
           },
           "timeInForce": {
-            "description": "주문 유효 조건 (Time In Force). `orderType` 과 결합되어 주문 방식이 결정됩니다 (예: `LIMIT` + `CLS` = LOC).\n- `DAY`: 당일 유효 (Day)\n- `CLS`: 장 마감 주문 (At the Close)\n- `OPG`: 장 개시 주문 (At the Opening). 현재는 지원하지 않습니다.\n\n클라이언트는 unknown code 를 허용하도록 구현해야 합니다.\n",
+            "description": "주문 유효 조건 (Time In Force). `orderType` 과 결합되어 주문 방식이 결정됩니다 (예: `LIMIT` + `CLS` = LOC).\n- `DAY`: 당일 유효 (Day)\n- `CLS`: 장 마감 주문 (At the Close)\n- `OPG`: 장 개시 주문 (At the Opening, 국내 시가단일가)\n\n클라이언트는 unknown code 를 허용하도록 구현해야 합니다.\n",
             "enum": [
               "DAY",
               "CLS",
@@ -3062,10 +3063,11 @@
               },
               "timeInForce": {
                 "default": "DAY",
-                "description": "주문 유효 조건 (Time In Force). 미전달 시 `DAY`. `orderType` 과 결합되어 주문 방식이 결정됩니다 (예: `LIMIT` + `CLS` = LOC).\n- `DAY`: 당일 유효 (Day). 정규장 종료까지 미체결분은 자동 취소됩니다.\n- `CLS`: 장 마감 주문 (At the Close). 현재 미국 주식 + `orderType=LIMIT` 조합만 지원합니다.\n",
+                "description": "주문 유효 조건 (Time In Force). 미전달 시 `DAY`. `orderType` 과 결합되어 주문 방식이 결정됩니다 (예: `LIMIT` + `CLS` = LOC).\n- `DAY`: 당일 유효 (Day). 정규장 종료까지 미체결분은 자동 취소됩니다.\n- `CLS`: 장 마감 주문 (At the Close). 현재 미국 주식 + `orderType=LIMIT` 조합만 지원합니다.\n- `OPG`: 장 개시 주문 (At the Opening, 국내 시가단일가). 현재 국내 주식 전용이며 `orderType` 은 `LIMIT`/`MARKET` 모두 지원합니다. 세션 시간(장전 사전접수) 외 접수는 원장에서 거절될 수 있습니다.\n",
                 "enum": [
                   "DAY",
-                  "CLS"
+                  "CLS",
+                  "OPG"
                 ],
                 "example": "DAY",
                 "type": "string"
@@ -3141,7 +3143,7 @@
       "OrderExecution": {
         "properties": {
           "averageFilledPrice": {
-            "description": "평균 체결 가격 (native currency). 부분 체결 시 체결된 건의 평균",
+            "description": "평균 체결 가격 (native currency). 부분 체결 시 체결된 건의 평균, 미체결 시 null",
             "example": "70000",
             "format": "decimal",
             "maxLength": 30,
@@ -3172,7 +3174,7 @@
           },
           "filledAt": {
             "description": "최종 체결 시간 (ISO 8601, KST)",
-            "example": "2026-03-28T09:31:15+09:00",
+            "example": "2026-03-28T09:31:15.000+09:00",
             "format": "date-time",
             "type": [
               "string",

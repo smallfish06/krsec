@@ -1531,6 +1531,54 @@ type KiwoomApiUsOrdrUst20003Request struct {
 	StkCd     string `json:"stk_cd,omitempty"`
 }
 
+type KiwoomApiUsOrdrUst21200Request struct {
+	OrdQty     string `json:"ord_qty,omitempty"`
+	OrdUv      string `json:"ord_uv,omitempty"`
+	RsrvEndDt  string `json:"rsrv_end_dt,omitempty"`
+	RsrvOrdTp  string `json:"rsrv_ord_tp,omitempty"`
+	RsrvStrtDt string `json:"rsrv_strt_dt,omitempty"`
+	StexTp     string `json:"stex_tp,omitempty"`
+	StkCd      string `json:"stk_cd,omitempty"`
+	TrdeTp     string `json:"trde_tp,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21201Request struct {
+	OrdQty     string `json:"ord_qty,omitempty"`
+	OrdUv      string `json:"ord_uv,omitempty"`
+	RsrvEndDt  string `json:"rsrv_end_dt,omitempty"`
+	RsrvOrdTp  string `json:"rsrv_ord_tp,omitempty"`
+	RsrvStrtDt string `json:"rsrv_strt_dt,omitempty"`
+	StexTp     string `json:"stex_tp,omitempty"`
+	StkCd      string `json:"stk_cd,omitempty"`
+	StopPric   string `json:"stop_pric,omitempty"`
+	TrdeTp     string `json:"trde_tp,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21203Request struct {
+	RsrvDt    string `json:"rsrv_dt,omitempty"`
+	RsrvOrdNo string `json:"rsrv_ord_no,omitempty"`
+	StexTp    string `json:"stex_tp,omitempty"`
+	StkCd     string `json:"stk_cd,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21204Request struct {
+	OrdSendDt string `json:"ord_send_dt,omitempty"`
+	RsrvOrdTp string `json:"rsrv_ord_tp,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21205Request struct {
+	BaseDtTp    string `json:"base_dt_tp,omitempty"`
+	FrRsrvDt    string `json:"fr_rsrv_dt,omitempty"`
+	FrRsrvOrdNo string `json:"fr_rsrv_ord_no,omitempty"`
+	RsrvCnclYn  string `json:"rsrv_cncl_yn,omitempty"`
+	RsrvOrdTp   string `json:"rsrv_ord_tp,omitempty"`
+	RsrvProcTp  string `json:"rsrv_proc_tp,omitempty"`
+	SlbyTp      string `json:"slby_tp,omitempty"`
+	StexTp      string `json:"stex_tp,omitempty"`
+	StkCd       string `json:"stk_cd,omitempty"`
+	ToRsrvDt    string `json:"to_rsrv_dt,omitempty"`
+}
+
 type KiwoomApiUsOrdrUst31490Request struct {
 	StexTp string `json:"stex_tp,omitempty"`
 	StkCd  string `json:"stk_cd,omitempty"`
@@ -7455,6 +7503,75 @@ type KiwoomApiUsOrdrUst20003Response struct {
 	StkNm      string `json:"stk_nm,omitempty"`
 }
 
+type KiwoomApiUsOrdrUst21200Response struct {
+	FrcsDt    string `json:"frcs_dt,omitempty"`
+	RsrvOrdNo string `json:"rsrv_ord_no,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21201Response struct {
+	FrcsDt    string `json:"frcs_dt,omitempty"`
+	RsrvOrdNo string `json:"rsrv_ord_no,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21203Response struct {
+	Filler string `json:"filler,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21204Response struct {
+	ResultList []KiwoomApiUsOrdrUst21204ResponseItem `json:"result_list,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21204ResponseItem struct {
+	AccmCntrQty string `json:"accm_cntr_qty,omitempty"`
+	AmPmTp      string `json:"am_pm_tp,omitempty"`
+	ErrCntn     string `json:"err_cntn,omitempty"`
+	OrdNo       string `json:"ord_no,omitempty"`
+	OrdQty      string `json:"ord_qty,omitempty"`
+	OrdSendDt   string `json:"ord_send_dt,omitempty"`
+	OrdUv       string `json:"ord_uv,omitempty"`
+	OrigOrdQty  string `json:"orig_ord_qty,omitempty"`
+	RsrvDt      string `json:"rsrv_dt,omitempty"`
+	RsrvEndDt   string `json:"rsrv_end_dt,omitempty"`
+	RsrvOrdNm   string `json:"rsrv_ord_nm,omitempty"`
+	RsrvOrdNo   string `json:"rsrv_ord_no,omitempty"`
+	RsrvOrdTp   string `json:"rsrv_ord_tp,omitempty"`
+	RsrvStrtDt  string `json:"rsrv_strt_dt,omitempty"`
+	SlbyTp      string `json:"slby_tp,omitempty"`
+	StexNm      string `json:"stex_nm,omitempty"`
+	StkCd       string `json:"stk_cd,omitempty"`
+	StkNm       string `json:"stk_nm,omitempty"`
+	TrdeNm      string `json:"trde_nm,omitempty"`
+	TrdeTp      string `json:"trde_tp,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21205Response struct {
+	ResultList []KiwoomApiUsOrdrUst21205ResponseItem `json:"result_list,omitempty"`
+}
+
+type KiwoomApiUsOrdrUst21205ResponseItem struct {
+	AccmCntrQty string `json:"accm_cntr_qty,omitempty"`
+	AmPmTp      string `json:"am_pm_tp,omitempty"`
+	ErrCntn     string `json:"err_cntn,omitempty"`
+	OrdQty      string `json:"ord_qty,omitempty"`
+	OrdUv       string `json:"ord_uv,omitempty"`
+	OrigOrdQty  string `json:"orig_ord_qty,omitempty"`
+	ProcTp      string `json:"proc_tp,omitempty"`
+	RsrvCnclYn  string `json:"rsrv_cncl_yn,omitempty"`
+	RsrvDt      string `json:"rsrv_dt,omitempty"`
+	RsrvEndDt   string `json:"rsrv_end_dt,omitempty"`
+	RsrvOrdNm   string `json:"rsrv_ord_nm,omitempty"`
+	RsrvOrdNo   string `json:"rsrv_ord_no,omitempty"`
+	RsrvOrdTp   string `json:"rsrv_ord_tp,omitempty"`
+	RsrvStrtDt  string `json:"rsrv_strt_dt,omitempty"`
+	SlbyTp      string `json:"slby_tp,omitempty"`
+	StexNm      string `json:"stex_nm,omitempty"`
+	StkCd       string `json:"stk_cd,omitempty"`
+	StkNm       string `json:"stk_nm,omitempty"`
+	StopPric    string `json:"stop_pric,omitempty"`
+	TrdeNm      string `json:"trde_nm,omitempty"`
+	TrdeTp      string `json:"trde_tp,omitempty"`
+}
+
 type KiwoomApiUsOrdrUst31490Response struct {
 	AplcRt            string `json:"aplc_rt,omitempty"`
 	CrncCode          string `json:"crnc_code,omitempty"`
@@ -9167,6 +9284,11 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/api/us/ordr|ust20001":        func() any { return &KiwoomApiUsOrdrUst20001Request{} },
 	"/api/us/ordr|ust20002":        func() any { return &KiwoomApiUsOrdrUst20002Request{} },
 	"/api/us/ordr|ust20003":        func() any { return &KiwoomApiUsOrdrUst20003Request{} },
+	"/api/us/ordr|ust21200":        func() any { return &KiwoomApiUsOrdrUst21200Request{} },
+	"/api/us/ordr|ust21201":        func() any { return &KiwoomApiUsOrdrUst21201Request{} },
+	"/api/us/ordr|ust21203":        func() any { return &KiwoomApiUsOrdrUst21203Request{} },
+	"/api/us/ordr|ust21204":        func() any { return &KiwoomApiUsOrdrUst21204Request{} },
+	"/api/us/ordr|ust21205":        func() any { return &KiwoomApiUsOrdrUst21205Request{} },
 	"/api/us/ordr|ust31490":        func() any { return &KiwoomApiUsOrdrUst31490Request{} },
 	"/api/us/rkinfo|usa01980":      func() any { return &KiwoomApiUsRkinfoUsa01980Request{} },
 	"/api/us/rkinfo|usa01990":      func() any { return &KiwoomApiUsRkinfoUsa01990Request{} },
@@ -9479,6 +9601,11 @@ var documentedEndpointResponseFactories = map[string]func() any{
 	"/api/us/ordr|ust20001":        func() any { return &KiwoomApiUsOrdrUst20001Response{} },
 	"/api/us/ordr|ust20002":        func() any { return &KiwoomApiUsOrdrUst20002Response{} },
 	"/api/us/ordr|ust20003":        func() any { return &KiwoomApiUsOrdrUst20003Response{} },
+	"/api/us/ordr|ust21200":        func() any { return &KiwoomApiUsOrdrUst21200Response{} },
+	"/api/us/ordr|ust21201":        func() any { return &KiwoomApiUsOrdrUst21201Response{} },
+	"/api/us/ordr|ust21203":        func() any { return &KiwoomApiUsOrdrUst21203Response{} },
+	"/api/us/ordr|ust21204":        func() any { return &KiwoomApiUsOrdrUst21204Response{} },
+	"/api/us/ordr|ust21205":        func() any { return &KiwoomApiUsOrdrUst21205Response{} },
 	"/api/us/ordr|ust31490":        func() any { return &KiwoomApiUsOrdrUst31490Response{} },
 	"/api/us/rkinfo|usa01980":      func() any { return &KiwoomApiUsRkinfoUsa01980Response{} },
 	"/api/us/rkinfo|usa01990":      func() any { return &KiwoomApiUsRkinfoUsa01990Response{} },

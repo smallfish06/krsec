@@ -22871,6 +22871,413 @@
     },
     {
       "path": "/api/us/ordr",
+      "api_id": "ust21200",
+      "method": "POST",
+      "required_fields": [
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stex_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_end_dt",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "frcs_dt",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_no",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/us/ordr",
+      "api_id": "ust21201",
+      "method": "POST",
+      "required_fields": [
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stex_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_end_dt",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stop_pric",
+          "type": "String"
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "frcs_dt",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_no",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/us/ordr",
+      "api_id": "ust21203",
+      "method": "POST",
+      "required_fields": [
+        "rsrv_dt",
+        "rsrv_ord_no",
+        "stex_tp",
+        "stk_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "rsrv_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_ord_no",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "filler",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/us/ordr",
+      "api_id": "ust21204",
+      "method": "POST",
+      "required_fields": [
+        "rsrv_ord_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_send_dt",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- accm_cntr_qty",
+          "type": "String"
+        },
+        {
+          "code": "- am_pm_tp",
+          "type": "String"
+        },
+        {
+          "code": "- err_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- ord_no",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_send_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- orig_ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_end_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_nm",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_no",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- stex_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/us/ordr",
+      "api_id": "ust21205",
+      "method": "POST",
+      "request_fields": [
+        {
+          "code": "base_dt_tp",
+          "type": "String"
+        },
+        {
+          "code": "fr_rsrv_dt",
+          "type": "String"
+        },
+        {
+          "code": "fr_rsrv_ord_no",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_cncl_yn",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_proc_tp",
+          "type": "String"
+        },
+        {
+          "code": "slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "stex_tp",
+          "type": "String"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "to_rsrv_dt",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- accm_cntr_qty",
+          "type": "String"
+        },
+        {
+          "code": "- am_pm_tp",
+          "type": "String"
+        },
+        {
+          "code": "- err_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- orig_ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- proc_tp",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_cncl_yn",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_end_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_nm",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_no",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- stex_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stop_pric",
+          "type": "String"
+        },
+        {
+          "code": "- trde_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/us/ordr",
       "api_id": "ust31490",
       "method": "POST",
       "required_fields": [

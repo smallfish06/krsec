@@ -29743,11 +29743,20 @@
           ]
         },
         {
-          "id": "kryp706u-ok08-gbfb-crt6-68oq6ys46uwa",
+          "id": "5f525823-f2d9-4638-8eaa-307be1e1a535",
           "name": "선물주문정정취소",
           "code": "H01",
           "transaction_per_sec": "-",
           "properties": [
+            {
+              "body_type": "req_b",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "3",
+              "order": "001"
+            },
             {
               "body_type": "req_h",
               "code": "token",
@@ -29767,13 +29776,21 @@
               "order": "001"
             },
             {
-              "body_type": "req_b",
-              "code": "tr_cd",
-              "name": "거래 CD",
+              "body_type": "res_b",
+              "code": "lineseq",
+              "name": "라인일련번호",
               "type": "A0001",
               "required": true,
-              "length": "3",
+              "length": "10",
               "order": "001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "tr_key",
+              "name": "단축코드",
+              "type": "A0001",
+              "length": "8",
+              "order": "002"
             },
             {
               "body_type": "req_h",
@@ -29785,12 +29802,409 @@
               "order": "002"
             },
             {
-              "body_type": "req_b",
-              "code": "tr_key",
-              "name": "단축코드",
+              "body_type": "res_b",
+              "code": "accno",
+              "name": "계좌번호",
               "type": "A0001",
-              "length": "8",
+              "required": true,
+              "length": "11",
               "order": "002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "user",
+              "name": "조작자ID",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "seq",
+              "name": "일련번호",
+              "type": "A0001",
+              "required": true,
+              "length": "11",
+              "order": "004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "trcode",
+              "name": "trcode",
+              "type": "A0001",
+              "required": true,
+              "length": "11",
+              "order": "005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "megrpno",
+              "name": "매칭그룹번호",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "boardid",
+              "name": "보드ID",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "memberno",
+              "name": "회원번호",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bpno",
+              "name": "지점번호",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ordno",
+              "name": "주문번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "010"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ordordno",
+              "name": "원주문번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "expcode",
+              "name": "종목코드",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dosugb",
+              "name": "매도수구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "013"
+            },
+            {
+              "body_type": "res_b",
+              "code": "mocagb",
+              "name": "정정취소구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "014"
+            },
+            {
+              "body_type": "res_b",
+              "code": "accno1",
+              "name": "계좌번호1",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "015"
+            },
+            {
+              "body_type": "res_b",
+              "code": "qty2",
+              "name": "호가수량",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "016"
+            },
+            {
+              "body_type": "res_b",
+              "code": "price",
+              "name": "호가가격",
+              "type": "A0001",
+              "required": true,
+              "length": "11.2",
+              "order": "017"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ordgb",
+              "name": "주문유형",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "018"
+            },
+            {
+              "body_type": "res_b",
+              "code": "hogagb",
+              "name": "호가구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "019"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sihogagb",
+              "name": "시장조성호가구분",
+              "type": "A0001",
+              "required": true,
+              "length": "11",
+              "order": "020"
+            },
+            {
+              "body_type": "res_b",
+              "code": "treaid",
+              "name": "자사주신고서ID",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "021"
+            },
+            {
+              "body_type": "res_b",
+              "code": "treacode",
+              "name": "자사주매매방법",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "022"
+            },
+            {
+              "body_type": "res_b",
+              "code": "askcode",
+              "name": "매도유형코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "023"
+            },
+            {
+              "body_type": "res_b",
+              "code": "creditcode",
+              "name": "신용구분코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "024"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jakigb",
+              "name": "위탁자기구분",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "025"
+            },
+            {
+              "body_type": "res_b",
+              "code": "trustnum",
+              "name": "위탁사번호",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ptgb",
+              "name": "프로그램구분",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "substocnum",
+              "name": "대용주권계좌번호",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "028"
+            },
+            {
+              "body_type": "res_b",
+              "code": "accgb",
+              "name": "계좌구분코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "029"
+            },
+            {
+              "body_type": "res_b",
+              "code": "accmarggb",
+              "name": "계좌증거금코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "030"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nationcode",
+              "name": "국가코드",
+              "type": "A0001",
+              "required": true,
+              "length": "3",
+              "order": "031"
+            },
+            {
+              "body_type": "res_b",
+              "code": "investgb",
+              "name": "투자자구분",
+              "type": "A0001",
+              "required": true,
+              "length": "4",
+              "order": "032"
+            },
+            {
+              "body_type": "res_b",
+              "code": "forecode",
+              "name": "외국인코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "033"
+            },
+            {
+              "body_type": "res_b",
+              "code": "medcode",
+              "name": "주문매체구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "034"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ordid",
+              "name": "주문식별자번호",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "035"
+            },
+            {
+              "body_type": "res_b",
+              "code": "macid",
+              "name": "MAC주소",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "036"
+            },
+            {
+              "body_type": "res_b",
+              "code": "orddate",
+              "name": "호가일자",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "037"
+            },
+            {
+              "body_type": "res_b",
+              "code": "rcvtime",
+              "name": "회원사주문시각",
+              "type": "A0001",
+              "required": true,
+              "length": "9",
+              "order": "038"
+            },
+            {
+              "body_type": "res_b",
+              "code": "mem_filler",
+              "name": "mem_filler",
+              "type": "A0001",
+              "required": true,
+              "length": "7",
+              "order": "039"
+            },
+            {
+              "body_type": "res_b",
+              "code": "mem_accno",
+              "name": "mem_accno",
+              "type": "A0001",
+              "required": true,
+              "length": "11",
+              "order": "040"
+            },
+            {
+              "body_type": "res_b",
+              "code": "mem_filler",
+              "name": "mem_filler1",
+              "type": "A0001",
+              "required": true,
+              "length": "42",
+              "order": "041"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ordacpttm",
+              "name": "매칭접수시간",
+              "type": "A0001",
+              "required": true,
+              "length": "9",
+              "order": "042"
+            },
+            {
+              "body_type": "res_b",
+              "code": "qty",
+              "name": "실정정취소수량",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "043"
+            },
+            {
+              "body_type": "res_b",
+              "code": "autogb",
+              "name": "자동취소구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "044"
+            },
+            {
+              "body_type": "res_b",
+              "code": "rejcode",
+              "name": "거부사유",
+              "type": "A0001",
+              "required": true,
+              "length": "4",
+              "order": "045"
+            },
+            {
+              "body_type": "res_b",
+              "code": "prgordde",
+              "name": "프로그램호가신고",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "046"
             }
           ]
         },
