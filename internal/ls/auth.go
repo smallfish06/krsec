@@ -9,7 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/sync/singleflight"
+
 	"github.com/smallfish06/krsec/pkg/broker"
+	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
 
 type tokenResponse struct {
@@ -20,6 +23,19 @@ type tokenResponse struct {
 	ErrorCode        string `json:"error_code"`
 	ErrorDescription string `json:"error_description"`
 }
+
+// authFlight collapses concurrent token issuance per appKey so a burst of
+// requests hitting an expired or revoked token results in a single token call
+// instead of queueing one-per-minute on the auth rate limiter. Without this,
+// every LS request that missed the token cache blocked serially on the
+// uncancellable auth limiter (the k-th waiter for k minutes) while the HTTP
+// client had long since given up, and the parked handler goroutines grew until
+// the process was OOM-killed.
+var authFlight singleflight.Group
+
+// issueTimeout bounds a detached token issuance: up to one auth-limiter
+// window (60s) plus the HTTP round trip.
+const issueTimeout = 90 * time.Second
 
 // Authenticate issues or reuses an LS OAuth token.
 func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
@@ -39,7 +55,45 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
 	}
 
+	// Issue at most one token per appKey at a time. The issuance runs on a
+	// detached context so one canceled caller cannot poison the refresh for
+	// every other request waiting on it.
+	ch := authFlight.DoChan(appKey, func() (any, error) {
+		return c.issueToken(tm, appKey, appSecret)
+	})
+
+	select {
+	case res := <-ch:
+		if res.Err != nil {
+			return nil, res.Err
+		}
+		token := res.Val.(*broker.Token)
+		c.setToken(token.AccessToken, token.ExpiresAt)
+		return token, nil
+	case <-ctx.Done():
+		// The in-flight issuance keeps running and caches its result for
+		// subsequent callers.
+		return nil, ctx.Err()
+	}
+}
+
+// issueToken requests a fresh token from LS and stores it in the manager.
+func (c *Client) issueToken(tm tokencache.Manager, appKey, appSecret string) (*broker.Token, error) {
+	// Another flight may have refreshed while we were queued.
+	if token, expiresAt, ok := tm.GetToken(appKey); ok {
+		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
+	}
+
 	tm.WaitForAuth(appKey)
+
+	// The limiter wait above may have taken up to a minute; a concurrent flight
+	// on another client sharing the same manager may have issued meanwhile.
+	if token, expiresAt, ok := tm.GetToken(appKey); ok {
+		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), issueTimeout)
+	defer cancel()
 
 	baseURL, _ := c.urls()
 	endpoint := strings.TrimRight(baseURL, "/") + PathOAuthToken
