@@ -16,6 +16,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
 
@@ -24,13 +25,51 @@ jobs:
           go-version-file: go.mod
 
       - name: Download dependencies
+        timeout-minutes: 5
         run: go mod download
 
       - name: Refresh documented specs
-        run: make spec-refresh-all
+        id: refresh
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifacts
+          printf 'broker\texit_code\n' > artifacts/refresh-status.tsv
+          failed=false
+          {
+            echo '## Spec refresh results'
+            echo
+            echo '| Broker | Refresh |'
+            echo '| --- | --- |'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for broker in kis kiwoom ls toss; do
+            echo "::group::Refresh ${broker} specs"
+            status=0
+            timeout --kill-after=15s 5m make "${broker}-spec-refresh" \
+              > "artifacts/${broker}-refresh.log" 2>&1 || status=$?
+            cat "artifacts/${broker}-refresh.log"
+            echo '::endgroup::'
+            printf '%s\t%s\n' "$broker" "$status" >> artifacts/refresh-status.tsv
+
+            if [[ "$status" -eq 0 ]]; then
+              echo "| ${broker} | Completed |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              failed=true
+              echo "| ${broker} | Failed (exit ${status}); see ${broker}-refresh.log |" >> "$GITHUB_STEP_SUMMARY"
+              echo "::error::${broker} spec refresh failed (exit ${status}); continuing with the remaining brokers."
+            fi
+          done
+
+          echo "failed=${failed}" >> "$GITHUB_OUTPUT"
+          if [[ "$failed" == true ]]; then
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo 'Refresh failures mean upstream fetching or generation did not complete. These failures are separate from detected changes to the checked-in specs.' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Detect spec drift
         id: drift
+        if: always()
         run: |
           set -euo pipefail
 
@@ -47,28 +86,58 @@ jobs:
             pkg/toss/specs/documented_specs_generated.go
           )
 
+          mkdir -p artifacts
+          git status --short -- "${TRACKED_FILES[@]}" > artifacts/spec-status.txt
+          git diff -- "${TRACKED_FILES[@]}" > artifacts/spec.diff
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo '## Changes to checked-in specs' >> "$GITHUB_STEP_SUMMARY"
+          echo >> "$GITHUB_STEP_SUMMARY"
+
           if git diff --quiet -- "${TRACKED_FILES[@]}"; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No spec drift detected." >> "$GITHUB_STEP_SUMMARY"
+            echo 'No file changes detected. This is a complete drift check only if every broker refresh completed successfully.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
-          mkdir -p artifacts
-          git status --short -- "${TRACKED_FILES[@]}" > artifacts/spec-status.txt
-          git diff -- "${TRACKED_FILES[@]}" > artifacts/spec.diff
-          echo "Spec drift detected in generated/snapshot files." >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'Spec drift detected in generated/snapshot files. See spec.diff in the spec-drift artifact.'
+            echo
+            echo '```text'
+            cat artifacts/spec-status.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload drift artifacts
-        if: steps.drift.outputs.changed == 'true'
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: spec-drift
           path: artifacts/
           if-no-files-found: error
 
-      - name: Fail on drift
-        if: steps.drift.outputs.changed == 'true'
+      - name: Fail on refresh errors or drift
+        if: always()
+        env:
+          REFRESH_OUTCOME: ${{ steps.refresh.outcome }}
+          REFRESH_FAILED: ${{ steps.refresh.outputs.failed }}
+          DRIFT_OUTCOME: ${{ steps.drift.outcome }}
+          DRIFT_CHANGED: ${{ steps.drift.outputs.changed }}
         run: |
-          echo "::error::Spec drift detected. Check spec-drift artifact for details."
-          exit 1
+          set -euo pipefail
+
+          failed=false
+          if [[ "$REFRESH_OUTCOME" != success || "$REFRESH_FAILED" != false ]]; then
+            echo '::error::Spec refresh did not complete successfully for every broker. Check refresh-status.tsv and broker refresh logs in the spec-drift artifact.'
+            failed=true
+          fi
+          if [[ "$DRIFT_OUTCOME" != success ]]; then
+            echo '::error::Could not complete spec drift detection.'
+            failed=true
+          elif [[ "$DRIFT_CHANGED" == true ]]; then
+            echo '::error::Spec drift detected. Check spec.diff in the spec-drift artifact.'
+            failed=true
+          fi
+          if [[ "$failed" == true ]]; then
+            exit 1
+          fi

@@ -48824,22 +48824,14 @@
           ]
         },
         {
-          "id": "91a1e804-ad13-4d71-b4a6-e723a76767ba",
+          "id": "afda5e31-3414-4463-8f89-035b59cc170d",
           "name": "(통합)주식챠트(일주월년) API용",
           "code": "t8451",
           "transaction_per_sec": "1",
           "properties": [
             {
-              "body_type": "req_b",
-              "code": "t8451InBlock",
-              "name": "t8451InBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "001"
-            },
-            {
               "body_type": "req_h",
-              "code": "type",
+              "code": "content-type",
               "name": "컨텐츠타입",
               "type": "A0001",
               "required": true,
@@ -48849,7 +48841,15 @@
             {
               "body_type": "res_b",
               "code": "t8451OutBlock",
-              "name": "단축코드t8451OutBlock",
+              "name": "출력",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "t8451InBlock",
+              "name": "기본입력",
               "type": "A0003",
               "required": true,
               "order": "001"
@@ -48894,7 +48894,7 @@
               "body_type": "res_b",
               "code": "jisiga",
               "name": "전일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.002"
@@ -48902,8 +48902,8 @@
             {
               "body_type": "req_b",
               "code": "qrycnt",
-              "name": "요청건수(최대:500)",
-              "type": "A0004",
+              "name": "요청건수(최대-압축:2000비압축:500)",
+              "type": "A0001",
               "required": true,
               "length": "4",
               "order": "001.003"
@@ -48912,8 +48912,9 @@
               "body_type": "res_b",
               "code": "jihigh",
               "name": "전일고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
+              "length": "8",
               "order": "001.003"
             },
             {
@@ -48929,7 +48930,7 @@
               "body_type": "res_b",
               "code": "jilow",
               "name": "전일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.004"
@@ -48947,7 +48948,7 @@
               "body_type": "res_b",
               "code": "jiclose",
               "name": "전일종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.005"
@@ -48965,7 +48966,7 @@
               "body_type": "res_b",
               "code": "jivolume",
               "name": "전일거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "001.006"
@@ -48973,7 +48974,7 @@
             {
               "body_type": "req_b",
               "code": "comp_yn",
-              "name": "압축여부(N:비압축)",
+              "name": "압축여부(Y:압축N:비압축)",
               "type": "A0001",
               "required": true,
               "length": "1",
@@ -48983,19 +48984,10 @@
               "body_type": "res_b",
               "code": "disiga",
               "name": "당일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dihigh",
-              "name": "당일고가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "001.008"
             },
             {
               "body_type": "req_b",
@@ -49004,6 +48996,15 @@
               "type": "A0001",
               "required": true,
               "length": "1",
+              "order": "001.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dihigh",
+              "name": "당일고가",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
               "order": "001.008"
             },
             {
@@ -49019,7 +49020,7 @@
               "body_type": "res_b",
               "code": "dilow",
               "name": "당일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.009"
@@ -49028,7 +49029,7 @@
               "body_type": "res_b",
               "code": "diclose",
               "name": "당일종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.010"
@@ -49037,7 +49038,7 @@
               "body_type": "res_b",
               "code": "highend",
               "name": "상한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.011"
@@ -49046,7 +49047,7 @@
               "body_type": "res_b",
               "code": "lowend",
               "name": "하한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.012"
@@ -49091,7 +49092,7 @@
               "body_type": "res_b",
               "code": "rec_count",
               "name": "레코드카운트",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "7",
               "order": "001.017"
@@ -49100,7 +49101,7 @@
               "body_type": "res_b",
               "code": "svi_uplmtprice",
               "name": "정적VI상한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.018"
@@ -49109,7 +49110,7 @@
               "body_type": "res_b",
               "code": "svi_dnlmtprice",
               "name": "정적VI하한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.019"
@@ -49169,6 +49170,60 @@
               "order": "001.025"
             },
             {
+              "body_type": "res_b",
+              "code": "krx_fm_s_time",
+              "name": "KRX프리마켓장시작시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_e_time",
+              "name": "KRX프리마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_dshmin",
+              "name": "KRX프리마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.028"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_s_time",
+              "name": "KRX에프터마켓장시작시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.029"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_e_time",
+              "name": "KRX에프터마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.030"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_dshmin",
+              "name": "KRX에프터마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.031"
+            },
+            {
               "body_type": "req_h",
               "code": "authorization",
               "name": "접근토큰",
@@ -49180,18 +49235,9 @@
             {
               "body_type": "res_b",
               "code": "t8451OutBlock1",
-              "name": "t8451OutBlock1",
+              "name": "출력1",
               "type": "A0005",
               "required": true,
-              "order": "002"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
               "order": "002"
             },
             {
@@ -49207,7 +49253,7 @@
               "body_type": "res_b",
               "code": "open",
               "name": "시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.002"
@@ -49216,7 +49262,7 @@
               "body_type": "res_b",
               "code": "high",
               "name": "고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.003"
@@ -49225,7 +49271,7 @@
               "body_type": "res_b",
               "code": "low",
               "name": "저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.004"
@@ -49234,7 +49280,7 @@
               "body_type": "res_b",
               "code": "close",
               "name": "종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.005"
@@ -49243,7 +49289,7 @@
               "body_type": "res_b",
               "code": "jdiff_vol",
               "name": "거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.006"
@@ -49252,7 +49298,7 @@
               "body_type": "res_b",
               "code": "value",
               "name": "거래대금",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.007"
@@ -49261,7 +49307,7 @@
               "body_type": "res_b",
               "code": "jongchk",
               "name": "수정구분",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "13",
               "order": "002.008"
@@ -49270,7 +49316,7 @@
               "body_type": "res_b",
               "code": "rate",
               "name": "수정비율",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "6.2",
               "order": "002.009"
@@ -49279,7 +49325,7 @@
               "body_type": "res_b",
               "code": "pricechk",
               "name": "수정주가반영항목",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "13",
               "order": "002.010"
@@ -49288,7 +49334,7 @@
               "body_type": "res_b",
               "code": "ratevalue",
               "name": "수정비율반영거래대금",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.011"
@@ -49313,11 +49359,11 @@
             },
             {
               "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
+              "code": "tr_cd",
+              "name": "거래 CD",
               "type": "A0001",
               "required": true,
-              "length": "1",
+              "length": "10",
               "order": "003"
             },
             {
@@ -49331,15 +49377,24 @@
             },
             {
               "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "004"
+            },
+            {
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "004"
+              "order": "005"
             },
             {
-              "body_type": "req_h",
+              "body_type": "res_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -49359,19 +49414,11 @@
           ]
         },
         {
-          "id": "6cc4c361-966c-41ec-b47b-db02023ef904",
+          "id": "0aa3dd33-bada-4df7-bb85-eccc23bea6d9",
           "name": "(통합)주식챠트(N분) API용",
           "code": "t8452",
           "transaction_per_sec": "1",
           "properties": [
-            {
-              "body_type": "req_b",
-              "code": "t8452InBlock",
-              "name": "t8452InBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "001"
-            },
             {
               "body_type": "req_h",
               "code": "content-type",
@@ -49384,7 +49431,15 @@
             {
               "body_type": "res_b",
               "code": "t8452OutBlock",
-              "name": "t8452OutBlock",
+              "name": "출력",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "t8452InBlock",
+              "name": "기본입력",
               "type": "A0003",
               "required": true,
               "order": "001"
@@ -49420,7 +49475,7 @@
               "body_type": "req_b",
               "code": "ncnt",
               "name": "단위(n분)",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "4",
               "order": "001.002"
@@ -49429,7 +49484,7 @@
               "body_type": "res_b",
               "code": "jisiga",
               "name": "전일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.002"
@@ -49437,8 +49492,8 @@
             {
               "body_type": "req_b",
               "code": "qrycnt",
-              "name": "요청건수(최대:500)",
-              "type": "A0004",
+              "name": "요청건수(최대-압축:2000비압축:500)",
+              "type": "A0001",
               "required": true,
               "length": "4",
               "order": "001.003"
@@ -49447,7 +49502,7 @@
               "body_type": "res_b",
               "code": "jihigh",
               "name": "전일고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.003"
@@ -49465,7 +49520,7 @@
               "body_type": "res_b",
               "code": "jilow",
               "name": "전일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.004"
@@ -49481,9 +49536,9 @@
             },
             {
               "body_type": "res_b",
-              "code": "jiclosev",
+              "code": "jiclose",
               "name": "전일종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.005"
@@ -49501,7 +49556,7 @@
               "body_type": "res_b",
               "code": "jivolume",
               "name": "전일거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "001.006"
@@ -49519,7 +49574,7 @@
               "body_type": "res_b",
               "code": "disiga",
               "name": "당일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.007"
@@ -49537,7 +49592,7 @@
               "body_type": "res_b",
               "code": "dihigh",
               "name": "당일고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.008"
@@ -49555,19 +49610,10 @@
               "body_type": "res_b",
               "code": "dilow",
               "name": "당일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "diclose",
-              "name": "당일종가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "001.010"
             },
             {
               "body_type": "req_b",
@@ -49579,21 +49625,30 @@
               "order": "001.010"
             },
             {
-              "body_type": "req_b",
-              "code": "comp_yn",
-              "name": "압축여부(N:비압축)",
+              "body_type": "res_b",
+              "code": "diclose",
+              "name": "당일종가",
               "type": "A0001",
               "required": true,
-              "length": "1",
-              "order": "001.011"
+              "length": "8",
+              "order": "001.010"
             },
             {
               "body_type": "res_b",
               "code": "highend",
               "name": "상한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
+              "order": "001.011"
+            },
+            {
+              "body_type": "req_b",
+              "code": "comp_yn",
+              "name": "압축여부(Y:압축N:비압축)",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
               "order": "001.011"
             },
             {
@@ -49609,7 +49664,7 @@
               "body_type": "res_b",
               "code": "lowend",
               "name": "하한가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.012"
@@ -49618,7 +49673,7 @@
               "body_type": "res_b",
               "code": "cts_date",
               "name": "연속일자",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.013"
@@ -49663,7 +49718,7 @@
               "body_type": "res_b",
               "code": "rec_count",
               "name": "레코드카운트",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "7",
               "order": "001.018"
@@ -49723,6 +49778,60 @@
               "order": "001.024"
             },
             {
+              "body_type": "res_b",
+              "code": "krx_fm_s_time",
+              "name": "KRX프리마켓장시작시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.025"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_e_time",
+              "name": "KRX프리마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_dshmin",
+              "name": "KRX프리마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_s_time",
+              "name": "KRX에프터마켓장시작시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.028"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_e_time",
+              "name": "KRX에프터마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.029"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_dshmin",
+              "name": "KRX에프터마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.030"
+            },
+            {
               "body_type": "req_h",
               "code": "authorization",
               "name": "접근토큰",
@@ -49734,18 +49843,9 @@
             {
               "body_type": "res_b",
               "code": "t8452OutBlock1",
-              "name": "t8452OutBlock1",
+              "name": "출력1",
               "type": "A0005",
               "required": true,
-              "order": "002"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
               "order": "002"
             },
             {
@@ -49770,7 +49870,7 @@
               "body_type": "res_b",
               "code": "open",
               "name": "시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.003"
@@ -49779,7 +49879,7 @@
               "body_type": "res_b",
               "code": "high",
               "name": "고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.004"
@@ -49788,7 +49888,7 @@
               "body_type": "res_b",
               "code": "low",
               "name": "저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.005"
@@ -49797,7 +49897,7 @@
               "body_type": "res_b",
               "code": "close",
               "name": "종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.006"
@@ -49806,7 +49906,7 @@
               "body_type": "res_b",
               "code": "jdiff_vol",
               "name": "거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.007"
@@ -49815,7 +49915,7 @@
               "body_type": "res_b",
               "code": "value",
               "name": "거래대금",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.008"
@@ -49824,7 +49924,7 @@
               "body_type": "res_b",
               "code": "jongchk",
               "name": "수정구분",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "13",
               "order": "002.009"
@@ -49833,7 +49933,7 @@
               "body_type": "res_b",
               "code": "rate",
               "name": "수정비율",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "6.2",
               "order": "002.010"
@@ -49848,6 +49948,15 @@
               "order": "002.011"
             },
             {
+              "body_type": "res_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003"
+            },
+            {
               "body_type": "req_h",
               "code": "tr_cd",
               "name": "거래 CD",
@@ -49857,16 +49966,16 @@
               "order": "003"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont",
               "name": "연속 거래 여부",
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "003"
+              "order": "004"
             },
             {
-              "body_type": "req_h",
+              "body_type": "res_h",
               "code": "tr_cont",
               "name": "연속 거래 여부",
               "type": "A0001",
@@ -49881,7 +49990,7 @@
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "004"
+              "order": "005"
             },
             {
               "body_type": "req_h",
@@ -49904,17 +50013,18 @@
           ]
         },
         {
-          "id": "70eede0c-82b7-49bd-8ab0-efba3a629d04",
+          "id": "9def2199-03ab-4a51-8275-e4db07ef35ce",
           "name": "(통합)주식챠트(틱/N틱) API용",
           "code": "t8453",
           "transaction_per_sec": "1",
           "properties": [
             {
-              "body_type": "req_b",
-              "code": "t8453InBlock",
-              "name": "t8453InBlock",
-              "type": "A0003",
+              "body_type": "req_h",
+              "code": "content-type",
+              "name": "컨텐츠타입",
+              "type": "A0001",
               "required": true,
+              "length": "100",
               "order": "001"
             },
             {
@@ -49927,20 +50037,19 @@
               "order": "001"
             },
             {
-              "body_type": "res_b",
-              "code": "t8453OutBlock",
-              "name": "t8453OutBlock",
+              "body_type": "req_b",
+              "code": "t8453InBlock",
+              "name": "기본입력",
               "type": "A0003",
               "required": true,
               "order": "001"
             },
             {
-              "body_type": "req_h",
-              "code": "content-type",
-              "name": "컨텐츠타입",
-              "type": "A0001",
+              "body_type": "res_b",
+              "code": "t8453OutBlock",
+              "name": "출력",
+              "type": "A0003",
               "required": true,
-              "length": "100",
               "order": "001"
             },
             {
@@ -49965,7 +50074,7 @@
               "body_type": "req_b",
               "code": "ncnt",
               "name": "단위(n틱)",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "4",
               "order": "001.002"
@@ -49974,7 +50083,7 @@
               "body_type": "res_b",
               "code": "jisiga",
               "name": "전일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.002"
@@ -49982,8 +50091,8 @@
             {
               "body_type": "req_b",
               "code": "qrycnt",
-              "name": "요청건수(최대:500)",
-              "type": "A0004",
+              "name": "요청건수(최대-압축:2000비압축:500)",
+              "type": "A0001",
               "required": true,
               "length": "4",
               "order": "001.003"
@@ -49992,7 +50101,7 @@
               "body_type": "res_b",
               "code": "jihigh",
               "name": "전일고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.003"
@@ -50010,7 +50119,7 @@
               "body_type": "res_b",
               "code": "jilow",
               "name": "전일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.004"
@@ -50026,9 +50135,9 @@
             },
             {
               "body_type": "res_b",
-              "code": "jicloseㅍ",
+              "code": "jiclose",
               "name": "전일종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.005"
@@ -50046,7 +50155,7 @@
               "body_type": "res_b",
               "code": "jivolume",
               "name": "전일거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "001.006"
@@ -50064,7 +50173,7 @@
               "body_type": "res_b",
               "code": "disiga",
               "name": "당일시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.007"
@@ -50082,7 +50191,7 @@
               "body_type": "res_b",
               "code": "dihigh",
               "name": "당일고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.008"
@@ -50100,7 +50209,7 @@
               "body_type": "res_b",
               "code": "dilow",
               "name": "당일저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.009"
@@ -50118,15 +50227,24 @@
               "body_type": "res_b",
               "code": "diclose",
               "name": "당일종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "001.010"
             },
             {
+              "body_type": "res_b",
+              "code": "highend",
+              "name": "상한가",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.011"
+            },
+            {
               "body_type": "req_b",
               "code": "comp_yn",
-              "name": "압축여부(N:비압축)",
+              "name": "압축여부(Y:압축N:비압축)",
               "type": "A0001",
               "required": true,
               "length": "1",
@@ -50134,12 +50252,12 @@
             },
             {
               "body_type": "res_b",
-              "code": "highend",
-              "name": "상한가",
-              "type": "A0004",
+              "code": "lowend",
+              "name": "하한가",
+              "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "001.011"
+              "order": "001.012"
             },
             {
               "body_type": "req_b",
@@ -50148,15 +50266,6 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "001.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lowend",
-              "name": "하한가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
               "order": "001.012"
             },
             {
@@ -50208,7 +50317,7 @@
               "body_type": "res_b",
               "code": "rec_count",
               "name": "레코드카운트",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "7",
               "order": "001.018"
@@ -50269,11 +50378,57 @@
             },
             {
               "body_type": "res_b",
-              "code": "t8453OutBlock1",
-              "name": "t8453OutBlock1",
-              "type": "A0005",
+              "code": "krx_fm_s_time",
+              "name": "KRX프리마켓장시작시간(HHMMSS)",
+              "type": "A0001",
               "required": true,
-              "order": "002"
+              "length": "6",
+              "order": "001.025"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_e_time",
+              "name": "KRX프리마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_fm_dshmin",
+              "name": "KRX프리마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_s_time",
+              "name": "KRX에프터마켓장시작시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.028"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_e_time",
+              "name": "KRX에프터마켓장종료시간(HHMMSS)",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.029"
+            },
+            {
+              "body_type": "res_b",
+              "code": "krx_am_dshmin",
+              "name": "KRX에프터마켓동시호가처리시간(MM:분)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.030"
             },
             {
               "body_type": "req_h",
@@ -50285,12 +50440,11 @@
               "order": "002"
             },
             {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
+              "body_type": "res_b",
+              "code": "t8453OutBlock1",
+              "name": "출력1",
+              "type": "A0005",
               "required": true,
-              "length": "10",
               "order": "002"
             },
             {
@@ -50315,7 +50469,7 @@
               "body_type": "res_b",
               "code": "open",
               "name": "시가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.003"
@@ -50324,7 +50478,7 @@
               "body_type": "res_b",
               "code": "high",
               "name": "고가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.004"
@@ -50333,7 +50487,7 @@
               "body_type": "res_b",
               "code": "low",
               "name": "저가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.005"
@@ -50342,7 +50496,7 @@
               "body_type": "res_b",
               "code": "close",
               "name": "종가",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "8",
               "order": "002.006"
@@ -50351,7 +50505,7 @@
               "body_type": "res_b",
               "code": "jdiff_vol",
               "name": "거래량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "12",
               "order": "002.007"
@@ -50360,7 +50514,7 @@
               "body_type": "res_b",
               "code": "jongchk",
               "name": "수정구분",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "13",
               "order": "002.008"
@@ -50369,7 +50523,7 @@
               "body_type": "res_b",
               "code": "rate",
               "name": "수정비율",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "6.2",
               "order": "002.009"
@@ -50378,7 +50532,7 @@
               "body_type": "res_b",
               "code": "pricechk",
               "name": "수정주가반영항목",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "13",
               "order": "002.010"
@@ -50394,11 +50548,11 @@
             },
             {
               "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
+              "code": "tr_cd",
+              "name": "거래 CD",
               "type": "A0001",
               "required": true,
-              "length": "1",
+              "length": "10",
               "order": "003"
             },
             {
@@ -50412,15 +50566,24 @@
             },
             {
               "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "004"
+            },
+            {
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "004"
+              "order": "005"
             },
             {
-              "body_type": "req_h",
+              "body_type": "res_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -62823,6 +62986,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t1901OutBlock",
+              "name": "t1901OutBlock",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t1901InBlock",
               "name": "t1901InBlock",
@@ -62846,7 +63017,1237 @@
               "type": "A0001",
               "required": true,
               "length": "6",
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "hname",
+              "name": "한글명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "exchgubun",
+              "name": "거래소구분코드",
+              "type": "A0001",
+              "length": "1",
               "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "price",
+              "name": "현재가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sign",
+              "name": "전일대비구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "change",
+              "name": "전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "diff",
+              "name": "등락율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "volume",
+              "name": "누적거래량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "recprice",
+              "name": "기준가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "avg",
+              "name": "가중평균",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "uplmtprice",
+              "name": "상한가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dnlmtprice",
+              "name": "하한가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.010"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilvolume",
+              "name": "전일거래량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "volumediff",
+              "name": "거래량차",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "open",
+              "name": "시가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.013"
+            },
+            {
+              "body_type": "res_b",
+              "code": "opentime",
+              "name": "시가시간",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.014"
+            },
+            {
+              "body_type": "res_b",
+              "code": "high",
+              "name": "고가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.015"
+            },
+            {
+              "body_type": "res_b",
+              "code": "hightime",
+              "name": "고가시간",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.016"
+            },
+            {
+              "body_type": "res_b",
+              "code": "low",
+              "name": "저가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.017"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lowtime",
+              "name": "저가시간",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.018"
+            },
+            {
+              "body_type": "res_b",
+              "code": "high52w",
+              "name": "52최고가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.019"
+            },
+            {
+              "body_type": "res_b",
+              "code": "high52wdate",
+              "name": "52최고가일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.020"
+            },
+            {
+              "body_type": "res_b",
+              "code": "low52w",
+              "name": "52최저가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.021"
+            },
+            {
+              "body_type": "res_b",
+              "code": "low52wdate",
+              "name": "52최저가일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.022"
+            },
+            {
+              "body_type": "res_b",
+              "code": "exhratio",
+              "name": "소진율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.023"
+            },
+            {
+              "body_type": "res_b",
+              "code": "flmtvol",
+              "name": "외국인보유수량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.024"
+            },
+            {
+              "body_type": "res_b",
+              "code": "per",
+              "name": "PER",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.025"
+            },
+            {
+              "body_type": "res_b",
+              "code": "listing",
+              "name": "상장주식수(천)",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jkrate",
+              "name": "증거금율",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "vol",
+              "name": "회전율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.028"
+            },
+            {
+              "body_type": "res_b",
+              "code": "shcode",
+              "name": "단축코드",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.029"
+            },
+            {
+              "body_type": "res_b",
+              "code": "value",
+              "name": "누적거래대금",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.030"
+            },
+            {
+              "body_type": "res_b",
+              "code": "highyear",
+              "name": "연중최고가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.031"
+            },
+            {
+              "body_type": "res_b",
+              "code": "highyeardate",
+              "name": "연중최고일자",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.032"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lowyear",
+              "name": "연중최저가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.033"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lowyeardate",
+              "name": "연중최저일자",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.034"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upname",
+              "name": "업종명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.035"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upcode",
+              "name": "업종코드",
+              "type": "A0001",
+              "required": true,
+              "length": "3",
+              "order": "001.036"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upprice",
+              "name": "업종현재가",
+              "type": "A0004",
+              "required": true,
+              "length": "7.2",
+              "order": "001.037"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upsign",
+              "name": "업종전일비구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.038"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upchange",
+              "name": "업종전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.039"
+            },
+            {
+              "body_type": "res_b",
+              "code": "updiff",
+              "name": "업종등락율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.040"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futname",
+              "name": "선물최근월물명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.041"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futcode",
+              "name": "선물최근월물코드",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.042"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futprice",
+              "name": "선물현재가",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.043"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futsign",
+              "name": "선물전일비구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.044"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futchange",
+              "name": "선물전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.045"
+            },
+            {
+              "body_type": "res_b",
+              "code": "futdiff",
+              "name": "선물등락율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.046"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nav",
+              "name": "NAV",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "001.047"
+            },
+            {
+              "body_type": "res_b",
+              "code": "navsign",
+              "name": "NAV전일대비구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.048"
+            },
+            {
+              "body_type": "res_b",
+              "code": "navchange",
+              "name": "NAV전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "001.049"
+            },
+            {
+              "body_type": "res_b",
+              "code": "navdiff",
+              "name": "NAV등락율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.050"
+            },
+            {
+              "body_type": "res_b",
+              "code": "cocrate",
+              "name": "추적오차율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.051"
+            },
+            {
+              "body_type": "res_b",
+              "code": "kasis",
+              "name": "괴리율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.052"
+            },
+            {
+              "body_type": "res_b",
+              "code": "subprice",
+              "name": "대용가",
+              "type": "A0004",
+              "required": true,
+              "length": "10",
+              "order": "001.053"
+            },
+            {
+              "body_type": "res_b",
+              "code": "offerno1",
+              "name": "매도증권사코드1",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.054"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bidno1",
+              "name": "매수증권사코드1",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.055"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dvol1",
+              "name": "총매도수량1",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.056"
+            },
+            {
+              "body_type": "res_b",
+              "code": "svol1",
+              "name": "총매수수량1",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.057"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dcha1",
+              "name": "매도증감1",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.058"
+            },
+            {
+              "body_type": "res_b",
+              "code": "scha1",
+              "name": "매수증감1",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.059"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ddiff1",
+              "name": "매도비율1",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.060"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sdiff1",
+              "name": "매수비율1",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.061"
+            },
+            {
+              "body_type": "res_b",
+              "code": "offerno2",
+              "name": "매도증권사코드2",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.062"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bidno2",
+              "name": "매수증권사코드2",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.063"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dvol2",
+              "name": "총매도수량2",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.064"
+            },
+            {
+              "body_type": "res_b",
+              "code": "svol2",
+              "name": "총매수수량2",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.065"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dcha2",
+              "name": "매도증감2",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.066"
+            },
+            {
+              "body_type": "res_b",
+              "code": "scha2",
+              "name": "매수증감2",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.067"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ddiff2",
+              "name": "매도비율2",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.068"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sdiff2",
+              "name": "매수비율2",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.069"
+            },
+            {
+              "body_type": "res_b",
+              "code": "offerno3",
+              "name": "매도증권사코드3",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.070"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bidno3",
+              "name": "매수증권사코드3",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.071"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dvol3",
+              "name": "총매도수량3",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.072"
+            },
+            {
+              "body_type": "res_b",
+              "code": "svol3",
+              "name": "총매수수량3",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.073"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dcha3",
+              "name": "매도증감3",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.074"
+            },
+            {
+              "body_type": "res_b",
+              "code": "scha3",
+              "name": "매수증감3",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.075"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ddiff3",
+              "name": "매도비율3",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.076"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sdiff3",
+              "name": "매수비율3",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.077"
+            },
+            {
+              "body_type": "res_b",
+              "code": "offerno4",
+              "name": "매도증권사코드4",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.078"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bidno4",
+              "name": "매수증권사코드4",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.079"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dvol4",
+              "name": "총매도수량4",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.080"
+            },
+            {
+              "body_type": "res_b",
+              "code": "svol4",
+              "name": "총매수수량4",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.081"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dcha4",
+              "name": "매도증감4",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.082"
+            },
+            {
+              "body_type": "res_b",
+              "code": "scha4",
+              "name": "매수증감4",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.083"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ddiff4",
+              "name": "매도비율4",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.084"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sdiff4",
+              "name": "매수비율4",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.085"
+            },
+            {
+              "body_type": "res_b",
+              "code": "offerno5",
+              "name": "매도증권사코드5",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.086"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bidno5",
+              "name": "매수증권사코드5",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.087"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dvol5",
+              "name": "총매도수량5",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.088"
+            },
+            {
+              "body_type": "res_b",
+              "code": "svol5",
+              "name": "총매수수량5",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.089"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dcha5",
+              "name": "매도증감5",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.090"
+            },
+            {
+              "body_type": "res_b",
+              "code": "scha5",
+              "name": "매수증감5",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.091"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ddiff5",
+              "name": "매도비율5",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.092"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sdiff5",
+              "name": "매수비율5",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.093"
+            },
+            {
+              "body_type": "res_b",
+              "code": "fwdvl",
+              "name": "외국계매도합계수량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.094"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ftradmdcha",
+              "name": "외국계매도직전대비",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.095"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ftradmddiff",
+              "name": "외국계매도비율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.096"
+            },
+            {
+              "body_type": "res_b",
+              "code": "fwsvl",
+              "name": "외국계매수합계수량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.097"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ftradmscha",
+              "name": "외국계매수직전대비",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.098"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ftradmsdiff",
+              "name": "외국계매수비율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.099"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upname2",
+              "name": "참고지수명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.100"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upcode2",
+              "name": "참고지수코드",
+              "type": "A0001",
+              "required": true,
+              "length": "3",
+              "order": "001.101"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upprice2",
+              "name": "참고지수현재가",
+              "type": "A0004",
+              "required": true,
+              "length": "7.2",
+              "order": "001.102"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilnav",
+              "name": "전일NAV",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "001.103"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilnavsign",
+              "name": "전일NAV전일대비구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.104"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilnavchange",
+              "name": "전일NAV전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "001.105"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilnavdiff",
+              "name": "전일NAV등락율",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.106"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etftotcap",
+              "name": "순자산총액(억원)",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "001.107"
+            },
+            {
+              "body_type": "res_b",
+              "code": "spread",
+              "name": "스프레드",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.108"
+            },
+            {
+              "body_type": "res_b",
+              "code": "leverage",
+              "name": "레버리지",
+              "type": "A0004",
+              "required": true,
+              "length": "2",
+              "order": "001.109"
+            },
+            {
+              "body_type": "res_b",
+              "code": "taxgubun",
+              "name": "과세구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.110"
+            },
+            {
+              "body_type": "res_b",
+              "code": "opcom_nmk",
+              "name": "운용사",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.111"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_nm1",
+              "name": "LP1",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.112"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_nm2",
+              "name": "LP2",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.113"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_nm3",
+              "name": "LP3",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.114"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_nm4",
+              "name": "LP4",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.115"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_nm5",
+              "name": "LP5",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.116"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etf_cp",
+              "name": "복제방법",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "001.117"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etf_kind",
+              "name": "상품유형(Filler)",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "001.118"
+            },
+            {
+              "body_type": "res_b",
+              "code": "vi_gubun",
+              "name": "VI발동해제",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "001.119"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etn_kind_cd",
+              "name": "ETN상품분류",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.120"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lastymd",
+              "name": "ETN만기일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.121"
+            },
+            {
+              "body_type": "res_b",
+              "code": "payday",
+              "name": "ETN지급일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.122"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lastdate",
+              "name": "ETN최종거래일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.123"
+            },
+            {
+              "body_type": "res_b",
+              "code": "issuernmk",
+              "name": "ETN발행시장참가자",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.124"
+            },
+            {
+              "body_type": "res_b",
+              "code": "last_sdate",
+              "name": "ETN만기상환가격결정시작일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.125"
+            },
+            {
+              "body_type": "res_b",
+              "code": "last_edate",
+              "name": "ETN만기상환가격결정종료일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.126"
+            },
+            {
+              "body_type": "res_b",
+              "code": "lp_holdvol",
+              "name": "ETNLP보유수량",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "001.127"
+            },
+            {
+              "body_type": "res_b",
+              "code": "listdate",
+              "name": "상장일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.128"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etp_gb",
+              "name": "ETP상품구분코드",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.129"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etn_elback_yn",
+              "name": "ETN조기상환가능여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.130"
+            },
+            {
+              "body_type": "res_b",
+              "code": "settletype",
+              "name": "최종결제",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.131"
+            },
+            {
+              "body_type": "res_b",
+              "code": "idx_asset_class1",
+              "name": "지수자산분류코드(대분류)",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.132"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ty_text",
+              "name": "ETF/ETN투자유의",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.133"
+            },
+            {
+              "body_type": "res_b",
+              "code": "leverage2",
+              "name": "추적수익률배수",
+              "type": "A0004",
+              "required": true,
+              "length": "6.2",
+              "order": "001.134"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_vi_gubun",
+              "name": "NXTVI발동해제",
+              "type": "A0001",
+              "length": "10",
+              "order": "001.135"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별단축코드",
+              "type": "A0001",
+              "length": "10",
+              "order": "001.136"
             },
             {
               "body_type": "req_h",
@@ -62856,1220 +64257,6 @@
               "required": true,
               "length": "1000",
               "order": "002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "t1901OutBlock",
-              "name": "t1901OutBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "hname",
-              "name": "한글명",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "price",
-              "name": "현재가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sign",
-              "name": "전일대비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "change",
-              "name": "전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.005"
-            },
-            {
-              "body_type": "res_b",
-              "code": "diff",
-              "name": "등락율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.006"
-            },
-            {
-              "body_type": "res_b",
-              "code": "volume",
-              "name": "누적거래량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "recprice",
-              "name": "기준가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.008"
-            },
-            {
-              "body_type": "res_b",
-              "code": "avg",
-              "name": "가중평균",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "uplmtprice",
-              "name": "상한가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.010"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dnlmtprice",
-              "name": "하한가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.011"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilvolume",
-              "name": "전일거래량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "volumediff",
-              "name": "거래량차",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.013"
-            },
-            {
-              "body_type": "res_b",
-              "code": "open",
-              "name": "시가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.014"
-            },
-            {
-              "body_type": "res_b",
-              "code": "opentime",
-              "name": "시가시간",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.015"
-            },
-            {
-              "body_type": "res_b",
-              "code": "high",
-              "name": "고가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.016"
-            },
-            {
-              "body_type": "res_b",
-              "code": "hightime",
-              "name": "고가시간",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.017"
-            },
-            {
-              "body_type": "res_b",
-              "code": "low",
-              "name": "저가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.018"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lowtime",
-              "name": "저가시간",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.019"
-            },
-            {
-              "body_type": "res_b",
-              "code": "high52w",
-              "name": "52최고가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.020"
-            },
-            {
-              "body_type": "res_b",
-              "code": "high52wdate",
-              "name": "52최고가일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.021"
-            },
-            {
-              "body_type": "res_b",
-              "code": "low52w",
-              "name": "52최저가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.022"
-            },
-            {
-              "body_type": "res_b",
-              "code": "low52wdate",
-              "name": "52최저가일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.023"
-            },
-            {
-              "body_type": "res_b",
-              "code": "exhratio",
-              "name": "소진율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.024"
-            },
-            {
-              "body_type": "res_b",
-              "code": "flmtvol",
-              "name": "외국인보유수량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.025"
-            },
-            {
-              "body_type": "res_b",
-              "code": "per",
-              "name": "PER",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.026"
-            },
-            {
-              "body_type": "res_b",
-              "code": "listing",
-              "name": "상장주식수(천)",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.027"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jkrate",
-              "name": "증거금율",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.028"
-            },
-            {
-              "body_type": "res_b",
-              "code": "vol",
-              "name": "회전율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.029"
-            },
-            {
-              "body_type": "res_b",
-              "code": "shcode",
-              "name": "단축코드",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.030"
-            },
-            {
-              "body_type": "res_b",
-              "code": "value",
-              "name": "누적거래대금",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.031"
-            },
-            {
-              "body_type": "res_b",
-              "code": "highyear",
-              "name": "연중최고가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.032"
-            },
-            {
-              "body_type": "res_b",
-              "code": "highyeardate",
-              "name": "연중최고일자",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.033"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lowyear",
-              "name": "연중최저가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.034"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lowyeardate",
-              "name": "연중최저일자",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.035"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upname",
-              "name": "업종명",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.036"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upcode",
-              "name": "업종코드",
-              "type": "A0001",
-              "required": true,
-              "length": "3",
-              "order": "002.037"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upprice",
-              "name": "업종현재가",
-              "type": "A0004",
-              "required": true,
-              "length": "7.2",
-              "order": "002.038"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upsign",
-              "name": "업종전일비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.039"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upchange",
-              "name": "업종전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.040"
-            },
-            {
-              "body_type": "res_b",
-              "code": "updiff",
-              "name": "업종등락율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.041"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futname",
-              "name": "선물최근월물명",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.042"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futcode",
-              "name": "선물최근월물코드",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.043"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futprice",
-              "name": "선물현재가",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.044"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futsign",
-              "name": "선물전일비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.045"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futchange",
-              "name": "선물전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.046"
-            },
-            {
-              "body_type": "res_b",
-              "code": "futdiff",
-              "name": "선물등락율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.047"
-            },
-            {
-              "body_type": "res_b",
-              "code": "nav",
-              "name": "NAV",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "002.048"
-            },
-            {
-              "body_type": "res_b",
-              "code": "navsign",
-              "name": "NAV전일대비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.049"
-            },
-            {
-              "body_type": "res_b",
-              "code": "navchange",
-              "name": "NAV전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "002.050"
-            },
-            {
-              "body_type": "res_b",
-              "code": "navdiff",
-              "name": "NAV등락율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.051"
-            },
-            {
-              "body_type": "res_b",
-              "code": "cocrate",
-              "name": "추적오차율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.052"
-            },
-            {
-              "body_type": "res_b",
-              "code": "kasis",
-              "name": "괴리율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.053"
-            },
-            {
-              "body_type": "res_b",
-              "code": "subprice",
-              "name": "대용가",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "002.054"
-            },
-            {
-              "body_type": "res_b",
-              "code": "offerno1",
-              "name": "매도증권사코드1",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.055"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bidno1",
-              "name": "매수증권사코드1",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.056"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dvol1",
-              "name": "총매도수량1",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.057"
-            },
-            {
-              "body_type": "res_b",
-              "code": "svol1",
-              "name": "총매수수량1",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.058"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dcha1",
-              "name": "매도증감1",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.059"
-            },
-            {
-              "body_type": "res_b",
-              "code": "scha1",
-              "name": "매수증감1",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.060"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ddiff1",
-              "name": "매도비율1",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.061"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sdiff1",
-              "name": "매수비율1",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.062"
-            },
-            {
-              "body_type": "res_b",
-              "code": "offerno2",
-              "name": "매도증권사코드2",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.063"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bidno2",
-              "name": "매수증권사코드2",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.064"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dvol2",
-              "name": "총매도수량2",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.065"
-            },
-            {
-              "body_type": "res_b",
-              "code": "svol2",
-              "name": "총매수수량2",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.066"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dcha2",
-              "name": "매도증감2",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.067"
-            },
-            {
-              "body_type": "res_b",
-              "code": "scha2",
-              "name": "매수증감2",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.068"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ddiff2",
-              "name": "매도비율2",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.069"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sdiff2",
-              "name": "매수비율2",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.070"
-            },
-            {
-              "body_type": "res_b",
-              "code": "offerno3",
-              "name": "매도증권사코드3",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.071"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bidno3",
-              "name": "매수증권사코드3",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.072"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dvol3",
-              "name": "총매도수량3",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.073"
-            },
-            {
-              "body_type": "res_b",
-              "code": "svol3",
-              "name": "총매수수량3",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.074"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dcha3",
-              "name": "매도증감3",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.075"
-            },
-            {
-              "body_type": "res_b",
-              "code": "scha3",
-              "name": "매수증감3",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.076"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ddiff3",
-              "name": "매도비율3",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.077"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sdiff3",
-              "name": "매수비율3",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.078"
-            },
-            {
-              "body_type": "res_b",
-              "code": "offerno4",
-              "name": "매도증권사코드4",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.079"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bidno4",
-              "name": "매수증권사코드4",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.080"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dvol4",
-              "name": "총매도수량4",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.081"
-            },
-            {
-              "body_type": "res_b",
-              "code": "svol4",
-              "name": "총매수수량4",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.082"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dcha4",
-              "name": "매도증감4",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.083"
-            },
-            {
-              "body_type": "res_b",
-              "code": "scha4",
-              "name": "매수증감4",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.084"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ddiff4",
-              "name": "매도비율4",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.085"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sdiff4",
-              "name": "매수비율4",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.086"
-            },
-            {
-              "body_type": "res_b",
-              "code": "offerno5",
-              "name": "매도증권사코드5",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.087"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bidno5",
-              "name": "매수증권사코드5",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.088"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dvol5",
-              "name": "총매도수량5",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.089"
-            },
-            {
-              "body_type": "res_b",
-              "code": "svol5",
-              "name": "총매수수량5",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.090"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dcha5",
-              "name": "매도증감5",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.091"
-            },
-            {
-              "body_type": "res_b",
-              "code": "scha5",
-              "name": "매수증감5",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.092"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ddiff5",
-              "name": "매도비율5",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.093"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sdiff5",
-              "name": "매수비율5",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.094"
-            },
-            {
-              "body_type": "res_b",
-              "code": "fwdvl",
-              "name": "외국계매도합계수량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.095"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ftradmdcha",
-              "name": "외국계매도직전대비",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.096"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ftradmddiff",
-              "name": "외국계매도비율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.097"
-            },
-            {
-              "body_type": "res_b",
-              "code": "fwsvl",
-              "name": "외국계매수합계수량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.098"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ftradmscha",
-              "name": "외국계매수직전대비",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.099"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ftradmsdiff",
-              "name": "외국계매수비율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.100"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upname2",
-              "name": "참고지수명",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.101"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upcode2",
-              "name": "참고지수코드",
-              "type": "A0001",
-              "required": true,
-              "length": "3",
-              "order": "002.102"
-            },
-            {
-              "body_type": "res_b",
-              "code": "upprice2",
-              "name": "참고지수현재가",
-              "type": "A0004",
-              "required": true,
-              "length": "7.2",
-              "order": "002.103"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilnav",
-              "name": "전일NAV",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "002.104"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilnavsign",
-              "name": "전일NAV전일대비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.105"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilnavchange",
-              "name": "전일NAV전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "002.106"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilnavdiff",
-              "name": "전일NAV등락율",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.107"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etftotcap",
-              "name": "순자산총액(억원)",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "002.108"
-            },
-            {
-              "body_type": "res_b",
-              "code": "spread",
-              "name": "스프레드",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.109"
-            },
-            {
-              "body_type": "res_b",
-              "code": "leverage",
-              "name": "레버리지",
-              "type": "A0004",
-              "required": true,
-              "length": "2",
-              "order": "002.110"
-            },
-            {
-              "body_type": "res_b",
-              "code": "taxgubun",
-              "name": "과세구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.111"
-            },
-            {
-              "body_type": "res_b",
-              "code": "opcom_nmk",
-              "name": "운용사",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.112"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_nm1",
-              "name": "LP1",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.113"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_nm2",
-              "name": "LP2",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.114"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_nm3",
-              "name": "LP3",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.115"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_nm4",
-              "name": "LP4",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.116"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_nm5",
-              "name": "LP5",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.117"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etf_cp",
-              "name": "복제방법",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "002.118"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etf_kind",
-              "name": "상품유형(Filler)",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "002.119"
-            },
-            {
-              "body_type": "res_b",
-              "code": "vi_gubun",
-              "name": "VI발동해제",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "002.120"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etn_kind_cd",
-              "name": "ETN상품분류",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.121"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lastymd",
-              "name": "ETN만기일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.122"
-            },
-            {
-              "body_type": "res_b",
-              "code": "payday",
-              "name": "ETN지급일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.123"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lastdate",
-              "name": "ETN최종거래일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.124"
-            },
-            {
-              "body_type": "res_b",
-              "code": "issuernmk",
-              "name": "ETN발행시장참가자",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.125"
-            },
-            {
-              "body_type": "res_b",
-              "code": "last_sdate",
-              "name": "ETN만기상환가격결정시작일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.126"
-            },
-            {
-              "body_type": "res_b",
-              "code": "last_edate",
-              "name": "ETN만기상환가격결정종료일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.127"
-            },
-            {
-              "body_type": "res_b",
-              "code": "lp_holdvol",
-              "name": "ETNLP보유수량",
-              "type": "A0001",
-              "required": true,
-              "length": "12",
-              "order": "002.128"
-            },
-            {
-              "body_type": "res_b",
-              "code": "listdate",
-              "name": "상장일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.129"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etp_gb",
-              "name": "ETP상품구분코드",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.130"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etn_elback_yn",
-              "name": "ETN조기상환가능여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.131"
-            },
-            {
-              "body_type": "res_b",
-              "code": "settletype",
-              "name": "최종결제",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.132"
-            },
-            {
-              "body_type": "res_b",
-              "code": "idx_asset_class1",
-              "name": "지수자산분류코드(대분류)",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.133"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ty_text",
-              "name": "ETF/ETN투자유의",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.134"
-            },
-            {
-              "body_type": "res_b",
-              "code": "leverage2",
-              "name": "추적수익률배수",
-              "type": "A0004",
-              "required": true,
-              "length": "6.2",
-              "order": "002.135"
             },
             {
               "body_type": "req_h",
@@ -64175,7 +64362,7 @@
               "type": "A0001",
               "required": true,
               "length": "6",
-              "order": "001.002"
+              "order": "001.001"
             },
             {
               "body_type": "req_b",
@@ -64184,6 +64371,14 @@
               "type": "A0001",
               "required": true,
               "length": "6",
+              "order": "001.002"
+            },
+            {
+              "body_type": "req_b",
+              "code": "exchgubun",
+              "name": "거래소구분코드",
+              "type": "A0001",
+              "length": "1",
               "order": "001.003"
             },
             {
@@ -64228,6 +64423,14 @@
               "type": "A0001",
               "required": true,
               "length": "20",
+              "order": "002.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별종목코드",
+              "type": "A0001",
+              "length": "10",
               "order": "002.004"
             },
             {
@@ -64436,6 +64639,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t1903OutBlock",
+              "name": "t1903OutBlock",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t1903InBlock",
               "name": "t1903InBlock",
@@ -64459,7 +64670,16 @@
               "type": "A0001",
               "required": true,
               "length": "6",
-              "order": "001.002"
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "date",
+              "name": "일자",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.001"
             },
             {
               "body_type": "req_b",
@@ -64468,7 +64688,41 @@
               "type": "A0001",
               "required": true,
               "length": "8",
+              "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "hname",
+              "name": "종목명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.002"
+            },
+            {
+              "body_type": "req_b",
+              "code": "exchgubun",
+              "name": "거래소구분코드",
+              "type": "A0001",
+              "length": "1",
               "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "upname",
+              "name": "업종지수명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별종목코드",
+              "type": "A0001",
+              "length": "10",
+              "order": "001.004"
             },
             {
               "body_type": "req_h",
@@ -64481,9 +64735,9 @@
             },
             {
               "body_type": "res_b",
-              "code": "t1903OutBlock",
-              "name": "t1903OutBlock",
-              "type": "A0003",
+              "code": "t1903OutBlock1",
+              "name": "t1903OutBlock1",
+              "type": "A0005",
               "required": true,
               "order": "002"
             },
@@ -64494,25 +64748,115 @@
               "type": "A0001",
               "required": true,
               "length": "8",
+              "order": "002.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "price",
+              "name": "현재가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
               "order": "002.002"
             },
             {
               "body_type": "res_b",
-              "code": "hname",
-              "name": "종목명",
+              "code": "sign",
+              "name": "전일대비구분",
               "type": "A0001",
               "required": true,
-              "length": "20",
+              "length": "1",
               "order": "002.003"
             },
             {
               "body_type": "res_b",
-              "code": "upname",
-              "name": "업종지수명",
-              "type": "A0001",
+              "code": "change",
+              "name": "전일대비",
+              "type": "A0004",
               "required": true,
-              "length": "20",
+              "length": "8",
               "order": "002.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "volume",
+              "name": "누적거래량",
+              "type": "A0004",
+              "required": true,
+              "length": "12",
+              "order": "002.005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "navdiff",
+              "name": "NAV대비",
+              "type": "A0004",
+              "required": true,
+              "length": "9.2",
+              "order": "002.006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nav",
+              "name": "NAV",
+              "type": "A0004",
+              "required": true,
+              "length": "9.2",
+              "order": "002.007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "navchange",
+              "name": "전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "9.2",
+              "order": "002.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "crate",
+              "name": "추적오차",
+              "type": "A0004",
+              "required": true,
+              "length": "9.2",
+              "order": "002.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "grate",
+              "name": "괴리",
+              "type": "A0004",
+              "required": true,
+              "length": "9.2",
+              "order": "002.010"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jisu",
+              "name": "지수",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "002.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jichange",
+              "name": "전일대비",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "002.012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jirate",
+              "name": "전일대비율",
+              "type": "A0004",
+              "required": true,
+              "length": "8.2",
+              "order": "002.013"
             },
             {
               "body_type": "req_h",
@@ -64524,14 +64868,6 @@
               "order": "003"
             },
             {
-              "body_type": "res_b",
-              "code": "t1903OutBlock1",
-              "name": "t1903OutBlock1",
-              "type": "A0005",
-              "required": true,
-              "order": "003"
-            },
-            {
               "body_type": "res_h",
               "code": "tr_cd",
               "name": "거래 CD",
@@ -64539,123 +64875,6 @@
               "required": true,
               "length": "10",
               "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "date",
-              "name": "일자",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "003.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "price",
-              "name": "현재가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "003.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sign",
-              "name": "전일대비구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "003.004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "change",
-              "name": "전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "003.005"
-            },
-            {
-              "body_type": "res_b",
-              "code": "volume",
-              "name": "누적거래량",
-              "type": "A0004",
-              "required": true,
-              "length": "12",
-              "order": "003.006"
-            },
-            {
-              "body_type": "res_b",
-              "code": "navdiff",
-              "name": "NAV대비",
-              "type": "A0004",
-              "required": true,
-              "length": "9.2",
-              "order": "003.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "nav",
-              "name": "NAV",
-              "type": "A0004",
-              "required": true,
-              "length": "9.2",
-              "order": "003.008"
-            },
-            {
-              "body_type": "res_b",
-              "code": "navchange",
-              "name": "전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "9.2",
-              "order": "003.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "crate",
-              "name": "추적오차",
-              "type": "A0004",
-              "required": true,
-              "length": "9.2",
-              "order": "003.010"
-            },
-            {
-              "body_type": "res_b",
-              "code": "grate",
-              "name": "괴리",
-              "type": "A0004",
-              "required": true,
-              "length": "9.2",
-              "order": "003.011"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jisu",
-              "name": "지수",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "003.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jichange",
-              "name": "전일대비",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "003.013"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jirate",
-              "name": "전일대비율",
-              "type": "A0004",
-              "required": true,
-              "length": "8.2",
-              "order": "003.014"
             },
             {
               "body_type": "req_h",
@@ -64743,7 +64962,7 @@
               "type": "A0001",
               "required": true,
               "length": "6",
-              "order": "001.002"
+              "order": "001.001"
             },
             {
               "body_type": "req_b",
@@ -64752,7 +64971,7 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "001.003"
+              "order": "001.002"
             },
             {
               "body_type": "req_b",
@@ -64760,6 +64979,14 @@
               "name": "정렬기준(1:평가금액2:증권수)",
               "type": "A0001",
               "required": true,
+              "length": "1",
+              "order": "001.003"
+            },
+            {
+              "body_type": "req_b",
+              "code": "exchgubun",
+              "name": "거래소구분코드",
+              "type": "A0001",
               "length": "1",
               "order": "001.004"
             },
@@ -65106,6 +65333,14 @@
             },
             {
               "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별종목코드",
+              "type": "A0001",
+              "length": "10",
+              "order": "002.038"
+            },
+            {
+              "body_type": "res_b",
               "code": "tot_sigatval",
               "name": "전종목구성시가총액합",
               "type": "A0004",
@@ -65267,6 +65502,14 @@
             },
             {
               "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별종목코드",
+              "type": "A0001",
+              "length": "10",
+              "order": "003.016"
+            },
+            {
+              "body_type": "res_b",
               "code": "diff2",
               "name": "ETF종목과등락차",
               "type": "A0004",
@@ -65352,6 +65595,14 @@
               "required": true,
               "length": "100",
               "order": "001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "exchgubun",
+              "name": "거래소구분코드",
+              "type": "A0001",
+              "length": "1",
+              "order": "001.002"
             },
             {
               "body_type": "req_b",
@@ -66359,6 +66610,86 @@
               "required": true,
               "length": "9",
               "order": "002.110"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_ho_status",
+              "name": "NXT동시구분",
+              "type": "A0001",
+              "length": "1",
+              "order": "002.110"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_midprice",
+              "name": "NXT중간가격",
+              "type": "A0004",
+              "length": "8",
+              "order": "002.111"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_offermidsumrem",
+              "name": "NXT매도중간가잔량합계수량",
+              "type": "A0004",
+              "length": "9",
+              "order": "002.112"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_bidmidsumrem",
+              "name": "NXT매수중간가잔량합계수량",
+              "type": "A0004",
+              "length": "9",
+              "order": "002.113"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_yeprice",
+              "name": "NXT예상체결가격",
+              "type": "A0004",
+              "length": "8",
+              "order": "002.114"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_yevolume",
+              "name": "NXT예상체결수량",
+              "type": "A0004",
+              "length": "12",
+              "order": "002.115"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_yesign",
+              "name": "NXT예상체결전일구분",
+              "type": "A0001",
+              "length": "1",
+              "order": "002.116"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_yechange",
+              "name": "NXT예상체결전일대비",
+              "type": "A0004",
+              "length": "8",
+              "order": "002.117"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nxt_yediff",
+              "name": "NXT예상체결등락율",
+              "type": "A0004",
+              "length": "62",
+              "order": "002.118"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ex_shcode",
+              "name": "거래소별종목코드",
+              "type": "A0001",
+              "length": "10",
+              "order": "002.119"
             },
             {
               "body_type": "req_h",

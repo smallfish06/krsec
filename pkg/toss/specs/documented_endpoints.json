@@ -1369,7 +1369,7 @@
             "type": "string"
           },
           "timestamp": {
-            "description": "봉 시작 시각",
+            "description": "봉 기준 시각\n- `1m`: 봉 종료 시각. 해당 봉은 `[timestamp - 1분, timestamp)` 구간의 체결을 집계합니다.\n- `1d`: 해당 거래일 (시각은 현지 자정 고정)\n",
             "example": "2026-03-25T09:00:00+09:00",
             "format": "date-time",
             "type": "string"

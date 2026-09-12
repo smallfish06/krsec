@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"go/format"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -232,33 +231,9 @@ func runCheck(args []string) error {
 }
 
 func fetchSnapshot(client *http.Client, listURL string) (*snapshot, error) {
-	form := url.Values{}
-	form.Set("apiId", "")
-
-	req, err := http.NewRequest(http.MethodPost, listURL, strings.NewReader(form.Encode()))
+	payload, err := fetchAPIList(client, listURL, time.Second)
 	if err != nil {
 		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", "krsec-kiwoom-specgen/1.0")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode >= 400 {
-		return nil, fmt.Errorf("fetch API list HTTP %d", resp.StatusCode)
-	}
-
-	var payload apiListResponse
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
-		return nil, fmt.Errorf("decode API list response: %w", err)
-	}
-	if strings.TrimSpace(payload.RespCode) != "0" {
-		return nil, fmt.Errorf("API list response error: code=%s msg=%s", strings.TrimSpace(payload.RespCode), strings.TrimSpace(payload.RespMsg))
 	}
 
 	byKey := make(map[string]endpointSnapshot, len(payload.RespData))
