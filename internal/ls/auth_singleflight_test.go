@@ -2,6 +2,7 @@ package ls
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -11,12 +12,105 @@ import (
 	"time"
 
 	"github.com/smallfish06/krsec/pkg/broker"
+	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
 
 // lockedTokenManager wraps memoryTokenManager for concurrent use.
 type lockedTokenManager struct {
 	mu   sync.Mutex
 	stub memoryTokenManager
+}
+
+type notifyingAuthManager struct {
+	tokencache.Manager
+	key    string
+	cached chan struct{}
+}
+
+func TestStaleAutomaticRefreshCannotReselectPreviousAccount(t *testing.T) {
+	c := NewClientWithTokenManager(false, &lockedTokenManager{})
+	c.SetCredentials("previous", "previous-secret")
+	key, secret := c.getCredentials() // A request captured these before the switch.
+	c.SetCredentials("current", "current-secret")
+	c.setToken("current-token", time.Now().Add(time.Hour))
+	if _, err := c.authenticateSelectedCredentials(context.Background(), key, secret); !errors.Is(err, broker.ErrUnauthorized) {
+		t.Fatalf("stale automatic refresh was not rejected: %v", err)
+	}
+	if current, _ := c.getCredentials(); current != "current" {
+		t.Fatal("automatic refresh changed account selection")
+	}
+	if token, _ := c.getToken(); token != "current-token" {
+		t.Fatal("automatic refresh replaced the active account token")
+	}
+}
+
+func (m *notifyingAuthManager) SetToken(key, token string, expires time.Time) error {
+	err := m.Manager.SetToken(key, token, expires)
+	if key == m.key {
+		close(m.cached)
+	}
+	return err
+}
+
+func TestAuthenticateOldIssuanceCannotReplaceNewAccountToken(t *testing.T) {
+	for _, cancelOld := range []bool{false, true} {
+		t.Run(map[bool]string{false: "superseded", true: "canceled"}[cancelOld], func(t *testing.T) {
+			oldKey := t.Name() + "-old"
+			newKey := t.Name() + "-new"
+			started, release := make(chan struct{}), make(chan struct{})
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if err := r.ParseForm(); err != nil {
+					t.Error(err)
+				}
+				key := r.Form.Get("appkey")
+				if key == oldKey {
+					close(started)
+					<-release
+				}
+				_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "token-" + key, "token_type": "Bearer", "expires_in": 3600})
+			}))
+			defer ts.Close()
+			var releaseOnce sync.Once
+			defer releaseOnce.Do(func() { close(release) })
+			tm := &notifyingAuthManager{Manager: NewFileTokenManagerWithDir(t.TempDir()), key: oldKey, cached: make(chan struct{})}
+			c := NewClientWithTokenManager(false, tm)
+			c.SetBaseURL(ts.URL)
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			oldDone := make(chan error, 1)
+			go func() {
+				_, err := c.Authenticate(ctx, broker.Credentials{AppKey: oldKey, AppSecret: "local-test-secret"})
+				oldDone <- err
+			}()
+			<-started
+			if cancelOld {
+				cancel()
+				if err := <-oldDone; !errors.Is(err, context.Canceled) {
+					t.Fatalf("canceled auth: %v", err)
+				}
+			}
+			newToken, err := c.Authenticate(context.Background(), broker.Credentials{AppKey: newKey, AppSecret: "local-test-secret"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			releaseOnce.Do(func() { close(release) })
+			<-tm.cached
+			if !cancelOld {
+				if err := <-oldDone; !errors.Is(err, broker.ErrUnauthorized) {
+					t.Fatalf("superseded authentication succeeded: %v", err)
+				}
+			}
+			if token, _ := c.getToken(); token != newToken.AccessToken {
+				t.Fatalf("old account token replaced active account token: %q", token)
+			}
+			if !c.isTokenValid() {
+				t.Fatal("new account token invalidated")
+			}
+			if token, _ := c.getToken(); token != newToken.AccessToken {
+				t.Fatal("cache lookup restored another account's token")
+			}
+		})
+	}
 }
 
 func (m *lockedTokenManager) GetToken(appKey string) (string, time.Time, bool) {

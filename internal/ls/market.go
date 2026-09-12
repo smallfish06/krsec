@@ -219,20 +219,79 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 
 // InquireBalance fetches t0424 account summary and position rows.
 func (c *Client) InquireBalance(ctx context.Context) (map[string]any, []map[string]any, error) {
-	resp, err := c.CallEndpoint(ctx, httpMethodPost, PathStockAccount, TRStockBalance, map[string]any{
-		"t0424InBlock": map[string]any{
-			"prcgb":       "1",
-			"chegb":       "2",
-			"dangb":       "0",
-			"charge":      "1",
-			"cts_expcode": "",
-		},
-	})
-	if err != nil {
-		return nil, nil, err
+	var summary map[string]any
+	rows := make([]map[string]any, 0)
+	cursor := ""
+	continuation := Continuation{}
+	seen := make(map[string]bool)
+	for pageNumber := 0; pageNumber < 100; pageNumber++ {
+		page, err := c.CallEndpointPage(ctx, httpMethodPost, PathStockAccount, TRStockBalance, map[string]any{
+			"t0424InBlock": map[string]any{"prcgb": "1", "chegb": "2", "dangb": "0", "charge": "1", "cts_expcode": cursor},
+		}, continuation)
+		if err != nil {
+			return nil, nil, err
+		}
+		block, ok := mapValue(page.Data, "t0424OutBlock")
+		if !ok {
+			return nil, nil, fmt.Errorf("%w: t0424OutBlock missing", broker.ErrServerError)
+		}
+		pageRows, ok := strictObjectRows(page.Data, "t0424OutBlock1")
+		if !ok {
+			return nil, nil, fmt.Errorf("%w: t0424OutBlock1 missing", broker.ErrServerError)
+		}
+		if summary == nil {
+			summary = block
+		}
+		rows = append(rows, pageRows...)
+		cursor = strings.TrimSpace(anyString(block["cts_expcode"]))
+		continuation = Continuation{}
+		if strings.EqualFold(page.TRCont, "Y") {
+			if page.TRContKey != "" {
+				continuation = page.Continuation
+			} else if cursor == "" {
+				return nil, nil, fmt.Errorf("%w: LS balance continuation key missing", broker.ErrServerError)
+			}
+		}
+		if cursor == "" && continuation.TRCont == "" {
+			return summary, rows, nil
+		}
+		next := cursor + "|" + continuation.TRContKey
+		if seen[next] || len(pageRows) == 0 {
+			return nil, nil, fmt.Errorf("%w: LS balance continuation did not advance", broker.ErrServerError)
+		}
+		seen[next] = true
 	}
-	block, _ := mapValue(resp, "t0424OutBlock")
-	return block, sliceValue(resp, "t0424OutBlock1"), nil
+	return nil, nil, fmt.Errorf("%w: LS balance exceeded 100 pages", broker.ErrServerError)
+}
+
+// strictObjectRows is used for complete account responses: a malformed row
+// must not silently disappear and turn incomplete holdings into success.
+func strictObjectRows(payload map[string]any, key string) ([]map[string]any, bool) {
+	value, exists := payload[key]
+	if !exists {
+		return nil, false
+	}
+	switch items := value.(type) {
+	case []map[string]any:
+		for _, row := range items {
+			if row == nil {
+				return nil, false
+			}
+		}
+		return items, true
+	case []any:
+		rows := make([]map[string]any, 0, len(items))
+		for _, item := range items {
+			row, ok := item.(map[string]any)
+			if !ok || row == nil {
+				return nil, false
+			}
+			rows = append(rows, row)
+		}
+		return rows, true
+	default:
+		return nil, false
+	}
 }
 
 // ListStockMaster fetches LS stock master rows with t8436.

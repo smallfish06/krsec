@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"slices"
 
 	"github.com/go-fuego/fuego"
 
@@ -41,8 +42,13 @@ func (s *Server) handleAccountsSummary(c fuego.ContextNoBody) (Response, error) 
 		}
 
 		balance, err := brk.GetBalance(ctx, account.AccountID)
-		if err != nil {
-			// 에러가 발생해도 계속 진행
+		if err != nil || balance == nil {
+			failed++
+			continue
+		}
+		if slices.Contains(balance.UnavailableFields, "total_assets") ||
+			slices.Contains(balance.UnavailableFields, "cash") ||
+			slices.Contains(balance.UnavailableFields, "profit_loss") {
 			failed++
 			continue
 		}
@@ -57,6 +63,12 @@ func (s *Server) handleAccountsSummary(c fuego.ContextNoBody) (Response, error) 
 		return respond(c, http.StatusServiceUnavailable, Response{
 			OK:    false,
 			Error: "failed to retrieve balances from all accounts",
+		})
+	}
+	if failed > 0 {
+		return respond(c, http.StatusServiceUnavailable, Response{
+			OK:    false,
+			Error: "cannot aggregate balances: one or more accounts are unavailable or incomplete",
 		})
 	}
 

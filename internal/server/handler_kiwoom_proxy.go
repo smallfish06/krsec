@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -10,15 +11,17 @@ import (
 	"github.com/smallfish06/krsec/internal/endpointpath"
 	"github.com/smallfish06/krsec/internal/kiwoom"
 	"github.com/smallfish06/krsec/pkg/broker"
+	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 )
 
 type kiwoomProxyRequest struct {
-	AccountID string         `json:"account_id,omitempty"`
-	Method    string         `json:"method,omitempty"`
-	APIID     string         `json:"api_id"`
-	Params    map[string]any `json:"params,omitempty"`
-	Query     map[string]any `json:"query,omitempty"`
-	Body      map[string]any `json:"body,omitempty"`
+	AccountID    string                    `json:"account_id,omitempty"`
+	Method       string                    `json:"method,omitempty"`
+	APIID        string                    `json:"api_id"`
+	Params       map[string]any            `json:"params,omitempty"`
+	Query        map[string]any            `json:"query,omitempty"`
+	Body         map[string]any            `json:"body,omitempty"`
+	Continuation *kiwoomspecs.Continuation `json:"continuation,omitempty"`
 }
 
 type kiwoomEndpointCaller interface {
@@ -29,6 +32,10 @@ type kiwoomEndpointCaller interface {
 		apiID string,
 		request any,
 	) (any, error)
+}
+
+type kiwoomPageCaller interface {
+	CallEndpointPage(context.Context, string, string, string, any, kiwoomspecs.Continuation) (*kiwoomspecs.EndpointPage, error)
 }
 
 // handleKiwoomProxy handles POST /kiwoom/{path...}
@@ -67,7 +74,11 @@ func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) 
 		mergeInterfaceMaps(req.Query, req.Params),
 		req.Body,
 	)
-	result, err := impl.CallEndpoint(c.Context(), method, rawPath, apiID, request)
+	continuation, err := kiwoomRequestContinuation(c.Header("cont-yn"), c.Header("next-key"), req.Continuation)
+	if err != nil {
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+	}
+	result, next, err := callKiwoomProxyPage(c.Context(), impl, method, rawPath, apiID, request, continuation)
 	if err != nil {
 		return respond(c, statusFromBrokerError(err, http.StatusInternalServerError), Response{
 			OK:     false,
@@ -75,6 +86,7 @@ func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) 
 			Broker: brk.Name(),
 		})
 	}
+	setKiwoomContinuationHeaders(c, next)
 
 	return respond(c, http.StatusOK, Response{
 		OK:     true,
@@ -106,7 +118,11 @@ func (s *Server) handleKiwoomProxyStatic(path, apiID string) func(fuego.ContextW
 			return respond(c, http.StatusBadRequest, Response{OK: false, Error: "selected account does not support Kiwoom endpoint dispatch"})
 		}
 
-		result, err := impl.CallEndpoint(c.Context(), http.MethodPost, rawPath, fixedAPIID, reqBody)
+		continuation, err := kiwoomRequestContinuation(c.Header("cont-yn"), c.Header("next-key"), nil)
+		if err != nil {
+			return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+		}
+		result, next, err := callKiwoomProxyPage(c.Context(), impl, http.MethodPost, rawPath, fixedAPIID, reqBody, continuation)
 		if err != nil {
 			return respond(c, statusFromBrokerError(err, http.StatusInternalServerError), Response{
 				OK:     false,
@@ -114,6 +130,7 @@ func (s *Server) handleKiwoomProxyStatic(path, apiID string) func(fuego.ContextW
 				Broker: brk.Name(),
 			})
 		}
+		setKiwoomContinuationHeaders(c, next)
 
 		return respond(c, http.StatusOK, Response{
 			OK:     true,
@@ -121,6 +138,50 @@ func (s *Server) handleKiwoomProxyStatic(path, apiID string) func(fuego.ContextW
 			Broker: brk.Name(),
 		})
 	}
+}
+
+func kiwoomRequestContinuation(contYN, nextKey string, body *kiwoomspecs.Continuation) (kiwoomspecs.Continuation, error) {
+	continuation := kiwoomspecs.Continuation{ContYN: strings.ToUpper(strings.TrimSpace(contYN)), NextKey: strings.TrimSpace(nextKey)}
+	if body != nil {
+		fromBody := kiwoomspecs.Continuation{ContYN: strings.ToUpper(strings.TrimSpace(body.ContYN)), NextKey: strings.TrimSpace(body.NextKey)}
+		if (continuation.ContYN != "" || continuation.NextKey != "") && continuation != fromBody {
+			return continuation, fmt.Errorf("conflicting Kiwoom continuation headers and body")
+		}
+		continuation = fromBody
+	}
+	if continuation.ContYN != "" && continuation.ContYN != "N" && continuation.ContYN != "Y" {
+		return continuation, fmt.Errorf("cont-yn must be Y or N")
+	}
+	if (continuation.ContYN == "Y") != (continuation.NextKey != "") {
+		return continuation, fmt.Errorf("cont-yn=Y and next-key must be supplied together")
+	}
+	return continuation, nil
+}
+
+func callKiwoomProxyPage(ctx context.Context, impl kiwoomEndpointCaller, method, path, apiID string, request any, continuation kiwoomspecs.Continuation) (any, *kiwoomspecs.Continuation, error) {
+	if paged, ok := impl.(kiwoomPageCaller); ok {
+		page, err := paged.CallEndpointPage(ctx, method, path, apiID, request, continuation)
+		if err != nil {
+			return nil, nil, err
+		}
+		if page == nil {
+			return nil, nil, fmt.Errorf("kiwoom endpoint returned no page")
+		}
+		return page.Data, &page.Continuation, nil
+	}
+	if continuation.ContYN == "Y" || continuation.NextKey != "" {
+		return nil, nil, fmt.Errorf("%w: selected Kiwoom adapter does not support continuation", broker.ErrInvalidOrderRequest)
+	}
+	data, err := impl.CallEndpoint(ctx, method, path, apiID, request)
+	return data, nil, err
+}
+
+func setKiwoomContinuationHeaders(c interface{ SetHeader(string, string) }, continuation *kiwoomspecs.Continuation) {
+	if continuation == nil {
+		return
+	}
+	c.SetHeader("cont-yn", continuation.ContYN)
+	c.SetHeader("next-key", continuation.NextKey)
 }
 
 func (s *Server) resolveKiwoomProxyBroker(accountID string) (broker.Broker, int, string) {

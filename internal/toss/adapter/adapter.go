@@ -6,9 +6,11 @@ import (
 	"log/slog"
 	"maps"
 	"math"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
+	_ "time/tzdata" // Keep US trading dates correct in minimal release images.
 
 	"github.com/smallfish06/krsec/internal/toss"
 	"github.com/smallfish06/krsec/pkg/broker"
@@ -103,19 +105,13 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 		Timestamp: ts,
 	}
 
-	if candles, candleErr := a.client.GetCandles(ctx, symbol, "1d", 1, "", true); candleErr == nil && len(candles.Candles) > 0 {
-		c := candles.Candles[0]
-		q.Open = parseDecimal(c.OpenPrice)
-		q.High = parseDecimal(c.HighPrice)
-		q.Low = parseDecimal(c.LowPrice)
-		q.Close = parseDecimal(c.ClosePrice)
-		q.Volume = parseDecimalInt64(c.Volume)
-		if q.Close != 0 || q.Price != 0 {
-			q.Change = q.Price - q.Close
-			q.PrevClose = q.Close
-		}
-		if q.Close != 0 && q.Change != 0 {
-			q.ChangeRate = q.Change / q.Close * 100
+	// Anchor daily change to the provider's last trade, including on weekends.
+	// A server clock fallback cannot establish which trading session the price
+	// belongs to. Daily candles use the exchange's local trading date.
+	quoteTime := parseOptionalTime(price.Timestamp)
+	if !quoteTime.IsZero() {
+		if candles, candleErr := a.client.GetCandles(ctx, symbol, "1d", 2, quoteTime.Format(time.RFC3339Nano), true); candleErr == nil {
+			applyQuoteCandles(q, quoteTime, price.Currency, candles.Candles)
 		}
 	}
 
@@ -186,25 +182,26 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	for _, currency := range []string{"KRW", "USD"} {
 		power, powerErr := a.client.GetBuyingPower(ctx, a.accountSeq, currency)
 		if powerErr != nil {
-			continue
+			return nil, fmt.Errorf("get Toss %s buying power: %w", currency, powerErr)
 		}
-		buyingPowerByCurrency[strings.ToUpper(power.Currency)] = parseDecimal(power.CashBuyingPower)
+		amount, parseErr := strconv.ParseFloat(strings.TrimSpace(power.CashBuyingPower), 64)
+		if parseErr != nil || math.IsNaN(amount) || math.IsInf(amount, 0) || amount < 0 || !strings.EqualFold(strings.TrimSpace(power.Currency), currency) {
+			return nil, fmt.Errorf("%w: invalid Toss %s buying-power response", broker.ErrServerError, currency)
+		}
+		buyingPowerByCurrency[currency] = amount
 	}
 
-	cash := buyingPowerByCurrency["KRW"]
 	return &broker.Balance{
+		// Holdings are stock valuations, and buying power is not settled cash
+		// or withdrawal availability. Leave those unsupported fields explicit.
+		UnavailableFields:       []string{"cash", "cash_by_currency", "withdrawable_cash", "total_assets", "total_assets_by_currency"},
 		AccountID:               strings.TrimSpace(accountID),
-		Cash:                    cash,
-		TotalAssets:             parseDecimal(holdings.MarketValue.Amount.KRW),
-		BuyingPower:             cash,
-		WithdrawableCash:        cash,
+		BuyingPower:             buyingPowerByCurrency["KRW"],
 		ProfitLoss:              parseDecimal(holdings.ProfitLoss.Amount.KRW),
 		ProfitLossPct:           parseDecimal(holdings.ProfitLoss.Rate) * 100,
 		PositionCost:            parseDecimal(holdings.TotalPurchaseAmount.KRW),
 		PositionValue:           parseDecimal(holdings.MarketValue.Amount.KRW),
-		CashByCurrency:          cloneCurrencyMap(buyingPowerByCurrency),
 		BuyingPowerByCurrency:   cloneCurrencyMap(buyingPowerByCurrency),
-		TotalAssetsByCurrency:   multiCurrencyMap(holdings.MarketValue.Amount),
 		ProfitLossByCurrency:    multiCurrencyMap(holdings.ProfitLoss.Amount),
 		PositionCostByCurrency:  multiCurrencyMap(holdings.TotalPurchaseAmount),
 		PositionValueByCurrency: multiCurrencyMap(holdings.MarketValue.Amount),
@@ -289,10 +286,11 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 		return nil, fmt.Errorf("%w: Toss order response missing orderId", broker.ErrServerError)
 	}
 	return &broker.OrderResult{
-		OrderID:      resp.OrderID,
-		Status:       broker.OrderStatusPending,
-		RemainingQty: requestQuantity(req),
-		Timestamp:    time.Now(),
+		OrderID:             resp.OrderID,
+		Status:              broker.OrderStatusPending,
+		RemainingQty:        requestQuantity(req),
+		RemainingQtyDecimal: requestQuantityDecimal(req),
+		Timestamp:           time.Now(),
 	}, nil
 }
 
@@ -322,10 +320,11 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 	}
 	newOrderID := firstNonEmpty(resp.OrderID, orderID)
 	return &broker.OrderResult{
-		OrderID:      newOrderID,
-		Status:       broker.OrderStatusPending,
-		RemainingQty: requestModifyQuantity(req),
-		Timestamp:    time.Now(),
+		OrderID:             newOrderID,
+		Status:              broker.OrderStatusPending,
+		RemainingQty:        requestModifyQuantity(req),
+		RemainingQtyDecimal: firstNonEmpty(req.QuantityDecimal, positiveIntString(req.Quantity)),
+		Timestamp:           time.Now(),
 	}, nil
 }
 
@@ -334,6 +333,12 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 	order, err := a.client.GetOrder(ctx, a.accountSeq, orderID)
 	if err != nil {
 		return nil, err
+	}
+	if _, ok := parseQuantity(order.Quantity); !ok {
+		return nil, fmt.Errorf("%w: invalid Toss order quantity", broker.ErrServerError)
+	}
+	if _, ok := parseQuantity(order.Execution.FilledQuantity); !ok {
+		return nil, fmt.Errorf("%w: invalid Toss filled quantity", broker.ErrServerError)
 	}
 	return orderToResult(order), nil
 }
@@ -344,21 +349,26 @@ func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.O
 	if err != nil {
 		return nil, err
 	}
-	filledQty := decimalToInt64(order.Execution.FilledQuantity)
-	if filledQty <= 0 {
+	filledDecimal := strings.TrimSpace(order.Execution.FilledQuantity)
+	filled, ok := parseQuantity(filledDecimal)
+	if !ok {
+		return nil, fmt.Errorf("%w: invalid Toss filled quantity", broker.ErrServerError)
+	}
+	if filled.Sign() == 0 {
 		return []broker.OrderFill{}, nil
 	}
 	return []broker.OrderFill{{
-		OrderID:   order.OrderID,
-		Symbol:    order.Symbol,
-		Market:    marketFromCurrency(order.Currency),
-		Side:      strings.ToLower(order.Side),
-		Quantity:  filledQty,
-		Price:     parseOptionalDecimal(order.Execution.AverageFilledPrice),
-		Amount:    parseOptionalDecimal(order.Execution.FilledAmount),
-		Currency:  order.Currency,
-		FilledAt:  parseOptionalStringTime(order.Execution.FilledAt),
-		RawStatus: order.Status,
+		OrderID:         order.OrderID,
+		Symbol:          order.Symbol,
+		Market:          marketFromCurrency(order.Currency),
+		Side:            strings.ToLower(order.Side),
+		Quantity:        decimalToInt64(filledDecimal),
+		QuantityDecimal: filledDecimal,
+		Price:           parseOptionalDecimal(order.Execution.AverageFilledPrice),
+		Amount:          parseOptionalDecimal(order.Execution.FilledAmount),
+		Currency:        order.Currency,
+		FilledAt:        parseOptionalStringTime(order.Execution.FilledAt),
+		RawStatus:       order.Status,
 	}}, nil
 }
 
@@ -475,16 +485,17 @@ func tossOrderType(orderType broker.OrderType) (string, error) {
 }
 
 func orderToResult(order toss.Order) *broker.OrderResult {
-	quantity := decimalToInt64(order.Quantity)
-	filledQty := decimalToInt64(order.Execution.FilledQuantity)
-	remaining := max(quantity-filledQty, 0)
+	filledQty := strings.TrimSpace(order.Execution.FilledQuantity)
+	remaining := remainingQuantity(order.Quantity, filledQty)
 	return &broker.OrderResult{
-		OrderID:        order.OrderID,
-		Status:         mapOrderStatus(order.Status),
-		FilledQuantity: filledQty,
-		RemainingQty:   remaining,
-		AvgFilledPrice: parseOptionalDecimal(order.Execution.AverageFilledPrice),
-		Timestamp:      parseTime(firstNonEmpty(order.OrderedAt, stringPtrValue(order.CanceledAt))),
+		OrderID:               order.OrderID,
+		Status:                mapOrderStatus(order.Status),
+		FilledQuantity:        decimalToInt64(filledQty),
+		FilledQuantityDecimal: filledQty,
+		RemainingQty:          decimalToInt64(remaining),
+		RemainingQtyDecimal:   remaining,
+		AvgFilledPrice:        parseOptionalDecimal(order.Execution.AverageFilledPrice),
+		Timestamp:             parseTime(firstNonEmpty(order.OrderedAt, stringPtrValue(order.CanceledAt))),
 	}
 }
 
@@ -513,10 +524,15 @@ func tossInterval(interval string) (string, error) {
 }
 
 func requestQuantity(req broker.OrderRequest) int64 {
-	if strings.TrimSpace(req.QuantityDecimal) != "" {
-		return decimalToInt64(req.QuantityDecimal)
+	return decimalToInt64(requestQuantityDecimal(req))
+}
+
+func requestQuantityDecimal(req broker.OrderRequest) string {
+	if firstNonEmpty(req.OrderAmountDecimal, decimalString(req.OrderAmount)) != "" {
+		// Amount orders do not have a known share quantity when accepted.
+		return ""
 	}
-	return req.Quantity
+	return firstNonEmpty(req.QuantityDecimal, positiveIntString(req.Quantity))
 }
 
 func requestModifyQuantity(req broker.ModifyOrderRequest) int64 {
@@ -543,11 +559,15 @@ func parseDecimalInt64(s string) int64 {
 }
 
 func decimalToInt64(s string) int64 {
-	f := parseDecimal(s)
-	if f <= 0 {
+	r, ok := parseQuantity(s)
+	if !ok {
 		return 0
 	}
-	return int64(math.Floor(f))
+	whole := new(big.Int).Quo(r.Num(), r.Denom())
+	if !whole.IsInt64() {
+		return 0
+	}
+	return whole.Int64()
 }
 
 func decimalString(v float64) string {

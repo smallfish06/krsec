@@ -45,6 +45,31 @@ type callOptions struct {
 	Headers   map[string]string
 }
 
+// Continuation carries the LS response headers needed for the next page.
+type Continuation struct {
+	TRCont    string `json:"tr_cont,omitempty"`
+	TRContKey string `json:"tr_cont_key,omitempty"`
+}
+
+// EndpointPage preserves a REST payload and its independent continuation headers.
+type EndpointPage struct {
+	Data map[string]any `json:"data"`
+	Continuation
+}
+
+// CallEndpointPage executes one page without discarding continuation metadata.
+func (c *Client) CallEndpointPage(ctx context.Context, method, path, trCD string, request any, continuation Continuation) (*EndpointPage, error) {
+	cont := strings.ToUpper(strings.TrimSpace(continuation.TRCont))
+	key := strings.TrimSpace(continuation.TRContKey)
+	if strings.ContainsAny(key, "\r\n") {
+		return nil, fmt.Errorf("%w: invalid LS continuation key", broker.ErrUpstreamBadRequest)
+	}
+	if (cont != "" && cont != "N" && cont != "Y") || (cont == "Y" && key == "") || (key != "" && cont != "Y") {
+		return nil, fmt.Errorf("%w: continuation requires tr_cont=Y and a non-empty tr_cont_key", broker.ErrUpstreamBadRequest)
+	}
+	return c.callEndpointAttempt(ctx, method, path, trCD, request, callOptions{TRCont: cont, TRContKey: key}, true)
+}
+
 // NewClientWithTokenManager creates an LS OpenAPI client.
 func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	baseURL := BaseURLReal
@@ -105,10 +130,27 @@ func (c *Client) Name() string {
 
 // SetCredentials stores LS app credentials for token refresh.
 func (c *Client) SetCredentials(appKey, appSecret string) {
+	appKey, appSecret = strings.TrimSpace(appKey), strings.TrimSpace(appSecret)
 	c.mu.Lock()
-	c.appKey = strings.TrimSpace(appKey)
-	c.appSecret = strings.TrimSpace(appSecret)
+	if c.appKey != appKey || c.appSecret != appSecret {
+		c.accessToken = ""
+		c.expiresAt = time.Time{}
+	}
+	c.appKey = appKey
+	c.appSecret = appSecret
 	c.mu.Unlock()
+}
+
+// Only an authentication for the currently selected credentials may install a
+// token. Detached issuances for a previous account can still populate its cache.
+func (c *Client) setCredentialToken(appKey, appSecret, token string, expiresAt time.Time) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.appKey != appKey || c.appSecret != appSecret {
+		return false
+	}
+	c.accessToken, c.expiresAt = token, expiresAt
+	return true
 }
 
 func (c *Client) getCredentials() (string, string) {
@@ -143,18 +185,14 @@ func (c *Client) getMACAddress() string {
 }
 
 func (c *Client) isTokenValid() bool {
-	appKey, _ := c.getCredentials()
+	appKey, appSecret := c.getCredentials()
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
 	if appKey != "" {
 		if token, expiresAt, ok := tm.GetToken(appKey); ok {
-			cached, _ := c.getToken()
-			if cached != token {
-				c.setToken(token, expiresAt)
-			}
-			return true
+			return c.setCredentialToken(appKey, appSecret, token, expiresAt)
 		}
 	}
 
@@ -170,7 +208,7 @@ func (c *Client) ensureToken(ctx context.Context) error {
 	if appKey == "" || appSecret == "" {
 		return broker.ErrInvalidCredentials
 	}
-	_, err := c.Authenticate(ctx, broker.Credentials{AppKey: appKey, AppSecret: appSecret})
+	_, err := c.authenticateSelectedCredentials(ctx, appKey, appSecret)
 	return err
 }
 
@@ -185,7 +223,11 @@ func (c *Client) callEndpoint(
 	request any,
 	opts callOptions,
 ) (map[string]any, error) {
-	return c.callEndpointAttempt(ctx, method, path, trCD, request, opts, true)
+	page, err := c.callEndpointAttempt(ctx, method, path, trCD, request, opts, true)
+	if err != nil {
+		return nil, err
+	}
+	return page.Data, nil
 }
 
 func (c *Client) callEndpointAttempt(
@@ -194,7 +236,7 @@ func (c *Client) callEndpointAttempt(
 	request any,
 	opts callOptions,
 	retryUnauthorized bool,
-) (map[string]any, error) {
+) (*EndpointPage, error) {
 	trCD = strings.TrimSpace(trCD)
 	if trCD == "" {
 		return nil, fmt.Errorf("%w: tr_cd is required", broker.ErrUpstreamBadRequest)
@@ -276,8 +318,13 @@ func (c *Client) callEndpointAttempt(
 
 	out := make(map[string]any)
 	if len(bytes.TrimSpace(bodyBytes)) > 0 {
-		if err := json.Unmarshal(bodyBytes, &out); err != nil {
+		decoder := json.NewDecoder(bytes.NewReader(bodyBytes))
+		decoder.UseNumber()
+		if err := decoder.Decode(&out); err != nil {
 			return nil, fmt.Errorf("decode LS response: %w", err)
+		}
+		if err := decoder.Decode(new(any)); !errors.Is(err, io.EOF) {
+			return nil, fmt.Errorf("%w: trailing data in LS response", broker.ErrServerError)
 		}
 	}
 	if isEmptyLSResponse(out) {
@@ -293,7 +340,11 @@ func (c *Client) callEndpointAttempt(
 		}
 		return nil, err
 	}
-	return out, nil
+	continuation := Continuation{TRCont: strings.ToUpper(strings.TrimSpace(resp.Header.Get("tr_cont"))), TRContKey: strings.TrimSpace(resp.Header.Get("tr_cont_key"))}
+	if continuation.TRCont != "" && continuation.TRCont != "Y" && continuation.TRCont != "N" {
+		return nil, fmt.Errorf("%w: invalid LS response continuation flag", broker.ErrServerError)
+	}
+	return &EndpointPage{Data: out, Continuation: continuation}, nil
 }
 
 func (c *Client) trLimiter(trCD string) *ratelimit.Limiter {
@@ -310,6 +361,14 @@ func (c *Client) trLimiter(trCD string) *ratelimit.Limiter {
 
 func lsTRRateLimit(trCD string) (float64, int, bool) {
 	switch strings.ToLower(strings.TrimSpace(trCD)) {
+	case "cspaq13700":
+		return 1, 1, true
+	case "t0424", "t0425":
+		return 2, 1, true
+	case "cspat00601":
+		return 10, 1, true
+	case "cspat00701", "cspat00801":
+		return 3, 1, true
 	case TRStockChart, TROverseasStockChart, TRForeignIndexHistory, TRForeignIndexQuote:
 		return 1, 1, true
 	case TROverseasStockQuote, "g3102", TROverseasStockInstrument, "g3106", TROverseasStockMaster:
@@ -324,7 +383,7 @@ func (c *Client) refreshToken(ctx context.Context) error {
 	if appKey == "" || appSecret == "" {
 		return broker.ErrInvalidCredentials
 	}
-	_, err := c.Authenticate(ctx, broker.Credentials{AppKey: appKey, AppSecret: appSecret})
+	_, err := c.authenticateSelectedCredentials(ctx, appKey, appSecret)
 	return err
 }
 

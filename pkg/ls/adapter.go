@@ -18,6 +18,17 @@ type Adapter interface {
 	BuildOverseasTradeSubscriptions(ctx context.Context, market string, maxRows int) ([]RealtimeSubscription, error)
 }
 
+// PageCaller is the optional REST pagination extension implemented by built-in adapters.
+type PageCaller interface {
+	CallEndpointPage(ctx context.Context, method, path, trCD string, request any, continuation Continuation) (*EndpointPage, error)
+}
+
+// Continuation holds LS continuation request and response headers.
+type Continuation = internal.Continuation
+
+// EndpointPage is a raw payload together with its continuation metadata.
+type EndpointPage = internal.EndpointPage
+
 // RealtimeConn is a live LS websocket connection.
 type RealtimeConn = internal.RealtimeConn
 
@@ -40,5 +51,5 @@ type Options struct {
 
 // NewAdapterWithOptions creates an LS adapter with injectable options.
 func NewAdapterWithOptions(sandbox bool, accountID string, opts Options) Adapter {
-	return internaladapter.NewAdapterWithOptions(sandbox, accountID, opts.TokenManager, opts.MACAddress, opts.Logger)
+	return internaladapter.NewAdapterWithOptions(sandbox, accountID, opts.TokenManager, opts.MACAddress, opts.Logger, opts.OrderContextDir)
 }

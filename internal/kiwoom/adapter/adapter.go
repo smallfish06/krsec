@@ -86,15 +86,12 @@ func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*
 
 // GetQuote retrieves quote for domestic markets.
 func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.Quote, error) {
-	symbol = normalizeSymbol(symbol)
-	if symbol == "" {
-		return nil, broker.ErrInvalidSymbol
-	}
-	if _, err := toKiwoomExchange(market); err != nil {
+	requestSymbol, symbol, outputMarket, err := marketDataSymbol(market, symbol)
+	if err != nil {
 		return nil, err
 	}
 
-	quote, err := a.client.InquirePrice(ctx, symbol)
+	quote, err := a.client.InquirePrice(ctx, requestSymbol)
 	if err != nil {
 		return nil, err
 	}
@@ -106,14 +103,14 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 		prevClose = price - change
 	}
 
-	symbolOut := normalizeSymbol(quote.StkCd)
+	symbolOut := stripVenueSuffix(normalizeSymbol(quote.StkCd))
 	if symbolOut == "" {
 		symbolOut = symbol
 	}
 
 	return &broker.Quote{
 		Symbol:     symbolOut,
-		Market:     normalizeOutputMarket(market),
+		Market:     outputMarket,
 		Price:      price,
 		Open:       normalizedPrice(parseFloatString(quote.OpenPric)),
 		High:       normalizedPrice(parseFloatString(quote.HighPric)),
@@ -131,11 +128,8 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 
 // GetOHLCV retrieves domestic OHLCV for day/week/month intervals.
 func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts broker.OHLCVOpts) ([]broker.OHLCV, error) {
-	symbol = normalizeSymbol(symbol)
-	if symbol == "" {
-		return nil, broker.ErrInvalidSymbol
-	}
-	if _, err := toKiwoomExchange(market); err != nil {
+	requestSymbol, _, _, err := marketDataSymbol(market, symbol)
+	if err != nil {
 		return nil, err
 	}
 
@@ -149,33 +143,20 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 		baseDate = opts.To.Format("20060102")
 	}
 
-	var (
-		rows []map[string]any
-		err  error
-	)
-
+	var apiID, rowField string
 	switch interval {
 	case "1d", "d", "day", "daily":
-		resp, e := a.client.InquireDailyPrice(ctx, symbol, baseDate)
-		err = e
-		if e == nil {
-			rows = decodeObjectArray(resp.StkDtPoleChartQry)
-		}
+		apiID, rowField = "ka10081", "stk_dt_pole_chart_qry"
 	case "1w", "w", "week", "weekly":
-		resp, e := a.client.InquireWeeklyPrice(ctx, symbol, baseDate)
-		err = e
-		if e == nil {
-			rows = decodeObjectArray(resp.StkStkPoleChartQry)
-		}
+		apiID, rowField = "ka10082", "stk_stk_pole_chart_qry"
 	case "1mo", "mo", "month", "monthly":
-		resp, e := a.client.InquireMonthlyPrice(ctx, symbol, baseDate)
-		err = e
-		if e == nil {
-			rows = decodeObjectArray(resp.StkMthPoleChartQry)
-		}
+		apiID, rowField = "ka10083", "stk_mth_pole_chart_qry"
 	default:
 		return nil, fmt.Errorf("unsupported interval for kiwoom: %s", opts.Interval)
 	}
+	rows, err := a.collectEndpointRowsUntil(ctx, kiwoom.PathChart, apiID, map[string]any{
+		"stk_cd": requestSymbol, "base_dt": baseDate, "upd_stkpc_tp": "1",
+	}, rowField, maxAccountChartPages, chartPageStop(opts))
 	if err != nil {
 		return nil, err
 	}
@@ -184,10 +165,11 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 	}
 
 	out := make([]broker.OHLCV, 0, len(rows))
+	fromDate, toDate := chartDateBounds(opts)
 	for _, row := range rows {
 		dt, ok := parseDateYYYYMMDDString(asAnyString(row["dt"]))
 		if !ok {
-			continue
+			return nil, fmt.Errorf("invalid Kiwoom chart bar date")
 		}
 		item := broker.OHLCV{
 			Timestamp: dt,
@@ -197,10 +179,10 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 			Close:     normalizedPrice(asAnyFloat(row["cur_prc"])),
 			Volume:    asAnyInt(row["trde_qty"]),
 		}
-		if !opts.From.IsZero() && item.Timestamp.Before(startOfDay(opts.From)) {
+		if !fromDate.IsZero() && item.Timestamp.Before(fromDate) {
 			continue
 		}
-		if !opts.To.IsZero() && item.Timestamp.After(endOfDay(opts.To)) {
+		if !toDate.IsZero() && item.Timestamp.After(toDate) {
 			continue
 		}
 		out = append(out, item)
@@ -227,12 +209,12 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	evaluationTotal := parseFloatString(bal.EvltAmtTot)
 	totalAssets := deposit + evaluationTotal
 
-	return &broker.Balance{
+	balance := &broker.Balance{
 		AccountID:        strings.TrimSpace(accountID),
 		Cash:             deposit,
 		TotalAssets:      totalAssets,
 		BuyingPower:      parseFloatString(bal.OrdAlowa),
-		WithdrawableCash: parseFloatString(bal.OrdAlowa),
+		WithdrawableCash: parseFloatString(bal.PymnAlowAmt),
 		ReceivableAmount: parseFloatString(bal.EntrD2),
 		ProfitLoss:       parseFloatString(bal.TotPlTot),
 		ProfitLossPct:    parseFloatString(bal.TotPlRt),
@@ -241,16 +223,21 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 		SettlementT1:     parseFloatString(bal.EntrD1),
 		Unsettled:        parseFloatString(bal.UnclStkAmt),
 		LoanBalance:      parseFloatString(bal.CrdLoanTot),
-	}, nil
+	}
+	if strings.TrimSpace(bal.PymnAlowAmt) == "" {
+		balance.UnavailableFields = append(balance.UnavailableFields, "withdrawable_cash")
+	}
+	return balance, nil
 }
 
 // GetPositions retrieves account stock positions.
 func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position, error) {
-	positionsResp, err := a.client.InquirePositions(ctx, "0", "KRX")
+	rows, err := a.collectEndpointRows(ctx, kiwoom.PathAccount, "kt00018", map[string]any{
+		"qry_tp": "1", "dmst_stex_tp": "KRX",
+	}, "acnt_evlt_remn_indv_tot", maxAccountChartPages)
 	if err != nil {
 		return nil, err
 	}
-	rows := decodeObjectArray(positionsResp.AcntEvltRemnIndvTot)
 	if len(rows) == 0 {
 		return []broker.Position{}, nil
 	}
@@ -259,9 +246,13 @@ func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position
 	for _, row := range rows {
 		symbol := normalizeSymbol(asAnyString(row["stk_cd"]))
 		if symbol == "" {
-			continue
+			return nil, fmt.Errorf("invalid Kiwoom position row: missing symbol")
 		}
-		remainingQty := asAnyInt(row["rmnd_qty"])
+		quantity := strings.ReplaceAll(strings.TrimSpace(asAnyString(row["rmnd_qty"])), ",", "")
+		remainingQty, err := strconv.ParseInt(quantity, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid Kiwoom position quantity for %s: %w", symbol, err)
+		}
 		if remainingQty == 0 {
 			continue
 		}
@@ -714,16 +705,6 @@ func normalizeSymbol(symbol string) string {
 	s := strings.ToUpper(strings.TrimSpace(symbol))
 	s = strings.TrimPrefix(s, "A")
 	return s
-}
-
-func startOfDay(t time.Time) time.Time {
-	y, m, d := t.Date()
-	return time.Date(y, m, d, 0, 0, 0, 0, t.Location())
-}
-
-func endOfDay(t time.Time) time.Time {
-	y, m, d := t.Date()
-	return time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), t.Location())
 }
 
 func mapOrderStatus(raw string, remaining int64) broker.OrderStatus {

@@ -4,6 +4,9 @@
 
 - Runtime code does **not** call KIS docs site.
 - Generated files are built from this snapshot only.
+- Request properties include both required and optional fields. Optional typed
+  inputs use `omitempty`; runtime validation still requires only documented
+  required fields. Raw map requests also accept optional inputs.
 - CI runs `make kis-spec-check` to detect stale generated outputs.
 
 ## Refresh Flow

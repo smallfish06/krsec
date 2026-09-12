@@ -59,19 +59,22 @@ type OHLCV struct {
 
 // Balance represents account balance
 type Balance struct {
-	AccountID        string  `json:"account_id"`
-	Cash             float64 `json:"cash"`
-	TotalAssets      float64 `json:"total_assets"`
-	BuyingPower      float64 `json:"buying_power"`
-	WithdrawableCash float64 `json:"withdrawable_cash,omitempty"`
-	ReceivableAmount float64 `json:"receivable_amount,omitempty"`
-	ProfitLoss       float64 `json:"profit_loss"`
-	ProfitLossPct    float64 `json:"profit_loss_pct"`
-	PositionCost     float64 `json:"position_cost,omitempty"`
-	PositionValue    float64 `json:"position_value,omitempty"`
-	SettlementT1     float64 `json:"settlement_t1,omitempty"`
-	Unsettled        float64 `json:"unsettled,omitempty"`
-	LoanBalance      float64 `json:"loan_balance,omitempty"`
+	// UnavailableFields names JSON fields the provider could not supply. Their
+	// numeric zero values are placeholders, not observed zero balances.
+	UnavailableFields []string `json:"unavailable_fields,omitempty"`
+	AccountID         string   `json:"account_id"`
+	Cash              float64  `json:"cash"`
+	TotalAssets       float64  `json:"total_assets"`
+	BuyingPower       float64  `json:"buying_power"`
+	WithdrawableCash  float64  `json:"withdrawable_cash,omitempty"`
+	ReceivableAmount  float64  `json:"receivable_amount,omitempty"`
+	ProfitLoss        float64  `json:"profit_loss"`
+	ProfitLossPct     float64  `json:"profit_loss_pct"`
+	PositionCost      float64  `json:"position_cost,omitempty"`
+	PositionValue     float64  `json:"position_value,omitempty"`
+	SettlementT1      float64  `json:"settlement_t1,omitempty"`
+	Unsettled         float64  `json:"unsettled,omitempty"`
+	LoanBalance       float64  `json:"loan_balance,omitempty"`
 
 	CashByCurrency          map[string]float64 `json:"cash_by_currency,omitempty"`
 	TotalAssetsByCurrency   map[string]float64 `json:"total_assets_by_currency,omitempty"`
@@ -212,26 +215,32 @@ type ModifyOrderRequest struct {
 
 // OrderResult represents the result of an order operation
 type OrderResult struct {
-	OrderID        string      `json:"order_id"`
-	Status         OrderStatus `json:"status"`
-	FilledQuantity int64       `json:"filled_quantity,omitempty"`
-	RemainingQty   int64       `json:"remaining_quantity,omitempty"`
-	AvgFilledPrice float64     `json:"avg_filled_price,omitempty"`
-	RejectedReason string      `json:"rejected_reason,omitempty"`
-	Message        string      `json:"message,omitempty"`
-	Timestamp      time.Time   `json:"timestamp"`
+	// Decimal quantities are authoritative when present; integer fields remain
+	// available for clients that only support whole-share orders.
+	FilledQuantityDecimal string      `json:"filled_quantity_decimal,omitempty"`
+	RemainingQtyDecimal   string      `json:"remaining_quantity_decimal,omitempty"`
+	OrderID               string      `json:"order_id"`
+	Status                OrderStatus `json:"status"`
+	FilledQuantity        int64       `json:"filled_quantity,omitempty"`
+	RemainingQty          int64       `json:"remaining_quantity,omitempty"`
+	AvgFilledPrice        float64     `json:"avg_filled_price,omitempty"`
+	RejectedReason        string      `json:"rejected_reason,omitempty"`
+	Message               string      `json:"message,omitempty"`
+	Timestamp             time.Time   `json:"timestamp"`
 }
 
 // OrderFill represents normalized fill execution data.
 type OrderFill struct {
-	OrderID   string    `json:"order_id"`
-	Symbol    string    `json:"symbol,omitempty"`
-	Market    string    `json:"market,omitempty"`
-	Side      string    `json:"side,omitempty"`
-	Quantity  int64     `json:"quantity"`
-	Price     float64   `json:"price"`
-	Amount    float64   `json:"amount,omitempty"`
-	Currency  string    `json:"currency,omitempty"`
-	FilledAt  time.Time `json:"filled_at"`
-	RawStatus string    `json:"raw_status,omitempty"`
+	// QuantityDecimal preserves fractional executions without rounding.
+	QuantityDecimal string    `json:"quantity_decimal,omitempty"`
+	OrderID         string    `json:"order_id"`
+	Symbol          string    `json:"symbol,omitempty"`
+	Market          string    `json:"market,omitempty"`
+	Side            string    `json:"side,omitempty"`
+	Quantity        int64     `json:"quantity"`
+	Price           float64   `json:"price"`
+	Amount          float64   `json:"amount,omitempty"`
+	Currency        string    `json:"currency,omitempty"`
+	FilledAt        time.Time `json:"filled_at"`
+	RawStatus       string    `json:"raw_status,omitempty"`
 }

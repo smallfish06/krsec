@@ -71,11 +71,16 @@ func TestGetQuote_MapsPriceAndDailyCandle(t *testing.T) {
 				}},
 			})
 		case toss.PathCandles:
+			if r.URL.Query().Get("count") != "2" || r.URL.Query().Get("before") != "2026-03-25T09:30:00+09:00" {
+				t.Errorf("quote candles query = %s", r.URL.RawQuery)
+			}
 			_ = json.NewEncoder(w).Encode(map[string]any{
 				"result": map[string]any{
 					"candles": []map[string]any{{
 						"timestamp": "2026-03-25T09:00:00+09:00",
 						"openPrice": "71600", "highPrice": "72300", "lowPrice": "71500", "closePrice": "71800", "volume": "3521000", "currency": "KRW",
+					}, {
+						"timestamp": "2026-03-24T00:00:00+09:00", "closePrice": "70000", "currency": "KRW",
 					}},
 					"nextBefore": nil,
 				},
@@ -98,6 +103,9 @@ func TestGetQuote_MapsPriceAndDailyCandle(t *testing.T) {
 	}
 	if quote.Price != 72000 || quote.Open != 71600 || quote.Volume != 3521000 {
 		t.Fatalf("unexpected quote: %+v", quote)
+	}
+	if quote.PrevClose != 70000 || quote.Change != 2000 {
+		t.Fatalf("daily change must use previous trading session: %+v", quote)
 	}
 }
 

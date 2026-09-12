@@ -91,6 +91,8 @@ krsec -config config.yaml
 | `DELETE` | `/accounts/{account_id}/orders/{id}` | 주문 취소 |
 | `GET` | `/swagger/` | Swagger UI |
 
+공통 응답의 수량 정밀도, 잔고 항목의 제공 여부, 연속조회 방법은 [공통 API 계약](doc/common-contract.md)을 참고하세요. 원본 REST 경로 지원과 공통 인터페이스의 지원 범위는 서로 다릅니다.
+
 ```bash
 curl http://localhost:8080/quotes/KRX/005930
 ```
@@ -237,13 +239,15 @@ examples/             사용 예시
 
 공통 HTTP API는 REST 중심입니다. LS증권은 국내 주식 `t1102/t8410/t8436`, 미국 해외주식 `g3101/g3204/g3104`를 공통 현재가/차트/종목정보 인터페이스로 제공합니다. 국내 `t8410`과 해외 `g3204` 차트 TR은 공식 quota에 맞춰 app key별 1 TPS로 직렬화합니다. 해외주식 가격조회는 `GET /quotes/US-NASDAQ/AAPL` 같은 공통 quote API와 raw `POST /ls/overseas-stock/market-data` `g3101` 양쪽에서 사용할 수 있습니다.
 
-LS raw proxy는 LS 공식 API 가이드 스냅샷 기준 문서화된 REST TR 전체를 `path + tr_cd`로 호출할 수 있습니다. 현재 snapshot은 41개 endpoint 묶음, 365개 TR(REST 249개, WebSocket 116개)을 포함합니다. REST raw 호출은 필수 request block/field를 검증한 뒤 전달하고, WebSocket TR은 REST proxy에서 거절하며 realtime client의 `ConnectRealtime`/`Subscribe` 경로로 사용합니다.
+LS raw proxy는 LS 공식 API 가이드 스냅샷 기준 문서화된 REST TR 전체를 `path + tr_cd`로 호출할 수 있습니다. 현재 snapshot은 41개 endpoint 묶음, 364개 TR(REST 248개, WebSocket 116개)을 포함합니다. REST raw 호출은 필수 request block/field를 검증한 뒤 전달하고, WebSocket TR은 REST proxy에서 거절하며 realtime client의 `ConnectRealtime`/`Subscribe` 경로로 사용합니다.
 
 LS증권은 REST 조회/주문 어댑터와 별도로 WebSocket 실시간 체결 구독 클라이언트를 제공합니다. `BuildTradeSubscriptions`로 LS 종목마스터 기준 KOSPI/KOSDAQ 체결 구독 목록을 만들고 `SubscribeMany`로 한 연결에 등록할 수 있습니다. 미국 해외주식은 `BuildOverseasTradeSubscriptions(ctx, "US-NASDAQ", maxRows)` 또는 `OverseasRealtimeKey("82", "AAPL")`와 `GSC/GSH` TR로 구독할 수 있습니다.
 
-LS 주문 정정/취소/주문조회/체결조회는 LS 원주문 컨텍스트 요구사항과 현재 공통 인터페이스가 맞지 않아 아직 `ErrNotSupported`를 반환합니다.
+LS 주문 정정/취소/주문조회/체결조회는 이 계좌의 공통 API로 접수하고 문맥이 저장된 당일 국내 주문에 대해 제공합니다. 계좌·인증키·거래일을 확인하고 증권사 조회로 현재 종목·잔량을 재확인합니다. 문맥이 없거나 거래일이 다른 주문은 추정하여 처리하지 않습니다. 외부에서 접수한 주문이나 과거 거래일 조회는 원본 API를 사용해야 합니다.
 
-Toss증권은 공식 OpenAPI JSON snapshot 기준 전체 REST operation을 `/toss/{path...}` raw proxy로 호출할 수 있습니다. 공통 `Broker` 인터페이스에서는 현재가, 1일/1분 캔들, 종목정보, 보유주식, 매수가능금액 기반 잔고, 주문 생성/정정/취소/조회/체결 요약을 제공합니다. Toss API 키는 `app_key_env`/`app_secret_env` 환경변수 참조 방식 사용을 권장합니다.
+Toss증권은 공식 OpenAPI JSON snapshot 기준 전체 REST operation을 `/toss/{path...}` raw proxy로 호출할 수 있습니다. 공통 `Broker` 인터페이스에서는 현재가, 1일/1분 캔들, 종목정보, 보유주식, 보유평가액·매수가능금액, 주문 생성/정정/취소/조회/체결 요약을 제공합니다. 예수금·출금가능금액·총자산은 해당 조회 결과로 알 수 없어 `unavailable_fields`로 표시하고 JSON 수치에서 제외합니다. Toss API 키는 `app_key_env`/`app_secret_env` 환경변수 참조 방식 사용을 권장합니다.
+
+KIS·키움·Toss의 WebSocket 실시간 기능은 아직 제공하지 않습니다. 키움 미국주식 REST 경로와 분봉 원본 API는 호출할 수 있지만 공통 미국주식·분봉 인터페이스는 미지원입니다. 현재 REST drift 검사는 별도의 실시간 계약까지 보장하지 않습니다.
 
 ## 개발
 

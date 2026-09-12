@@ -9,12 +9,22 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/smallfish06/krsec/internal/ls"
 	"github.com/smallfish06/krsec/pkg/broker"
 	lsspecs "github.com/smallfish06/krsec/pkg/ls/specs"
 )
 
 // CallEndpoint executes a documented LS REST endpoint by path and tr_cd.
 func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, request any) (any, error) {
+	page, err := a.CallEndpointPage(ctx, method, path, trCD, request, ls.Continuation{})
+	if err != nil {
+		return nil, err
+	}
+	return page.Data, nil
+}
+
+// CallEndpointPage executes one documented REST page and returns continuation headers.
+func (a *Adapter) CallEndpointPage(ctx context.Context, method, path, trCD string, request any, continuation ls.Continuation) (*ls.EndpointPage, error) {
 	path = normalizeEndpointPath(path)
 	trCD = strings.TrimSpace(trCD)
 	if path == "" {
@@ -56,7 +66,7 @@ func (a *Adapter) CallEndpoint(ctx context.Context, method, path, trCD string, r
 	if a == nil || a.client == nil {
 		return nil, fmt.Errorf("%w: LS client is not initialized", broker.ErrInvalidOrderRequest)
 	}
-	return a.client.CallEndpoint(ctx, effectiveMethod, path, trCD, payload)
+	return a.client.CallEndpointPage(ctx, effectiveMethod, path, trCD, payload, continuation)
 }
 
 func validateDocumentedRequestFields(spec lsspecs.LSEndpointSpec, payload map[string]any) error {

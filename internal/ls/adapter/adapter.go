@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/smallfish06/krsec/internal/ls"
@@ -14,10 +15,17 @@ import (
 
 // Adapter adapts LS Securities OpenAPI into broker.Broker.
 type Adapter struct {
-	client    *ls.Client
-	accountID string
-	sandbox   bool
-	logger    *slog.Logger
+	client       *ls.Client
+	accountID    string
+	sandbox      bool
+	logger       *slog.Logger
+	orderMu      sync.Mutex
+	actionMu     sync.Mutex
+	orders       map[string]orderContext
+	orderDir     string
+	orderLoadErr error
+	credentialID string
+	now          func() time.Time
 }
 
 // NewAdapterWithOptions creates an LS adapter with injectable internals.
@@ -27,6 +35,7 @@ func NewAdapterWithOptions(
 	tokenManager tokencache.Manager,
 	macAddress string,
 	logger *slog.Logger,
+	orderContextDir ...string,
 ) *Adapter {
 	if logger == nil {
 		logger = slog.Default()
@@ -34,12 +43,22 @@ func NewAdapterWithOptions(
 	client := ls.NewClientWithTokenManager(sandbox, tokenManager)
 	client.SetLogger(logger)
 	client.SetMACAddress(macAddress)
-	return &Adapter{
+	a := &Adapter{
 		client:    client,
 		accountID: strings.TrimSpace(accountID),
 		sandbox:   sandbox,
 		logger:    logger,
+		orders:    make(map[string]orderContext),
+		now:       time.Now,
 	}
+	if len(orderContextDir) > 0 {
+		a.orderDir = strings.TrimSpace(orderContextDir[0])
+	}
+	a.orderLoadErr = a.loadOrderContexts()
+	if a.orderLoadErr != nil {
+		a.logger.Warn("failed to load LS order contexts", "error", a.orderLoadErr)
+	}
+	return a
 }
 
 // Client exposes the underlying LS client for advanced users and tests.
@@ -54,7 +73,16 @@ func (a *Adapter) Name() string {
 
 // Authenticate authenticates with LS.
 func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
-	return a.client.Authenticate(ctx, creds)
+	a.actionMu.Lock()
+	defer a.actionMu.Unlock()
+	// The client installs new credentials before token issuance completes.
+	// A failed or canceled reauthentication must invalidate the old order scope.
+	a.credentialID = ""
+	token, err := a.client.Authenticate(ctx, creds)
+	if err == nil {
+		a.credentialID = credentialFingerprint(creds.AppKey)
+	}
+	return token, err
 }
 
 // ConnectRealtime opens an LS realtime WebSocket connection.
@@ -236,18 +264,13 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	if err != nil {
 		return nil, err
 	}
-	totalAssets := anyFloat(summary["tappamt"])
-	if totalAssets == 0 {
-		totalAssets = anyFloat(summary["sunamt"])
-	}
 	return &broker.Balance{
-		AccountID:     strings.TrimSpace(accountID),
-		Cash:          anyFloat(summary["sunamt"]),
-		TotalAssets:   totalAssets,
-		BuyingPower:   anyFloat(summary["sunamt"]),
-		ProfitLoss:    anyFloat(summary["tdtsunik"]),
-		PositionCost:  anyFloat(summary["mamt"]),
-		PositionValue: anyFloat(summary["tappamt"]),
+		UnavailableFields: []string{"cash", "cash_by_currency", "buying_power", "buying_power_by_currency", "withdrawable_cash"},
+		AccountID:         strings.TrimSpace(accountID),
+		TotalAssets:       anyFloat(summary["sunamt"]),
+		ProfitLoss:        anyFloat(summary["tdtsunik"]),
+		PositionCost:      anyFloat(summary["mamt"]),
+		PositionValue:     anyFloat(summary["tappamt"]),
 	}, nil
 }
 
@@ -290,9 +313,24 @@ func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position
 
 // PlaceOrder places a regular cash stock order.
 func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*broker.OrderResult, error) {
-	symbol := normalizeOrderSymbol(req.Symbol, a.sandbox)
+	a.actionMu.Lock()
+	defer a.actionMu.Unlock()
+	if err := a.orderContextReady(); err != nil {
+		return nil, err
+	}
+	if req.AccountID != "" && strings.TrimSpace(req.AccountID) != a.accountID {
+		return nil, broker.ErrInvalidOrderRequest
+	}
+	member, err := lsOrderMarket(req.Market)
+	if err != nil {
+		return nil, err
+	}
+	symbol := canonicalOrderSymbol(req.Symbol)
 	if symbol == "" {
 		return nil, broker.ErrInvalidSymbol
+	}
+	if req.QuantityDecimal != "" || req.OrderAmount != 0 || req.OrderAmountDecimal != "" || req.TimeInForce != "" {
+		return nil, fmt.Errorf("%w: LS common orders require whole quantity and default time in force", broker.ErrInvalidOrderRequest)
 	}
 	side, err := lsOrderSide(req.Side)
 	if err != nil {
@@ -311,7 +349,7 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 
 	resp, err := a.client.CallEndpoint(ctx, "POST", ls.PathStockOrder, ls.TRStockOrder, map[string]any{
 		"CSPAT00601InBlock1": map[string]any{
-			"IsuNo":         symbol,
+			"IsuNo":         lsWireOrderSymbol(symbol, a.sandbox),
 			"OrdQty":        req.Quantity,
 			"OrdPrc":        req.Price,
 			"BnsTpCode":     side,
@@ -319,17 +357,18 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 			"MgntrnCode":    "000",
 			"LoanDt":        "",
 			"OrdCndiTpCode": "0",
-			"MbrNo":         lsMarketMember(req.Market),
+			"MbrNo":         member,
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
 	block, _ := mapValue(resp, "CSPAT00601OutBlock2")
-	orderID := anyString(block["OrdNo"])
+	orderID := normalizeOrderID(anyString(block["OrdNo"]))
 	if orderID == "" {
 		return nil, fmt.Errorf("%w: LS order response missing OrdNo", broker.ErrServerError)
 	}
+	a.storeOrderContext(orderID, orderContext{OrderID: orderID, AccountID: a.accountID, CredentialID: a.credentialID, Symbol: symbol, Market: member, Side: req.Side, OrderType: req.Type, Quantity: req.Quantity, Price: req.Price, PlacedAt: a.orderNow()})
 	return &broker.OrderResult{
 		OrderID:      orderID,
 		Status:       broker.OrderStatusPending,
@@ -337,27 +376,6 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 		Message:      anyString(resp["rsp_msg"]),
 		Timestamp:    time.Now(),
 	}, nil
-}
-
-// CancelOrder requires original symbol and quantity, which the common API does
-// not carry yet for LS order cancellation.
-func (a *Adapter) CancelOrder(context.Context, string) error {
-	return fmt.Errorf("%w: LS cancel requires original symbol and quantity context", broker.ErrNotSupported)
-}
-
-// ModifyOrder requires original symbol and order type context, which the common API does not carry yet.
-func (a *Adapter) ModifyOrder(context.Context, string, broker.ModifyOrderRequest) (*broker.OrderResult, error) {
-	return nil, fmt.Errorf("%w: LS modify requires original symbol and order context", broker.ErrNotSupported)
-}
-
-// GetOrder is not implemented until LS order history is mapped into the common contract.
-func (a *Adapter) GetOrder(context.Context, string) (*broker.OrderResult, error) {
-	return nil, fmt.Errorf("%w: LS order lookup is not implemented", broker.ErrNotSupported)
-}
-
-// GetOrderFills is not implemented until LS fill history is mapped into the common contract.
-func (a *Adapter) GetOrderFills(context.Context, string) ([]broker.OrderFill, error) {
-	return nil, fmt.Errorf("%w: LS order fills lookup is not implemented", broker.ErrNotSupported)
 }
 
 // GetInstrument returns stock master metadata.

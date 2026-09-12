@@ -47,9 +47,10 @@ type Client struct {
 
 // callOptions controls optional Kiwoom continuation headers.
 type callOptions struct {
-	ContYN  string
-	NextKey string
-	Headers map[string]string
+	ContYN   string
+	NextKey  string
+	Headers  map[string]string
+	Response *kiwoomspecs.Continuation
 }
 
 func cloneBody(body map[string]any) map[string]any {
@@ -175,7 +176,13 @@ func (c *Client) CallDocumentedEndpoint(
 		return nil, err
 	}
 
-	bodyBytes, err := c.doRequest(ctx, method, apiID, path, normalizeRequestBody(body), callOptions{})
+	opts := callOptions{}
+	if page, ok := ctx.Value(pageContextKey{}).(*pageCapture); ok {
+		opts.ContYN = page.request.ContYN
+		opts.NextKey = page.request.NextKey
+		opts.Response = &page.response
+	}
+	bodyBytes, err := c.doRequest(ctx, method, apiID, path, normalizeRequestBody(body), opts)
 	if err != nil {
 		return nil, err
 	}
@@ -353,6 +360,25 @@ func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body
 			msg = http.StatusText(resp.StatusCode)
 		}
 		return nil, wrapCallError(apiID, resp.StatusCode, msg)
+	}
+	if opts.Response != nil {
+		continuation := kiwoomspecs.Continuation{
+			ContYN:  strings.ToUpper(strings.TrimSpace(resp.Header.Get("cont-yn"))),
+			NextKey: strings.TrimSpace(resp.Header.Get("next-key")),
+		}
+		if continuation.ContYN == "" {
+			continuation.ContYN = "N"
+		}
+		if continuation.ContYN != "N" && continuation.ContYN != "Y" {
+			return nil, fmt.Errorf("invalid Kiwoom response continuation: cont-yn must be Y or N")
+		}
+		if continuation.ContYN == "Y" && continuation.NextKey == "" {
+			return nil, fmt.Errorf("incomplete Kiwoom response: cont-yn=Y without next-key")
+		}
+		if continuation.ContYN == "N" {
+			continuation.NextKey = ""
+		}
+		*opts.Response = continuation
 	}
 	return bodyBytes, nil
 }

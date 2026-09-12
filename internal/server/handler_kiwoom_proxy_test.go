@@ -9,6 +9,7 @@ import (
 
 	"github.com/smallfish06/krsec/pkg/broker"
 	"github.com/smallfish06/krsec/pkg/config"
+	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 )
 
 type proxyKiwoomBroker struct {
@@ -228,5 +229,90 @@ func TestHandleKiwoomProxy_InvalidMethodRejected(t *testing.T) {
 	}
 	if kiwoomBroker.called {
 		t.Fatalf("expected broker not to be called")
+	}
+}
+
+type proxyPagedKiwoomBroker struct {
+	proxyKiwoomBroker
+	continuation kiwoomspecs.Continuation
+	next         kiwoomspecs.Continuation
+}
+
+func (b *proxyPagedKiwoomBroker) CallEndpointPage(ctx context.Context, method, path, apiID string, request any, continuation kiwoomspecs.Continuation) (*kiwoomspecs.EndpointPage, error) {
+	b.continuation = continuation
+	data, err := b.CallEndpoint(ctx, method, path, apiID, request)
+	if err != nil {
+		return nil, err
+	}
+	return &kiwoomspecs.EndpointPage{Data: data, Continuation: b.next}, nil
+}
+
+func TestHandleKiwoomProxyContinuationHeaders(t *testing.T) {
+	for _, route := range []struct{ path, body string }{
+		{"/kiwoom/dostk/chart", `{"api_id":"ka10081","body":{"stk_cd":"005930","base_dt":"20260912","upd_stkpc_tp":"1"}}`},
+		{"/kiwoom/dostk/chart/ka10081", `{"stk_cd":"005930","base_dt":"20260912","upd_stkpc_tp":"1"}`},
+	} {
+		t.Run(route.path, func(t *testing.T) {
+			brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}, resp: map[string]any{"stk_cd": "005930"}}, next: kiwoomspecs.Continuation{ContYN: "Y", NextKey: "page2"}}
+			s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
+			req := httptest.NewRequest(http.MethodPost, route.path, bytes.NewBufferString(route.body))
+			req.Header.Set("cont-yn", "Y")
+			req.Header.Set("next-key", "page1")
+			rr := performFiberRequest(t, s, req)
+			if rr.Code != http.StatusOK {
+				t.Fatalf("status=%d body=%s", rr.Code, rr.Body.String())
+			}
+			if brk.continuation.ContYN != "Y" || brk.continuation.NextKey != "page1" {
+				t.Fatalf("continuation=%+v", brk.continuation)
+			}
+			if rr.Header().Get("cont-yn") != "Y" || rr.Header().Get("next-key") != "page2" {
+				t.Fatalf("headers=%v", rr.Header())
+			}
+			response := decodeResponse(t, rr)
+			data, ok := response.Data.(map[string]any)
+			if !ok || data["stk_cd"] != "005930" || data["data"] != nil {
+				t.Fatalf("legacy body changed: %+v", response)
+			}
+		})
+	}
+}
+
+func TestHandleKiwoomProxyContinuationBody(t *testing.T) {
+	brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}, resp: map[string]any{}}, next: kiwoomspecs.Continuation{ContYN: "N"}}
+	s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
+	req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/chart", bytes.NewBufferString(`{"api_id":"ka10081","body":{"stk_cd":"005930"},"continuation":{"cont_yn":"Y","next_key":"page1"}}`))
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK || brk.continuation.NextKey != "page1" || rr.Header().Get("cont-yn") != "N" {
+		t.Fatalf("response=%s continuation=%+v headers=%v", rr.Body.String(), brk.continuation, rr.Header())
+	}
+}
+
+func TestHandleKiwoomProxyRejectsBadContinuation(t *testing.T) {
+	for _, test := range []struct{ cont, key, body string }{
+		{"Y", "", `{"api_id":"ka10001","body":{"stk_cd":"005930"}}`},
+		{"N", "page1", `{"api_id":"ka10001","body":{"stk_cd":"005930"}}`},
+		{"Y", "page1", `{"api_id":"ka10001","body":{"stk_cd":"005930"},"continuation":{"cont_yn":"Y","next_key":"other"}}`},
+	} {
+		brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}}
+		s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
+		req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/stkinfo", bytes.NewBufferString(test.body))
+		req.Header.Set("cont-yn", test.cont)
+		req.Header.Set("next-key", test.key)
+		rr := performFiberRequest(t, s, req)
+		if rr.Code != http.StatusBadRequest || brk.called {
+			t.Fatalf("status=%d called=%v body=%s", rr.Code, brk.called, rr.Body.String())
+		}
+	}
+}
+
+func TestHandleKiwoomLegacyAdapterRejectsCursor(t *testing.T) {
+	brk := &proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}
+	s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
+	req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/stkinfo/ka10001", bytes.NewBufferString(`{"stk_cd":"005930"}`))
+	req.Header.Set("cont-yn", "Y")
+	req.Header.Set("next-key", "page1")
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusBadRequest || brk.called {
+		t.Fatalf("status=%d called=%v body=%s", rr.Code, brk.called, rr.Body.String())
 	}
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/smallfish06/krsec/pkg/broker"
 	"github.com/smallfish06/krsec/pkg/config"
+	"github.com/smallfish06/krsec/pkg/ls"
 )
 
 type proxyLSBroker struct {
@@ -173,5 +174,57 @@ func TestHandleLSProxy_InvalidMethodRejected(t *testing.T) {
 	}
 	if lsBroker.called {
 		t.Fatalf("expected broker not to be called")
+	}
+}
+
+type paginatedLSBroker struct {
+	proxyLSBroker
+	continuation ls.Continuation
+}
+
+func (b *paginatedLSBroker) CallEndpointPage(_ context.Context, _, _, _ string, request any, continuation ls.Continuation) (*ls.EndpointPage, error) {
+	b.continuation = continuation
+	b.gotReq = request
+	return &ls.EndpointPage{Data: map[string]any{"rsp_cd": "00000"}, Continuation: ls.Continuation{TRCont: "Y", TRContKey: "following-page"}}, nil
+}
+
+func TestHandleLSProxyPreservesContinuationOutsidePayload(t *testing.T) {
+	b := &paginatedLSBroker{proxyLSBroker: proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}}
+	s := newOrderTestServer(map[string]broker.Broker{"ls": b}, []config.AccountConfig{{AccountID: "ls", Broker: "ls"}})
+	req := httptest.NewRequest(http.MethodPost, "/ls/stock/accno", bytes.NewBufferString(`{"tr_cd":"t0425","tr_cont":"Y","tr_cont_key":"next-page","body":{"t0425InBlock":{"expcode":"005930"}}}`))
+	rr := performFiberRequest(t, s, req)
+	if rr.Code != http.StatusOK || b.continuation.TRCont != "Y" || b.continuation.TRContKey != "next-page" {
+		t.Fatalf("request continuation lost: status=%d cont=%+v body=%s", rr.Code, b.continuation, rr.Body.String())
+	}
+	if rr.Header().Get("tr_cont") != "Y" || rr.Header().Get("tr_cont_key") != "following-page" {
+		t.Fatalf("response continuation lost: %v", rr.Header())
+	}
+	data := decodeResponse(t, rr).Data.(map[string]any)
+	if data["rsp_cd"] != "00000" || data["data"] != nil {
+		t.Fatalf("existing data shape changed: %v", data)
+	}
+	if b.gotReq.(map[string]any)["tr_cont_key"] != nil {
+		t.Fatal("header cursor leaked into upstream body")
+	}
+}
+
+func TestHandleLSProxyRejectsContinuationForLegacyAdapter(t *testing.T) {
+	b := &proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}
+	s := newOrderTestServer(map[string]broker.Broker{"ls": b}, []config.AccountConfig{{AccountID: "ls", Broker: "ls"}})
+	rr := performFiberRequest(t, s, httptest.NewRequest(http.MethodPost, "/ls/stock/accno", bytes.NewBufferString(`{"tr_cd":"t0425","tr_cont":"Y","tr_cont_key":"next"}`)))
+	if rr.Code != http.StatusBadRequest || b.called {
+		t.Fatalf("legacy adapter silently ignored continuation: %d %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestLSRequestContinuationHeadersAndConflicts(t *testing.T) {
+	cont, err := lsRequestContinuation("Y", "cursor", "", "")
+	if err != nil || cont.TRCont != "Y" || cont.TRContKey != "cursor" {
+		t.Fatalf("headers ignored: %+v %v", cont, err)
+	}
+	for _, fields := range [][4]string{{"Y", "a", "Y", "b"}, {"Y", "a", "N", ""}, {"Y", "", "", ""}, {"", "a", "", ""}} {
+		if _, err := lsRequestContinuation(fields[0], fields[1], fields[2], fields[3]); err == nil {
+			t.Fatalf("invalid continuation accepted: %v", fields)
+		}
 	}
 }

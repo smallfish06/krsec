@@ -49,7 +49,7 @@ func TestAdapterCallEndpoint_DispatchesDocumentedRESTTR(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -116,7 +116,7 @@ func TestAdapterCallEndpoint_AllowsInitialOverseasChartContinuationFields(t *tes
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -149,7 +149,7 @@ func TestAdapterCallEndpoint_AllowsInitialOverseasChartContinuationFields(t *tes
 func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 	t.Parallel()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]any{
 		"t1102InBlock": map[string]any{
 			"shcode": "078020",
@@ -169,7 +169,7 @@ func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 func TestAdapterCallEndpoint_RejectsUndocumentedTR(t *testing.T) {
 	t.Parallel()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, "NOPE", map[string]any{})
 	if err == nil {
 		t.Fatal("expected unsupported endpoint error, got nil")
@@ -182,7 +182,7 @@ func TestAdapterCallEndpoint_RejectsUndocumentedTR(t *testing.T) {
 func TestAdapterCallEndpoint_RejectsWebSocketTRForRESTDispatch(t *testing.T) {
 	t.Parallel()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/websocket/overseas-stock", internalls.TRRealtimeOverseasTrade, map[string]any{})
 	if err == nil {
 		t.Fatal("expected websocket rejection, got nil")

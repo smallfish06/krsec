@@ -80,7 +80,7 @@ func TestAdapterGetQuote_MapsT1102Response(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -153,7 +153,7 @@ func TestAdapterGetQuote_MapsOverseasG3101Response(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -197,7 +197,7 @@ func TestAdapterGetQuote_ReturnsErrorWhenG3101OutputMissing(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -253,7 +253,7 @@ func TestAdapterGetOHLCV_UsesHistoricalStartForT8410FromOnly(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -314,7 +314,7 @@ func TestAdapterGetOHLCV_UsesOpenEndedEndForT8410Latest(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -373,7 +373,7 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -420,7 +420,7 @@ func TestAdapterGetOHLCV_ReturnsErrorWhenG3204OutputMissing(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)
@@ -472,7 +472,7 @@ func TestAdapterGetInstrument_MapsOverseasG3104Response(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil)
+	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	a.Client().SetBaseURL(ts.URL)
 	if _, err := a.Authenticate(context.Background(), broker.Credentials{AppKey: "app-key", AppSecret: "app-secret"}); err != nil {
 		t.Fatalf("Authenticate error: %v", err)

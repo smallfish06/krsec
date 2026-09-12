@@ -45,15 +45,6 @@ func lsOverseasExchangeGroup(market string) (string, bool) {
 	}
 }
 
-func lsMarketMember(market string) string {
-	switch strings.ToUpper(strings.TrimSpace(market)) {
-	case "NXT", "N":
-		return "NXT"
-	default:
-		return "KRX"
-	}
-}
-
 func lsOrderSide(side broker.OrderSide) (string, error) {
 	switch side {
 	case broker.OrderSideSell:
@@ -86,17 +77,6 @@ func normalizeOverseasSymbol(symbol string) string {
 	symbol = strings.TrimSpace(strings.ToUpper(symbol))
 	if len(symbol) > 2 && (strings.HasPrefix(symbol, "81") || strings.HasPrefix(symbol, "82")) {
 		return strings.TrimSpace(symbol[2:])
-	}
-	return symbol
-}
-
-func normalizeOrderSymbol(symbol string, sandbox bool) string {
-	symbol = normalizeSymbol(symbol)
-	if symbol == "" {
-		return ""
-	}
-	if sandbox && len(symbol) == 6 {
-		return "A" + symbol
 	}
 	return symbol
 }

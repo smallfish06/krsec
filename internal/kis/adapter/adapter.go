@@ -222,58 +222,6 @@ func (a *Adapter) getOverseasQuote(ctx context.Context, market, symbol, exchange
 	}, nil
 }
 
-// GetOHLCV retrieves OHLCV data for a given market and symbol
-func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts broker.OHLCVOpts) ([]broker.OHLCV, error) {
-	fidCondMrktDivCode := "J"
-	if strings.EqualFold(strings.TrimSpace(market), "KOSDAQ") {
-		fidCondMrktDivCode = "Q"
-	}
-	resp, err := callEndpointDecoded[struct {
-		Output  []kisspecs.KISDomesticStockV1QuotationsInquireDailyPriceOutputItem `json:"output"`
-		Output1 []kisspecs.KISDomesticStockV1QuotationsInquireDailyPriceOutputItem `json:"output1"`
-	}](
-		a,
-		ctx,
-		http.MethodGet,
-		kis.PathDomesticStockInquireDailyPrice,
-		"",
-		kisspecs.KISDomesticStockV1QuotationsInquireDailyPriceRequest{
-			FidCondMrktDivCode: fidCondMrktDivCode,
-			FidInputIscd:       symbol,
-			FidPeriodDivCode:   "D",
-			FidOrgAdjPrc:       "0",
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	rows := resp.Output
-	if len(rows) == 0 {
-		rows = resp.Output1
-	}
-	result := make([]broker.OHLCV, 0, len(rows))
-	for _, item := range rows {
-		timestamp, _ := time.Parse("20060102", item.StckBsopDate)
-		open, _ := strconv.ParseFloat(item.StckOprc, 64)
-		high, _ := strconv.ParseFloat(item.StckHgpr, 64)
-		low, _ := strconv.ParseFloat(item.StckLwpr, 64)
-		close, _ := strconv.ParseFloat(item.StckClpr, 64)
-		volume, _ := strconv.ParseInt(item.AcmlVol, 10, 64)
-
-		result = append(result, broker.OHLCV{
-			Timestamp: timestamp,
-			Open:      open,
-			High:      high,
-			Low:       low,
-			Close:     close,
-			Volume:    volume,
-		})
-	}
-
-	return applyOHLCVOptions(result, opts)
-}
-
 // GetBalance retrieves account balance
 func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Balance, error) {
 	// accountID 파싱
@@ -352,7 +300,7 @@ func toBrokerStockPosition(item kisspecs.KISDomesticStockV1TradingInquireBalance
 func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.Position, error) {
 	cano, acntPrdtCD := a.parseAccountID(accountID)
 
-	var positions []broker.Position
+	positions := make([]broker.Position, 0)
 
 	// 1. 주식 잔고 조회
 	resp, err := callEndpointDecoded[struct {
@@ -374,13 +322,19 @@ func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.
 			PrcsDvsn:          "00",
 		},
 	)
-	if err == nil {
-		for _, item := range resp.Output1 {
-			positions = append(positions, toBrokerStockPosition(item))
-		}
+	if err != nil {
+		return nil, fmt.Errorf("query stock positions: %w", err)
+	}
+	for _, item := range resp.Output1 {
+		positions = append(positions, toBrokerStockPosition(item))
+	}
+	// KIS explicitly does not offer bond balances in virtual trading. Stocks
+	// are the complete supported position set for that environment.
+	if a.sandbox {
+		return positions, nil
 	}
 
-	// 2. 채권 잔고 조회 (실패해도 주식 결과는 반환)
+	// Both sources must succeed: a partial list is not a complete account snapshot.
 	bondResp, err := callEndpointDecoded[struct {
 		Output  []kisspecs.KISDomesticBondV1TradingInquireBalanceOutputItem `json:"output"`
 		Output1 []kisspecs.KISDomesticBondV1TradingInquireBalanceOutputItem `json:"output1"`
@@ -401,51 +355,45 @@ func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.
 		},
 	)
 	if err != nil {
-		a.logger.Warn("bond balance query failed (non-fatal)", "error", err)
+		return nil, fmt.Errorf("query bond positions: %w", err)
 	}
-	if err == nil {
-		bondItems := bondResp.Output
-		if len(bondItems) == 0 {
-			bondItems = bondResp.Output1
+	bondItems := bondResp.Output
+	if len(bondItems) == 0 {
+		bondItems = bondResp.Output1
+	}
+	// Aggregate by symbol (same bond bought on different dates)
+	type bondAgg struct {
+		name     string
+		totalQty int64
+		totalAmt float64
+	}
+	bondMap := make(map[string]*bondAgg)
+	for _, item := range bondItems {
+		qty, _ := strconv.ParseInt(item.CblcQty, 10, 64)
+		if qty == 0 {
+			continue
 		}
-		// Aggregate by symbol (same bond bought on different dates)
-		type bondAgg struct {
-			name     string
-			totalQty int64
-			totalAmt float64
-		}
-		bondMap := make(map[string]*bondAgg)
-		for _, item := range bondItems {
-			qty, _ := strconv.ParseInt(item.CblcQty, 10, 64)
-			if qty == 0 {
-				continue
-			}
-			buyAmt, _ := strconv.ParseFloat(item.BuyAmt, 64)
-			if agg, ok := bondMap[item.Pdno]; ok {
-				agg.totalQty += qty
-				agg.totalAmt += buyAmt
-			} else {
-				bondMap[item.Pdno] = &bondAgg{name: item.PrdtName, totalQty: qty, totalAmt: buyAmt}
-			}
-		}
-		for symbol, agg := range bondMap {
-			avgPrice := agg.totalAmt / float64(agg.totalQty)
-			positions = append(positions, broker.Position{
-				Symbol:        symbol,
-				Name:          agg.name,
-				Market:        "KRX",
-				AssetType:     broker.AssetBond,
-				Quantity:      agg.totalQty,
-				AvgPrice:      avgPrice,
-				CurrentPrice:  avgPrice,
-				PurchaseValue: agg.totalAmt,
-				ProfitLoss:    0,
-			})
+		buyAmt, _ := strconv.ParseFloat(item.BuyAmt, 64)
+		if agg, ok := bondMap[item.Pdno]; ok {
+			agg.totalQty += qty
+			agg.totalAmt += buyAmt
+		} else {
+			bondMap[item.Pdno] = &bondAgg{name: item.PrdtName, totalQty: qty, totalAmt: buyAmt}
 		}
 	}
-
-	if positions == nil {
-		positions = []broker.Position{}
+	for symbol, agg := range bondMap {
+		avgPrice := agg.totalAmt / float64(agg.totalQty)
+		positions = append(positions, broker.Position{
+			Symbol:        symbol,
+			Name:          agg.name,
+			Market:        "KRX",
+			AssetType:     broker.AssetBond,
+			Quantity:      agg.totalQty,
+			AvgPrice:      avgPrice,
+			CurrentPrice:  avgPrice,
+			PurchaseValue: agg.totalAmt,
+			ProfitLoss:    0,
+		})
 	}
 
 	return positions, nil
@@ -711,23 +659,27 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 		}, nil
 	}
 
-	exchangeCode := toKISExchangeID(req.Market)
+	exchangeCode, err := a.domesticOrderExchange(req.Market)
+	if err != nil {
+		return nil, err
+	}
 
-	trID := "TTTC0802U"
+	trID := "TTTC0012U"
 	if side == "sell" {
-		trID = "TTTC0801U"
+		trID = "TTTC0011U"
 	}
 	if a.sandbox {
 		trID = "V" + trID[1:]
 	}
 
 	reqFields := kisspecs.KISDomesticStockV1TradingOrderCashRequest{
-		Cano:       cano,
-		AcntPrdtCd: acntPrdtCD,
-		Pdno:       req.Symbol,
-		OrdDvsn:    orderDvsn,
-		OrdQty:     strconv.Itoa(int(req.Quantity)),
-		OrdUnpr:    strconv.Itoa(int(req.Price)),
+		Cano:         cano,
+		AcntPrdtCd:   acntPrdtCD,
+		Pdno:         req.Symbol,
+		OrdDvsn:      orderDvsn,
+		OrdQty:       strconv.Itoa(int(req.Quantity)),
+		OrdUnpr:      strconv.Itoa(int(req.Price)),
+		ExcgIdDvsnCd: exchangeCode,
 	}
 	resp, err := callEndpointDecoded[kisspecs.KISDomesticStockV1TradingOrderCash](
 		a,
@@ -800,9 +752,13 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 			reqFields,
 		)
 	} else {
-		trID := "TTTC0803U"
+		exchangeCode, exchangeErr := a.domesticOrderExchange(meta.ExchangeCode)
+		if exchangeErr != nil {
+			return exchangeErr
+		}
+		trID := "TTTC0013U"
 		if a.sandbox {
-			trID = "VTTC0803U"
+			trID = "VTTC0013U"
 		}
 		reqFields := kisspecs.KISDomesticStockV1TradingOrderRvsecnclRequest{
 			Cano:            meta.CANO,
@@ -814,6 +770,7 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 			OrdQty:          strconv.Itoa(meta.OrderQty),
 			OrdUnpr:         strconv.Itoa(int(meta.OrderPrice)),
 			QtyAllOrdYn:     "Y",
+			ExcgIdDvsnCd:    exchangeCode,
 		}
 		_, err = callEndpointDecoded[kisspecs.KISDomesticStockV1TradingOrderRvsecncl](
 			a,
@@ -895,9 +852,13 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 			respOrdNo = decoded.Output[0].Odno
 		}
 	} else {
-		trID := "TTTC0803U"
+		exchangeCode, exchangeErr := a.domesticOrderExchange(meta.ExchangeCode)
+		if exchangeErr != nil {
+			return nil, exchangeErr
+		}
+		trID := "TTTC0013U"
 		if a.sandbox {
-			trID = "VTTC0803U"
+			trID = "VTTC0013U"
 		}
 		reqFields := kisspecs.KISDomesticStockV1TradingOrderRvsecnclRequest{
 			Cano:            meta.CANO,
@@ -909,6 +870,7 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 			OrdQty:          strconv.Itoa(newQty),
 			OrdUnpr:         strconv.Itoa(int(newPrice)),
 			QtyAllOrdYn:     "N",
+			ExcgIdDvsnCd:    exchangeCode,
 		}
 		decoded, err := callEndpointDecoded[kisspecs.KISDomesticStockV1TradingOrderRvsecncl](
 			a,
@@ -1280,17 +1242,20 @@ func (a *Adapter) resolveOrderContext(ctx context.Context, orderID string) (orde
 	return orderContext{}, broker.ErrOrderNotFound
 }
 
-func toKISExchangeID(market string) string {
+func (a *Adapter) domesticOrderExchange(market string) (string, error) {
+	var exchange string
 	switch strings.ToUpper(strings.TrimSpace(market)) {
-	case "", "KRX", "KOSPI", "KOSDAQ":
-		return "KRX"
-	case "NXT":
-		return "NXT"
-	case "SOR":
-		return "SOR"
+	case "", "KRX", "KOSPI", "KOSDAQ", "KONEX", "KNX":
+		exchange = "KRX"
+	case "NXT", "SOR":
+		exchange = strings.ToUpper(strings.TrimSpace(market))
 	default:
-		return "KRX"
+		return "", fmt.Errorf("%w: unsupported domestic order market %q", broker.ErrInvalidMarket, market)
 	}
+	if a.sandbox && exchange != "KRX" {
+		return "", fmt.Errorf("%w: KIS sandbox supports KRX orders only", broker.ErrInvalidMarket)
+	}
+	return exchange, nil
 }
 
 type orderStatusSnapshot struct {

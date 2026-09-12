@@ -39,6 +39,8 @@ func (s *Server) registerKiwoomStaticProxyRoutes() {
 			fuego.OptionSummary(summary),
 			fuego.OptionDescription(desc),
 			fuego.OptionQuery("account_id", "Optional account selector when multiple Kiwoom accounts exist."),
+			fuego.OptionHeader("cont-yn", "Use Y with next-key to request the next page. Response headers expose both values."),
+			fuego.OptionHeader("next-key", "Continuation key from the preceding response; send together with cont-yn=Y."),
 		}
 
 		if reqType := kiwoomspecs.NewDocumentedEndpointRequest(spec.Path, spec.APIID); reqType != nil {

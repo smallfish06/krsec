@@ -1643,6 +1643,12 @@ type KISDomesticFutureoptionV1TradingInquirePsblOrderOutputItem struct {
 }
 
 type KISDomesticFutureoptionV1TradingInquirePsblOrderRequest struct {
+	AcntPrdtCd   string `json:"ACNT_PRDT_CD,omitempty"`
+	Cano         string `json:"CANO,omitempty"`
+	OrdDvsnCd    string `json:"ORD_DVSN_CD,omitempty"`
+	Pdno         string `json:"PDNO,omitempty"`
+	SllBuyDvsnCd string `json:"SLL_BUY_DVSN_CD,omitempty"`
+	UnitPrice    string `json:"UNIT_PRICE,omitempty"`
 }
 
 type KISDomesticFutureoptionV1TradingNgtMarginDetail struct {
@@ -1699,14 +1705,18 @@ type KISDomesticFutureoptionV1TradingOrderOutputItem struct {
 }
 
 type KISDomesticFutureoptionV1TradingOrderRequest struct {
-	AcntPrdtCd    string `json:"ACNT_PRDT_CD"`
-	Cano          string `json:"CANO"`
-	OrdDvsnCd     string `json:"ORD_DVSN_CD"`
-	OrdPrcsDvsnCd string `json:"ORD_PRCS_DVSN_CD"`
-	OrdQty        string `json:"ORD_QTY"`
-	ShtnPdno      string `json:"SHTN_PDNO"`
-	SllBuyDvsnCd  string `json:"SLL_BUY_DVSN_CD"`
-	UnitPrice     string `json:"UNIT_PRICE"`
+	AcntPrdtCd     string `json:"ACNT_PRDT_CD"`
+	Cano           string `json:"CANO"`
+	CtacTlno       string `json:"CTAC_TLNO,omitempty"`
+	FuopItemDvsnCd string `json:"FUOP_ITEM_DVSN_CD,omitempty"`
+	KrxNmprCndtCd  string `json:"KRX_NMPR_CNDT_CD,omitempty"`
+	NmprTypeCd     string `json:"NMPR_TYPE_CD,omitempty"`
+	OrdDvsnCd      string `json:"ORD_DVSN_CD"`
+	OrdPrcsDvsnCd  string `json:"ORD_PRCS_DVSN_CD"`
+	OrdQty         string `json:"ORD_QTY"`
+	ShtnPdno       string `json:"SHTN_PDNO"`
+	SllBuyDvsnCd   string `json:"SLL_BUY_DVSN_CD"`
+	UnitPrice      string `json:"UNIT_PRICE"`
 }
 
 type KISDomesticFutureoptionV1TradingOrderRvsecncl struct {
@@ -1727,6 +1737,7 @@ type KISDomesticFutureoptionV1TradingOrderRvsecnclOutputItem struct {
 type KISDomesticFutureoptionV1TradingOrderRvsecnclRequest struct {
 	AcntPrdtCd     string `json:"ACNT_PRDT_CD"`
 	Cano           string `json:"CANO"`
+	FuopItemDvsnCd string `json:"FUOP_ITEM_DVSN_CD,omitempty"`
 	KrxNmprCndtCd  string `json:"KRX_NMPR_CNDT_CD"`
 	NmprTypeCd     string `json:"NMPR_TYPE_CD"`
 	OrdDvsnCd      string `json:"ORD_DVSN_CD"`
@@ -4041,6 +4052,7 @@ type KISDomesticStockV1QuotationsInquireTimeDailychartpriceOutput2Item struct {
 
 type KISDomesticStockV1QuotationsInquireTimeDailychartpriceRequest struct {
 	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
+	FidFakeTickIncuYn  string `json:"FID_FAKE_TICK_INCU_YN,omitempty"`
 	FidInputDate1      string `json:"FID_INPUT_DATE_1"`
 	FidInputHour1      string `json:"FID_INPUT_HOUR_1"`
 	FidInputIscd       string `json:"FID_INPUT_ISCD"`
@@ -5993,9 +6005,12 @@ type KISDomesticStockV1TradingInquireBalanceRequest struct {
 	AcntPrdtCd        string `json:"ACNT_PRDT_CD"`
 	AfhrFlprYn        string `json:"AFHR_FLPR_YN"`
 	Cano              string `json:"CANO"`
+	CtxAreaFk100      string `json:"CTX_AREA_FK100,omitempty"`
+	CtxAreaNk100      string `json:"CTX_AREA_NK100,omitempty"`
 	FncgAmtAutoRdptYn string `json:"FNCG_AMT_AUTO_RDPT_YN"`
 	FundSttlIcldYn    string `json:"FUND_STTL_ICLD_YN"`
 	InqrDvsn          string `json:"INQR_DVSN"`
+	OflYn             string `json:"OFL_YN,omitempty"`
 	PrcsDvsn          string `json:"PRCS_DVSN"`
 	UnprDvsn          string `json:"UNPR_DVSN"`
 }
@@ -6174,7 +6189,9 @@ type KISDomesticStockV1TradingInquireDailyCcldRequest struct {
 	InqrDvsn3    string `json:"INQR_DVSN_3"`
 	InqrEndDt    string `json:"INQR_END_DT"`
 	InqrStrtDt   string `json:"INQR_STRT_DT"`
+	Odno         string `json:"ODNO,omitempty"`
 	OrdGnoBrno   string `json:"ORD_GNO_BRNO"`
+	Pdno         string `json:"PDNO,omitempty"`
 	SllBuyDvsnCd string `json:"SLL_BUY_DVSN_CD"`
 }
 
@@ -6518,12 +6535,15 @@ type KISDomesticStockV1TradingOrderCashOutputItem struct {
 }
 
 type KISDomesticStockV1TradingOrderCashRequest struct {
-	AcntPrdtCd string `json:"ACNT_PRDT_CD"`
-	Cano       string `json:"CANO"`
-	OrdDvsn    string `json:"ORD_DVSN"`
-	OrdQty     string `json:"ORD_QTY"`
-	OrdUnpr    string `json:"ORD_UNPR"`
-	Pdno       string `json:"PDNO"`
+	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
+	Cano         string `json:"CANO"`
+	CndtPric     string `json:"CNDT_PRIC,omitempty"`
+	ExcgIdDvsnCd string `json:"EXCG_ID_DVSN_CD,omitempty"`
+	OrdDvsn      string `json:"ORD_DVSN"`
+	OrdQty       string `json:"ORD_QTY"`
+	OrdUnpr      string `json:"ORD_UNPR"`
+	Pdno         string `json:"PDNO"`
+	SllType      string `json:"SLL_TYPE,omitempty"`
 }
 
 type KISDomesticStockV1TradingOrderCredit struct {
@@ -6538,14 +6558,30 @@ type KISDomesticStockV1TradingOrderCreditOutputItem struct {
 }
 
 type KISDomesticStockV1TradingOrderCreditRequest struct {
-	AcntPrdtCd string `json:"ACNT_PRDT_CD"`
-	Cano       string `json:"CANO"`
-	CrdtType   string `json:"CRDT_TYPE"`
-	LoanDt     string `json:"LOAN_DT"`
-	OrdDvsn    string `json:"ORD_DVSN"`
-	OrdQty     string `json:"ORD_QTY"`
-	OrdUnpr    string `json:"ORD_UNPR"`
-	Pdno       string `json:"PDNO"`
+	AcntPrdtCd        string `json:"ACNT_PRDT_CD"`
+	Cano              string `json:"CANO"`
+	CndtPric          string `json:"CNDT_PRIC,omitempty"`
+	CrdtType          string `json:"CRDT_TYPE"`
+	CvrgSeq           string `json:"CVRG_SEQ,omitempty"`
+	CvrgSlctRsonCd    string `json:"CVRG_SLCT_RSON_CD,omitempty"`
+	EmgcOrdYn         string `json:"EMGC_ORD_YN,omitempty"`
+	ExcgIdDvsnCd      string `json:"EXCG_ID_DVSN_CD,omitempty"`
+	LoanDt            string `json:"LOAN_DT"`
+	LpOrdYn           string `json:"LP_ORD_YN,omitempty"`
+	LqtyTrAgmtNo      string `json:"LQTY_TR_AGMT_NO,omitempty"`
+	LqtyTrNgtnDtlNo   string `json:"LQTY_TR_NGTN_DTL_NO,omitempty"`
+	LqtyTrNgtnId      string `json:"LQTY_TR_NGTN_ID,omitempty"`
+	MdiaOdno          string `json:"MDIA_ODNO,omitempty"`
+	MgcoAptmOdno      string `json:"MGCO_APTM_ODNO,omitempty"`
+	OrdDvsn           string `json:"ORD_DVSN"`
+	OrdQty            string `json:"ORD_QTY"`
+	OrdSvrDvsnCd      string `json:"ORD_SVR_DVSN_CD,omitempty"`
+	OrdUnpr           string `json:"ORD_UNPR"`
+	Pdno              string `json:"PDNO"`
+	PgmNmprStmtDvsnCd string `json:"PGM_NMPR_STMT_DVSN_CD,omitempty"`
+	PgtrDvsn          string `json:"PGTR_DVSN,omitempty"`
+	RsvnOrdYn         string `json:"RSVN_ORD_YN,omitempty"`
+	SllType           string `json:"SLL_TYPE,omitempty"`
 }
 
 type KISDomesticStockV1TradingOrderResv struct {
@@ -6561,11 +6597,14 @@ type KISDomesticStockV1TradingOrderResvOutputItem struct {
 type KISDomesticStockV1TradingOrderResvRequest struct {
 	AcntPrdtCd        string `json:"ACNT_PRDT_CD"`
 	Cano              string `json:"CANO"`
+	LdngDt            string `json:"LDNG_DT,omitempty"`
+	LoanDt            string `json:"LOAN_DT,omitempty"`
 	OrdDvsnCd         string `json:"ORD_DVSN_CD"`
 	OrdObjtCblcDvsnCd string `json:"ORD_OBJT_CBLC_DVSN_CD"`
 	OrdQty            string `json:"ORD_QTY"`
 	OrdUnpr           string `json:"ORD_UNPR"`
 	Pdno              string `json:"PDNO"`
+	RsvnOrdEndDt      string `json:"RSVN_ORD_END_DT,omitempty"`
 	SllBuyDvsnCd      string `json:"SLL_BUY_DVSN_CD"`
 }
 
@@ -6628,11 +6667,16 @@ type KISDomesticStockV1TradingOrderResvRvsecnclOutputItem struct {
 type KISDomesticStockV1TradingOrderResvRvsecnclRequest struct {
 	AcntPrdtCd        string `json:"ACNT_PRDT_CD"`
 	Cano              string `json:"CANO"`
+	CtalTlno          string `json:"CTAL_TLNO,omitempty"`
+	LoanDt            string `json:"LOAN_DT,omitempty"`
 	OrdDvsnCd         string `json:"ORD_DVSN_CD"`
 	OrdObjtCblcDvsnCd string `json:"ORD_OBJT_CBLC_DVSN_CD"`
 	OrdQty            string `json:"ORD_QTY"`
 	OrdUnpr           string `json:"ORD_UNPR"`
 	Pdno              string `json:"PDNO"`
+	RsvnOrdEndDt      string `json:"RSVN_ORD_END_DT,omitempty"`
+	RsvnOrdOrdDt      string `json:"RSVN_ORD_ORD_DT,omitempty"`
+	RsvnOrdOrgno      string `json:"RSVN_ORD_ORGNO,omitempty"`
 	RsvnOrdSeq        string `json:"RSVN_ORD_SEQ"`
 	SllBuyDvsnCd      string `json:"SLL_BUY_DVSN_CD"`
 }
@@ -6651,6 +6695,8 @@ type KISDomesticStockV1TradingOrderRvsecnclOutputItem struct {
 type KISDomesticStockV1TradingOrderRvsecnclRequest struct {
 	AcntPrdtCd      string `json:"ACNT_PRDT_CD"`
 	Cano            string `json:"CANO"`
+	CndtPric        string `json:"CNDT_PRIC,omitempty"`
+	ExcgIdDvsnCd    string `json:"EXCG_ID_DVSN_CD,omitempty"`
 	KrxFwdgOrdOrgno string `json:"KRX_FWDG_ORD_ORGNO"`
 	OrdDvsn         string `json:"ORD_DVSN"`
 	OrdQty          string `json:"ORD_QTY"`
@@ -6796,6 +6842,7 @@ type KISDomesticStockV1TradingPensionInquirePresentBalanceRequest struct {
 	Cano         string `json:"CANO"`
 	CtxAreaFk100 string `json:"CTX_AREA_FK100"`
 	CtxAreaNk100 string `json:"CTX_AREA_NK100"`
+	PrcsDvsnCd   string `json:"PRCS_DVSN_CD,omitempty"`
 	UserDvsnCd   string `json:"USER_DVSN_CD"`
 }
 
@@ -9116,18 +9163,22 @@ type KISOverseasFutureoptionV1TradingOrderOutputItem struct {
 }
 
 type KISOverseasFutureoptionV1TradingOrderRequest struct {
-	AcntPrdtCd      string `json:"ACNT_PRDT_CD"`
-	Cano            string `json:"CANO"`
-	CcldCndtCd      string `json:"CCLD_CNDT_CD"`
-	CplxOrdDvsnCd   string `json:"CPLX_ORD_DVSN_CD"`
-	EcisRsvnOrdYn   string `json:"ECIS_RSVN_ORD_YN"`
-	FmHdgeOrdScrnYn string `json:"FM_HDGE_ORD_SCRN_YN"`
-	FmLimitOrdPric  string `json:"FM_LIMIT_ORD_PRIC"`
-	FmOrdQty        string `json:"FM_ORD_QTY"`
-	FmStopOrdPric   string `json:"FM_STOP_ORD_PRIC"`
-	OvrsFutrFxPdno  string `json:"OVRS_FUTR_FX_PDNO"`
-	PricDvsnCd      string `json:"PRIC_DVSN_CD"`
-	SllBuyDvsnCd    string `json:"SLL_BUY_DVSN_CD"`
+	AcntPrdtCd       string `json:"ACNT_PRDT_CD"`
+	Cano             string `json:"CANO"`
+	CcldCndtCd       string `json:"CCLD_CNDT_CD"`
+	CplxOrdDvsnCd    string `json:"CPLX_ORD_DVSN_CD"`
+	EcisRsvnOrdYn    string `json:"ECIS_RSVN_ORD_YN"`
+	FmHdgeOrdScrnYn  string `json:"FM_HDGE_ORD_SCRN_YN"`
+	FmLimitOrdPric   string `json:"FM_LIMIT_ORD_PRIC"`
+	FmLqdLmtOrdPric  string `json:"FM_LQD_LMT_ORD_PRIC,omitempty"`
+	FmLqdStopOrdPric string `json:"FM_LQD_STOP_ORD_PRIC,omitempty"`
+	FmLqdUstlCcldDt  string `json:"FM_LQD_USTL_CCLD_DT,omitempty"`
+	FmLqdUstlCcno    string `json:"FM_LQD_USTL_CCNO,omitempty"`
+	FmOrdQty         string `json:"FM_ORD_QTY"`
+	FmStopOrdPric    string `json:"FM_STOP_ORD_PRIC"`
+	OvrsFutrFxPdno   string `json:"OVRS_FUTR_FX_PDNO"`
+	PricDvsnCd       string `json:"PRIC_DVSN_CD"`
+	SllBuyDvsnCd     string `json:"SLL_BUY_DVSN_CD"`
 }
 
 type KISOverseasFutureoptionV1TradingOrderRvsecncl struct {
@@ -9141,11 +9192,16 @@ type KISOverseasFutureoptionV1TradingOrderRvsecnclOutputItem struct {
 }
 
 type KISOverseasFutureoptionV1TradingOrderRvsecnclRequest struct {
-	AcntPrdtCd      string `json:"ACNT_PRDT_CD"`
-	Cano            string `json:"CANO"`
-	FmHdgeOrdScrnYn string `json:"FM_HDGE_ORD_SCRN_YN"`
-	OrgnOdno        string `json:"ORGN_ODNO"`
-	OrgnOrdDt       string `json:"ORGN_ORD_DT"`
+	AcntPrdtCd       string `json:"ACNT_PRDT_CD"`
+	Cano             string `json:"CANO"`
+	FmHdgeOrdScrnYn  string `json:"FM_HDGE_ORD_SCRN_YN"`
+	FmLimitOrdPric   string `json:"FM_LIMIT_ORD_PRIC,omitempty"`
+	FmLqdLmtOrdPric  string `json:"FM_LQD_LMT_ORD_PRIC,omitempty"`
+	FmLqdStopOrdPric string `json:"FM_LQD_STOP_ORD_PRIC,omitempty"`
+	FmMkprCvsnYn     string `json:"FM_MKPR_CVSN_YN,omitempty"`
+	FmStopOrdPric    string `json:"FM_STOP_ORD_PRIC,omitempty"`
+	OrgnOdno         string `json:"ORGN_ODNO"`
+	OrgnOrdDt        string `json:"ORGN_ORD_DT"`
 }
 
 type KISOverseasPriceV1QuotationsBrknewsTitle struct {
@@ -9269,6 +9325,7 @@ type KISOverseasPriceV1QuotationsDailypriceRequest struct {
 	Bymd string `json:"BYMD"`
 	Excd string `json:"EXCD"`
 	Gubn string `json:"GUBN"`
+	Keyb string `json:"KEYB,omitempty"`
 	Modp string `json:"MODP"`
 	Symb string `json:"SYMB"`
 }
@@ -9553,8 +9610,33 @@ type KISOverseasPriceV1QuotationsInquireSearchOutput2Item struct {
 }
 
 type KISOverseasPriceV1QuotationsInquireSearchRequest struct {
-	Auth string `json:"AUTH"`
-	Excd string `json:"EXCD"`
+	Auth         string `json:"AUTH"`
+	CoEnAmt      string `json:"CO_EN_AMT,omitempty"`
+	CoEnEps      string `json:"CO_EN_EPS,omitempty"`
+	CoEnPer      string `json:"CO_EN_PER,omitempty"`
+	CoEnPricecur string `json:"CO_EN_PRICECUR,omitempty"`
+	CoEnRate     string `json:"CO_EN_RATE,omitempty"`
+	CoEnShar     string `json:"CO_EN_SHAR,omitempty"`
+	CoEnValx     string `json:"CO_EN_VALX,omitempty"`
+	CoEnVolume   string `json:"CO_EN_VOLUME,omitempty"`
+	CoStAmt      string `json:"CO_ST_AMT,omitempty"`
+	CoStEps      string `json:"CO_ST_EPS,omitempty"`
+	CoStPer      string `json:"CO_ST_PER,omitempty"`
+	CoStPricecur string `json:"CO_ST_PRICECUR,omitempty"`
+	CoStRate     string `json:"CO_ST_RATE,omitempty"`
+	CoStShar     string `json:"CO_ST_SHAR,omitempty"`
+	CoStValx     string `json:"CO_ST_VALX,omitempty"`
+	CoStVolume   string `json:"CO_ST_VOLUME,omitempty"`
+	CoYnAmt      string `json:"CO_YN_AMT,omitempty"`
+	CoYnEps      string `json:"CO_YN_EPS,omitempty"`
+	CoYnPer      string `json:"CO_YN_PER,omitempty"`
+	CoYnPricecur string `json:"CO_YN_PRICECUR,omitempty"`
+	CoYnRate     string `json:"CO_YN_RATE,omitempty"`
+	CoYnShar     string `json:"CO_YN_SHAR,omitempty"`
+	CoYnValx     string `json:"CO_YN_VALX,omitempty"`
+	CoYnVolume   string `json:"CO_YN_VOLUME,omitempty"`
+	Excd         string `json:"EXCD"`
+	Keyb         string `json:"KEYB,omitempty"`
 }
 
 type KISOverseasPriceV1QuotationsInquireTimeIndexchartprice struct {
@@ -10406,9 +10488,11 @@ type KISOverseasStockV1TradingAlgoOrdnoOutputItem struct {
 }
 
 type KISOverseasStockV1TradingAlgoOrdnoRequest struct {
-	AcntPrdtCd string `json:"ACNT_PRDT_CD"`
-	Cano       string `json:"CANO"`
-	TradDt     string `json:"TRAD_DT"`
+	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
+	Cano         string `json:"CANO"`
+	CtxAreaFk200 string `json:"CTX_AREA_FK200,omitempty"`
+	CtxAreaNk200 string `json:"CTX_AREA_NK200,omitempty"`
+	TradDt       string `json:"TRAD_DT"`
 }
 
 type KISOverseasStockV1TradingDaytimeOrder struct {
@@ -10425,6 +10509,8 @@ type KISOverseasStockV1TradingDaytimeOrderOutputItem struct {
 type KISOverseasStockV1TradingDaytimeOrderRequest struct {
 	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
 	Cano         string `json:"CANO"`
+	CtacTlno     string `json:"CTAC_TLNO,omitempty"`
+	MgcoAptmOdno string `json:"MGCO_APTM_ODNO,omitempty"`
 	OrdDvsn      string `json:"ORD_DVSN"`
 	OrdQty       string `json:"ORD_QTY"`
 	OrdSvrDvsnCd string `json:"ORD_SVR_DVSN_CD"`
@@ -10515,10 +10601,14 @@ type KISOverseasStockV1TradingInquireAlgoCcnlOutput3Item struct {
 }
 
 type KISOverseasStockV1TradingInquireAlgoCcnlRequest struct {
-	AcntPrdtCd string `json:"ACNT_PRDT_CD"`
-	Cano       string `json:"CANO"`
-	Odno       string `json:"ODNO"`
-	OrdDt      string `json:"ORD_DT"`
+	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
+	Cano         string `json:"CANO"`
+	CtxAreaFk200 string `json:"CTX_AREA_FK200,omitempty"`
+	CtxAreaNk200 string `json:"CTX_AREA_NK200,omitempty"`
+	Odno         string `json:"ODNO"`
+	OrdDt        string `json:"ORD_DT"`
+	OrdGnoBrno   string `json:"ORD_GNO_BRNO,omitempty"`
+	TtlzIcldYn   string `json:"TTLZ_ICLD_YN,omitempty"`
 }
 
 type KISOverseasStockV1TradingInquireBalance struct {
@@ -10563,10 +10653,12 @@ type KISOverseasStockV1TradingInquireBalanceOutput2Item struct {
 }
 
 type KISOverseasStockV1TradingInquireBalanceRequest struct {
-	AcntPrdtCd string `json:"ACNT_PRDT_CD"`
-	Cano       string `json:"CANO"`
-	OvrsExcgCd string `json:"OVRS_EXCG_CD"`
-	TrCrcyCd   string `json:"TR_CRCY_CD"`
+	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
+	Cano         string `json:"CANO"`
+	CtxAreaFk200 string `json:"CTX_AREA_FK200,omitempty"`
+	CtxAreaNk200 string `json:"CTX_AREA_NK200,omitempty"`
+	OvrsExcgCd   string `json:"OVRS_EXCG_CD"`
+	TrCrcyCd     string `json:"TR_CRCY_CD"`
 }
 
 type KISOverseasStockV1TradingInquireCcnl struct {
@@ -10966,14 +11058,20 @@ type KISOverseasStockV1TradingOrderOutputItem struct {
 }
 
 type KISOverseasStockV1TradingOrderRequest struct {
-	AcntPrdtCd   string `json:"ACNT_PRDT_CD"`
-	Cano         string `json:"CANO"`
-	OrdDvsn      string `json:"ORD_DVSN"`
-	OrdQty       string `json:"ORD_QTY"`
-	OrdSvrDvsnCd string `json:"ORD_SVR_DVSN_CD"`
-	OvrsExcgCd   string `json:"OVRS_EXCG_CD"`
-	OvrsOrdUnpr  string `json:"OVRS_ORD_UNPR"`
-	Pdno         string `json:"PDNO"`
+	AcntPrdtCd       string `json:"ACNT_PRDT_CD"`
+	AlgoOrdTmdDvsnCd string `json:"ALGO_ORD_TMD_DVSN_CD,omitempty"`
+	Cano             string `json:"CANO"`
+	CtacTlno         string `json:"CTAC_TLNO,omitempty"`
+	EndTime          string `json:"END_TIME,omitempty"`
+	MgcoAptmOdno     string `json:"MGCO_APTM_ODNO,omitempty"`
+	OrdDvsn          string `json:"ORD_DVSN"`
+	OrdQty           string `json:"ORD_QTY"`
+	OrdSvrDvsnCd     string `json:"ORD_SVR_DVSN_CD"`
+	OvrsExcgCd       string `json:"OVRS_EXCG_CD"`
+	OvrsOrdUnpr      string `json:"OVRS_ORD_UNPR"`
+	Pdno             string `json:"PDNO"`
+	SllType          string `json:"SLL_TYPE,omitempty"`
+	StartTime        string `json:"START_TIME,omitempty"`
 }
 
 type KISOverseasStockV1TradingOrderResv struct {
@@ -10988,14 +11086,20 @@ type KISOverseasStockV1TradingOrderResvOutputItem struct {
 }
 
 type KISOverseasStockV1TradingOrderResvRequest struct {
-	AcntPrdtCd     string `json:"ACNT_PRDT_CD"`
-	Cano           string `json:"CANO"`
-	FtOrdQty       string `json:"FT_ORD_QTY"`
-	FtOrdUnpr3     string `json:"FT_ORD_UNPR3"`
-	OvrsExcgCd     string `json:"OVRS_EXCG_CD"`
-	Pdno           string `json:"PDNO"`
-	PrdtTypeCd     string `json:"PRDT_TYPE_CD"`
-	RvseCnclDvsnCd string `json:"RVSE_CNCL_DVSN_CD"`
+	AcntPrdtCd       string `json:"ACNT_PRDT_CD"`
+	AlgoOrdTmdDvsnCd string `json:"ALGO_ORD_TMD_DVSN_CD,omitempty"`
+	Cano             string `json:"CANO"`
+	FtOrdQty         string `json:"FT_ORD_QTY"`
+	FtOrdUnpr3       string `json:"FT_ORD_UNPR3"`
+	OrdDvsn          string `json:"ORD_DVSN,omitempty"`
+	OrdSvrDvsnCd     string `json:"ORD_SVR_DVSN_CD,omitempty"`
+	OvrsExcgCd       string `json:"OVRS_EXCG_CD"`
+	OvrsRsvnOdno     string `json:"OVRS_RSVN_ODNO,omitempty"`
+	Pdno             string `json:"PDNO"`
+	PrdtTypeCd       string `json:"PRDT_TYPE_CD"`
+	RsvnOrdRcitDt    string `json:"RSVN_ORD_RCIT_DT,omitempty"`
+	RvseCnclDvsnCd   string `json:"RVSE_CNCL_DVSN_CD"`
+	SllBuyDvsnCd     string `json:"SLL_BUY_DVSN_CD,omitempty"`
 }
 
 type KISOverseasStockV1TradingOrderResvCcnl struct {
@@ -11074,7 +11178,9 @@ type KISOverseasStockV1TradingOrderRvsecnclOutputItem struct {
 type KISOverseasStockV1TradingOrderRvsecnclRequest struct {
 	AcntPrdtCd     string `json:"ACNT_PRDT_CD"`
 	Cano           string `json:"CANO"`
+	MgcoAptmOdno   string `json:"MGCO_APTM_ODNO,omitempty"`
 	OrdQty         string `json:"ORD_QTY"`
+	OrdSvrDvsnCd   string `json:"ORD_SVR_DVSN_CD,omitempty"`
 	OrgnOdno       string `json:"ORGN_ODNO"`
 	OvrsExcgCd     string `json:"OVRS_EXCG_CD"`
 	OvrsOrdUnpr    string `json:"OVRS_ORD_UNPR"`

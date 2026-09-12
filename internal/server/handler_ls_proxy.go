@@ -2,12 +2,14 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/go-fuego/fuego"
 
 	"github.com/smallfish06/krsec/pkg/broker"
+	"github.com/smallfish06/krsec/pkg/ls"
 )
 
 type lsProxyRequest struct {
@@ -17,6 +19,8 @@ type lsProxyRequest struct {
 	Params    map[string]any `json:"params,omitempty"`
 	Query     map[string]any `json:"query,omitempty"`
 	Body      map[string]any `json:"body,omitempty"`
+	TRCont    string         `json:"tr_cont,omitempty"`
+	TRContKey string         `json:"tr_cont_key,omitempty"`
 }
 
 type lsEndpointCaller interface {
@@ -38,6 +42,10 @@ func (s *Server) handleLSProxy(c fuego.ContextWithBody[lsProxyRequest]) (Respons
 		s.logger.Warn("LS proxy validation failed", "path", rawPath, "account_id", req.AccountID, "error", err)
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
+	continuation, err := lsRequestContinuation(c.Header("tr_cont"), c.Header("tr_cont_key"), req.TRCont, req.TRContKey)
+	if err != nil {
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+	}
 
 	method := req.Method
 	if method == "" {
@@ -57,7 +65,23 @@ func (s *Server) handleLSProxy(c fuego.ContextWithBody[lsProxyRequest]) (Respons
 		mergeInterfaceMaps(req.Query, req.Params),
 		req.Body,
 	)
-	result, err := impl.CallEndpoint(c.Context(), method, rawPath, req.TRCD, request)
+	var result any
+	if pageCaller, ok := brk.(ls.PageCaller); ok {
+		var page *ls.EndpointPage
+		page, err = pageCaller.CallEndpointPage(c.Context(), method, rawPath, req.TRCD, request, continuation)
+		if err == nil && page == nil {
+			err = fmt.Errorf("%w: LS endpoint page missing", broker.ErrServerError)
+		}
+		if err == nil && page != nil {
+			result = page.Data
+			c.SetHeader("tr_cont", page.TRCont)
+			c.SetHeader("tr_cont_key", page.TRContKey)
+		}
+	} else if continuation.TRCont != "" || continuation.TRContKey != "" {
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: "selected account does not support LS continuation"})
+	} else {
+		result, err = impl.CallEndpoint(c.Context(), method, rawPath, req.TRCD, request)
+	}
 	if err != nil {
 		return respond(c, statusFromBrokerError(err, http.StatusInternalServerError), Response{
 			OK:     false,
@@ -70,6 +94,26 @@ func (s *Server) handleLSProxy(c fuego.ContextWithBody[lsProxyRequest]) (Respons
 		Data:   result,
 		Broker: brk.Name(),
 	})
+}
+
+func lsRequestContinuation(headerCont, headerKey, bodyCont, bodyKey string) (ls.Continuation, error) {
+	headerCont = strings.ToUpper(strings.TrimSpace(headerCont))
+	bodyCont = strings.ToUpper(strings.TrimSpace(bodyCont))
+	headerKey = strings.TrimSpace(headerKey)
+	bodyKey = strings.TrimSpace(bodyKey)
+	if (headerCont != "" && bodyCont != "" && headerCont != bodyCont) || (headerKey != "" && bodyKey != "" && headerKey != bodyKey) {
+		return ls.Continuation{}, fmt.Errorf("conflicting LS continuation headers and body")
+	}
+	if bodyCont == "" {
+		bodyCont = headerCont
+	}
+	if bodyKey == "" {
+		bodyKey = headerKey
+	}
+	if (bodyCont != "" && bodyCont != "Y" && bodyCont != "N") || (bodyCont == "Y" && bodyKey == "") || (bodyKey != "" && bodyCont != "Y") {
+		return ls.Continuation{}, fmt.Errorf("continuation requires tr_cont=Y and a non-empty tr_cont_key")
+	}
+	return ls.Continuation{TRCont: bodyCont, TRContKey: bodyKey}, nil
 }
 
 func (s *Server) resolveLSProxyBroker(accountID string) (broker.Broker, int, string) {

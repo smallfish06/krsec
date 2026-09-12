@@ -41,6 +41,7 @@ type endpointSnapshot struct {
 	RealTRID       string         `json:"real_trid"`
 	VirtualTRID    string         `json:"virtual_trid"`
 	RequiredFields []string       `json:"required_fields,omitempty"`
+	RequestProps   []snapshotProp `json:"request_props,omitempty"`
 	ResponseProps  []snapshotProp `json:"response_props,omitempty"`
 }
 
@@ -71,6 +72,7 @@ type endpointModel struct {
 	TypeName       string
 	RequestType    string
 	RequiredFields []string
+	RequestProps   []snapshotProp
 	Top            []responseNode
 }
 
@@ -388,6 +390,8 @@ func fetchEndpointDetail(ctx context.Context, client *http.Client, detailURL, pa
 
 	required := make([]string, 0, 32)
 	requiredSet := map[string]struct{}{}
+	reqProps := make([]snapshotProp, 0, 32)
+	reqSeen := map[string]struct{}{}
 	resProps := make([]snapshotProp, 0, 256)
 	resSeen := map[string]struct{}{}
 
@@ -402,6 +406,10 @@ func fetchEndpointDetail(ctx context.Context, client *http.Client, detailURL, pa
 
 		switch bodyType {
 		case "req_b":
+			if _, ok := reqSeen[code]; !ok {
+				reqSeen[code] = struct{}{}
+				reqProps = append(reqProps, snapshotProp{Code: code, Type: typ, Order: order})
+			}
 			if strings.EqualFold(strings.TrimSpace(p.RequireYn), "Y") {
 				if _, ok := requiredSet[code]; !ok {
 					requiredSet[code] = struct{}{}
@@ -423,6 +431,7 @@ func fetchEndpointDetail(ctx context.Context, client *http.Client, detailURL, pa
 	}
 
 	sort.Strings(required)
+	sort.Slice(reqProps, func(i, j int) bool { return reqProps[i].Code < reqProps[j].Code })
 	sort.Slice(resProps, func(i, j int) bool {
 		cmp := compareOrder(resProps[i].Order, resProps[j].Order)
 		if cmp != 0 {
@@ -437,6 +446,7 @@ func fetchEndpointDetail(ctx context.Context, client *http.Client, detailURL, pa
 		RealTRID:       strings.TrimSpace(raw.RealTRID),
 		VirtualTRID:    normalizeVirtualTRID(raw.VirtualTRID),
 		RequiredFields: required,
+		RequestProps:   reqProps,
 		ResponseProps:  resProps,
 	}, nil
 }
@@ -575,6 +585,7 @@ func generateDocumentedTypesGo(snap *snapshot) ([]byte, error) {
 			TypeName:       respType,
 			RequestType:    respType + "Request",
 			RequiredFields: append([]string(nil), ep.RequiredFields...),
+			RequestProps:   append([]snapshotProp(nil), ep.RequestProps...),
 			Top:            buildResponseNodes(ep.ResponseProps),
 		})
 	}
@@ -610,8 +621,22 @@ func emitEndpointRequestType(b *strings.Builder, m endpointModel) {
 	fmt.Fprintf(b, "type %s struct {\n", m.RequestType)
 	used := map[string]int{}
 	usedJSONTags := map[string]struct{}{}
-	for _, f := range m.RequiredFields {
-		fieldCode := strings.TrimSpace(f)
+	required := make(map[string]bool, len(m.RequiredFields))
+	fields := make(map[string]struct{}, len(m.RequiredFields)+len(m.RequestProps))
+	for _, code := range m.RequiredFields {
+		code = strings.TrimSpace(code)
+		required[code] = true
+		fields[code] = struct{}{}
+	}
+	for _, prop := range m.RequestProps {
+		fields[strings.TrimSpace(prop.Code)] = struct{}{}
+	}
+	codes := make([]string, 0, len(fields))
+	for code := range fields {
+		codes = append(codes, code)
+	}
+	sort.Strings(codes)
+	for _, fieldCode := range codes {
 		if fieldCode == "" {
 			continue
 		}
@@ -620,7 +645,11 @@ func emitEndpointRequestType(b *strings.Builder, m endpointModel) {
 		}
 		usedJSONTags[fieldCode] = struct{}{}
 		fieldName := uniqueFieldName(toExportedIdentifier(fieldCode), used)
-		fmt.Fprintf(b, "\t%s string `json:\"%s\"`\n", fieldName, fieldCode)
+		tag := fieldCode
+		if !required[fieldCode] {
+			tag += ",omitempty"
+		}
+		fmt.Fprintf(b, "\t%s string `json:\"%s\"`\n", fieldName, tag)
 	}
 	b.WriteString("}\n\n")
 }

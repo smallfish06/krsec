@@ -44,14 +44,32 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	if appKey == "" || appSecret == "" {
 		return nil, broker.ErrInvalidCredentials
 	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 	c.SetCredentials(appKey, appSecret)
+	return c.authenticateSelectedCredentials(ctx, appKey, appSecret)
+}
+
+// Automatic refreshes must not reselect a stale account after an explicit
+// authentication has switched this client to another set of credentials.
+func (c *Client) authenticateSelectedCredentials(ctx context.Context, appKey, appSecret string) (*broker.Token, error) {
+	currentKey, currentSecret := c.getCredentials()
+	if currentKey != appKey || currentSecret != appSecret {
+		return nil, fmt.Errorf("%w: LS credentials changed before token refresh", broker.ErrUnauthorized)
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
 	if token, expiresAt, ok := tm.GetToken(appKey); ok {
-		c.setToken(token, expiresAt)
+		if !c.setCredentialToken(appKey, appSecret, token, expiresAt) {
+			return nil, fmt.Errorf("%w: LS credentials changed during authentication", broker.ErrUnauthorized)
+		}
 		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
 	}
 
@@ -68,7 +86,12 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 			return nil, res.Err
 		}
 		token := res.Val.(*broker.Token)
-		c.setToken(token.AccessToken, token.ExpiresAt)
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		if !c.setCredentialToken(appKey, appSecret, token.AccessToken, token.ExpiresAt) {
+			return nil, fmt.Errorf("%w: LS credentials changed during authentication", broker.ErrUnauthorized)
+		}
 		return token, nil
 	case <-ctx.Done():
 		// The in-flight issuance keeps running and caches its result for
@@ -142,7 +165,8 @@ func (c *Client) issueToken(tm tokencache.Manager, appKey, appSecret string) (*b
 		tokenType = "Bearer"
 	}
 
-	c.setToken(tr.AccessToken, expiresAt)
+	// This issuance can outlive its caller. Cache under the issuing app key,
+	// but only an active Authenticate caller may install it on the client.
 	if err := tm.SetToken(appKey, tr.AccessToken, expiresAt); err != nil {
 		c.logger.Warn("failed to persist LS token", "error", err)
 	}

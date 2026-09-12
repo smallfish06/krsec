@@ -427,6 +427,14 @@ func (a *Adapter) CallEndpoint(
 	return dispatcher.callEndpoint(ctx, method, path, apiID, request)
 }
 
+// CallEndpointPage executes exactly one request, preserving its continuation
+// headers. It never automatically repeats an endpoint or order operation.
+func (a *Adapter) CallEndpointPage(ctx context.Context, method, path, apiID string, request any, continuation kiwoomspecs.Continuation) (*kiwoomspecs.EndpointPage, error) {
+	return kiwoom.CaptureEndpointPage(ctx, continuation, func(callCtx context.Context) (any, error) {
+		return a.CallEndpoint(callCtx, method, path, apiID, request)
+	})
+}
+
 func (d *endpointDispatcher) callEndpoint(
 	ctx context.Context,
 	method string,

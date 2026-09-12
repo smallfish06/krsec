@@ -2,8 +2,10 @@ package kiwoom
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
+	"github.com/smallfish06/krsec/pkg/broker"
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 )
 
@@ -42,7 +44,10 @@ func (c *Client) InquirePositionsByRequest(
 ) (*kiwoomspecs.KiwoomApiDostkAcntKt00018Response, error) {
 	req.QryTp = strings.TrimSpace(req.QryTp)
 	if req.QryTp == "" {
-		req.QryTp = "0"
+		req.QryTp = "1"
+	}
+	if req.QryTp != "1" && req.QryTp != "2" {
+		return nil, fmt.Errorf("%w: kt00018 qry_tp must be 1 or 2", broker.ErrInvalidOrderRequest)
 	}
 	req.DmstStexTp = strings.ToUpper(strings.TrimSpace(req.DmstStexTp))
 	if req.DmstStexTp == "" {
@@ -248,7 +253,10 @@ func (c *Client) InquirePositionsByAsset(
 ) (*kiwoomspecs.KiwoomApiDostkAcntKt00018Response, error) {
 	queryType = strings.TrimSpace(queryType)
 	if queryType == "" {
-		queryType = "0"
+		queryType = "1"
+	}
+	if queryType != "1" && queryType != "2" {
+		return nil, fmt.Errorf("%w: kt00018 qry_tp must be 1 or 2", broker.ErrInvalidOrderRequest)
 	}
 	exchange = strings.ToUpper(strings.TrimSpace(exchange))
 	if exchange == "" {
@@ -279,7 +287,7 @@ func (c *Client) InquirePositionsByAsset(
 
 // InquireBondPositions is a convenience wrapper for bond holdings.
 func (c *Client) InquireBondPositions(ctx context.Context, exchange string) (*kiwoomspecs.KiwoomApiDostkAcntKt00018Response, error) {
-	return c.InquirePositionsByAsset(ctx, "0", exchange, "2")
+	return c.InquirePositionsByAsset(ctx, "1", exchange, "2")
 }
 
 // InquireUnsettledOrdersByExchange fetches unsettled orders with explicit exchange scope.
