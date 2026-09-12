@@ -21,12 +21,14 @@ import (
 )
 
 const (
-	defaultPortalURL    = "https://openapi.ls-sec.co.kr/apiservice"
-	defaultAPIListURL   = "https://openapi.ls-sec.co.kr/api/apis/public/api-list"
-	defaultTRListURL    = "https://openapi.ls-sec.co.kr/api/apis/guide/tr"
-	defaultPropertyURL  = "https://openapi.ls-sec.co.kr/api/apis/guide/tr/property"
-	defaultSnapshotPath = "pkg/ls/specs/documented_endpoints.json"
-	defaultSpecsOutPath = "pkg/ls/specs/documented_specs_generated.go"
+	defaultPortalURL      = "https://openapi.ls-sec.co.kr/apiservice"
+	defaultAPIListURL     = "https://openapi.ls-sec.co.kr/api/apis/public/api-list"
+	defaultTRListURL      = "https://openapi.ls-sec.co.kr/api/apis/guide/tr"
+	defaultPropertyURL    = "https://openapi.ls-sec.co.kr/api/apis/guide/tr/property"
+	defaultSnapshotPath   = "pkg/ls/specs/documented_endpoints.json"
+	defaultSpecsOutPath   = "pkg/ls/specs/documented_specs_generated.go"
+	documentFetchAttempts = 3
+	maxDocumentBytes      = 16 << 20
 )
 
 type snapshot struct {
@@ -500,26 +502,50 @@ func getJSON(client *http.Client, url string, out any) error {
 }
 
 func getBytes(client *http.Client, url string) ([]byte, error) {
+	return getBytesWithRetry(client, url, time.Second)
+}
+
+func getBytesWithRetry(client *http.Client, url string, retryDelay time.Duration) ([]byte, error) {
+	for attempt := 1; ; attempt++ {
+		data, retry, err := getBytesOnce(client, url)
+		if err == nil {
+			return data, nil
+		}
+		if !retry || attempt == documentFetchAttempts {
+			return nil, fmt.Errorf("GET %s failed after %d attempt(s): %w", url, attempt, err)
+		}
+		time.Sleep(retryDelay * time.Duration(attempt))
+	}
+}
+
+func getBytesOnce(client *http.Client, url string) ([]byte, bool, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	req.Header.Set("Accept", "application/json,text/html;q=0.9,*/*;q=0.8")
 	req.Header.Set("User-Agent", "krsec-ls-specgen/1.0")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, true, err
 	}
 	defer func() { _ = resp.Body.Close() }()
-	data, err := io.ReadAll(resp.Body)
+
+	responseInfo := fmt.Sprintf("HTTP %d, Content-Type %q", resp.StatusCode, resp.Header.Get("Content-Type"))
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		retry := resp.StatusCode == http.StatusRequestTimeout || resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500
+		// Error pages can contain session identifiers; never include their body.
+		return nil, retry, fmt.Errorf("fetch document: %s", responseInfo)
+	}
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxDocumentBytes+1))
 	if err != nil {
-		return nil, err
+		return nil, true, fmt.Errorf("read document (%s): %w", responseInfo, err)
 	}
-	if resp.StatusCode >= 400 {
-		return nil, fmt.Errorf("GET %s HTTP %d: %s", url, resp.StatusCode, strings.TrimSpace(string(data)))
+	if len(data) > maxDocumentBytes {
+		return nil, false, fmt.Errorf("document exceeds %d bytes (%s)", maxDocumentBytes, responseInfo)
 	}
-	return data, nil
+	return data, false, nil
 }
 
 func sortSnapshot(groups []groupSnapshot, endpoints []endpointSnapshot) {
