@@ -987,7 +987,7 @@
           ]
         },
         {
-          "id": "futroptn-0000-0000-0000-00CCENQ30100",
+          "id": "faa66357-b33b-46c7-91d8-aa4894b56f37",
           "name": "KRX야간파생 주문/체결내역 조회",
           "code": "CCENQ30100",
           "transaction_per_sec": "1",
@@ -1002,14 +1002,6 @@
               "order": "001"
             },
             {
-              "body_type": "req_b",
-              "code": "CCENQ30100InBlock1",
-              "name": "CCENQ30100InBlock1",
-              "type": "A0003",
-              "required": true,
-              "order": "001"
-            },
-            {
               "body_type": "res_h",
               "code": "content-type",
               "name": "컨텐츠타입",
@@ -1020,12 +1012,73 @@
             },
             {
               "body_type": "req_b",
+              "code": "CCENQ30100InBlock1",
+              "name": "In(*EMPTY*)",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CCENQ30100OutBlock1",
+              "name": "In(*EMPTY*)",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
+              "body_type": "req_b",
               "code": "RecCnt",
               "name": "레코드갯수",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "5",
-              "order": "001.000"
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "RecCnt",
+              "name": "레코드갯수",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "001.001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "AcntNo",
+              "name": "계좌번호",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "AcntNo",
+              "name": "계좌번호",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.002"
+            },
+            {
+              "body_type": "req_b",
+              "code": "InptPwd",
+              "name": "입력비밀번호",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "InptPwd",
+              "name": "입력비밀번호",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.003"
             },
             {
               "body_type": "req_b",
@@ -1034,7 +1087,16 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "001.001"
+              "order": "001.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "QrySrtDt",
+              "name": "조회시작일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.004"
             },
             {
               "body_type": "req_b",
@@ -1043,7 +1105,16 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "001.002"
+              "order": "001.005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "QryEndDt",
+              "name": "조회종료일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "001.005"
             },
             {
               "body_type": "req_b",
@@ -1052,7 +1123,16 @@
               "type": "A0001",
               "required": true,
               "length": "2",
-              "order": "001.003"
+              "order": "001.006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoClssCode",
+              "name": "선물옵션분류코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.006"
             },
             {
               "body_type": "req_b",
@@ -1061,7 +1141,16 @@
               "type": "A0001",
               "required": true,
               "length": "2",
-              "order": "001.004"
+              "order": "001.007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "PrdgrpCode",
+              "name": "상품군코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.007"
             },
             {
               "body_type": "req_b",
@@ -1070,7 +1159,16 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "001.005"
+              "order": "001.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "PrdtExecTpCode",
+              "name": "체결구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.008"
             },
             {
               "body_type": "req_b",
@@ -1079,7 +1177,25 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "001.006"
+              "order": "001.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "StnlnSeqTp",
+              "name": "정렬순서구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "MktTpCode",
+              "name": "시장구분코드",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.010"
             },
             {
               "body_type": "req_b",
@@ -1088,7 +1204,7 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "001.007"
+              "order": "001.010"
             },
             {
               "body_type": "req_b",
@@ -1097,7 +1213,25 @@
               "type": "A0001",
               "required": true,
               "length": "2",
-              "order": "001.008"
+              "order": "001.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CommdaCode",
+              "name": "통신매체코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoIsuNo",
+              "name": "선물옵션종목번호",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "001.012"
             },
             {
               "body_type": "req_b",
@@ -1106,7 +1240,16 @@
               "type": "A0001",
               "required": true,
               "length": "12",
-              "order": "001.009"
+              "order": "001.012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoTrdPtnCode",
+              "name": "선물옵션거래유형코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.013"
             },
             {
               "body_type": "req_b",
@@ -1115,7 +1258,7 @@
               "type": "A0001",
               "required": true,
               "length": "2",
-              "order": "001.010"
+              "order": "001.013"
             },
             {
               "body_type": "req_b",
@@ -1124,7 +1267,16 @@
               "type": "A0001",
               "required": true,
               "length": "20",
-              "order": "001.011"
+              "order": "001.014"
+            },
+            {
+              "body_type": "res_b",
+              "code": "GrpId",
+              "name": "그룹ID",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.014"
             },
             {
               "body_type": "req_b",
@@ -1133,16 +1285,43 @@
               "type": "A0001",
               "required": true,
               "length": "16",
-              "order": "001.012"
+              "order": "001.015"
+            },
+            {
+              "body_type": "res_b",
+              "code": "UserId",
+              "name": "사용자ID",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "001.015"
+            },
+            {
+              "body_type": "res_b",
+              "code": "SrtOrdNo2",
+              "name": "시작주문번호2",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "001.016"
             },
             {
               "body_type": "req_b",
               "code": "SrtOrdNo2",
               "name": "시작주문번호2",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "10",
-              "order": "001.013"
+              "order": "001.016"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "002"
             },
             {
               "body_type": "req_h",
@@ -1155,199 +1334,20 @@
             },
             {
               "body_type": "res_b",
-              "code": "CCENQ30100OutBlock1",
-              "name": "CCENQ30100OutBlock1",
+              "code": "CCENQ30100OutBlock2",
+              "name": "Out(*EMPTY*)",
               "type": "A0003",
               "required": true,
               "order": "002"
             },
             {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "002"
-            },
-            {
               "body_type": "res_b",
               "code": "RecCnt",
               "name": "레코드갯수",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "5",
               "order": "002.001"
-            },
-            {
-              "body_type": "res_b",
-              "code": "AcntNo",
-              "name": "계좌번호",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "InptPwd",
-              "name": "입력비밀번호",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "QrySrtDt",
-              "name": "조회시작일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "QryEndDt",
-              "name": "조회종료일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.005"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoClssCode",
-              "name": "선물옵션분류코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.006"
-            },
-            {
-              "body_type": "res_b",
-              "code": "PrdgrpCode",
-              "name": "상품군코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "PrdtExecTpCode",
-              "name": "체결구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.008"
-            },
-            {
-              "body_type": "res_b",
-              "code": "StnlnSeqTp",
-              "name": "정렬순서구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "MktTpCode",
-              "name": "시장구분코드",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.010"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CommdaCode",
-              "name": "통신매체코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.011"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoIsuNo",
-              "name": "선물옵션종목번호",
-              "type": "A0001",
-              "required": true,
-              "length": "12",
-              "order": "002.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoTrdPtnCode",
-              "name": "선물옵션거래유형코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.013"
-            },
-            {
-              "body_type": "res_b",
-              "code": "GrpId",
-              "name": "그룹ID",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.014"
-            },
-            {
-              "body_type": "res_b",
-              "code": "UserId",
-              "name": "사용자ID",
-              "type": "A0001",
-              "required": true,
-              "length": "16",
-              "order": "002.015"
-            },
-            {
-              "body_type": "res_b",
-              "code": "SrtOrdNo2",
-              "name": "시작주문번호2",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "002.016"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CCENQ30100OutBlock2",
-              "name": "CCENQ30100OutBlock2",
-              "type": "A0004",
-              "required": true,
-              "order": "003"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "RecCnt",
-              "name": "레코드갯수",
-              "type": "A0004",
-              "required": true,
-              "length": "5",
-              "order": "003.001"
             },
             {
               "body_type": "res_b",
@@ -1356,43 +1356,321 @@
               "type": "A0001",
               "required": true,
               "length": "40",
-              "order": "003.002"
+              "order": "002.002"
             },
             {
               "body_type": "res_b",
               "code": "FutsOrdQty",
               "name": "선물주문수량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "16",
-              "order": "003.003"
+              "order": "002.003"
             },
             {
               "body_type": "res_b",
               "code": "FutsExecQty",
               "name": "선물체결수량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "16",
-              "order": "003.004"
+              "order": "002.004"
             },
             {
               "body_type": "res_b",
               "code": "OptOrdQty",
               "name": "옵션주문수량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "16",
-              "order": "003.005"
+              "order": "002.005"
             },
             {
               "body_type": "res_b",
               "code": "OptExecQty",
               "name": "옵션체결수량",
-              "type": "A0004",
+              "type": "A0001",
               "required": true,
               "length": "16",
+              "order": "002.006"
+            },
+            {
+              "body_type": "req_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CCENQ30100OutBlock3",
+              "name": "Out1(*EMPTY*)",
+              "type": "A0005",
+              "required": true,
+              "order": "003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrdDt",
+              "name": "주문일",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "003.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrdNo",
+              "name": "주문번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrgOrdNo",
+              "name": "원주문번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrdTime",
+              "name": "주문시각",
+              "type": "A0001",
+              "required": true,
+              "length": "9",
+              "order": "003.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoIsuNo",
+              "name": "선물옵션종목번호",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "003.005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "IsuNm",
+              "name": "종목명",
+              "type": "A0001",
+              "required": true,
+              "length": "40",
               "order": "003.006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "BnsTpNm",
+              "name": "매매구분",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "MrcTpNm",
+              "name": "정정취소구분명",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoOrdprcPtnCode",
+              "name": "선물옵션호가유형코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "003.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoOrdprcPtnNm",
+              "name": "선물옵션호가유형명",
+              "type": "A0001",
+              "required": true,
+              "length": "40",
+              "order": "003.010"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoOrdPrc",
+              "name": "선물옵션주문가격",
+              "type": "A0001",
+              "required": true,
+              "length": "27.8",
+              "order": "003.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrdQty",
+              "name": "주문수량",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "OrdTpNm",
+              "name": "주문구분명",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.013"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ExecTpNm",
+              "name": "체결구분명",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.014"
+            },
+            {
+              "body_type": "res_b",
+              "code": "FnoExecPrc",
+              "name": "선물옵션체결가",
+              "type": "A0001",
+              "required": true,
+              "length": "27.8",
+              "order": "003.015"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ExecQty",
+              "name": "체결수량",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.016"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CtrctTime",
+              "name": "약정시각",
+              "type": "A0001",
+              "required": true,
+              "length": "9",
+              "order": "003.017"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CtrctNo",
+              "name": "약정번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.018"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ExecNo",
+              "name": "체결번호",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003.019"
+            },
+            {
+              "body_type": "res_b",
+              "code": "BnsplAmt",
+              "name": "매매손익금액",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.020"
+            },
+            {
+              "body_type": "res_b",
+              "code": "UnercQty",
+              "name": "미체결수량",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.021"
+            },
+            {
+              "body_type": "res_b",
+              "code": "UserId",
+              "name": "사용자ID",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.022"
+            },
+            {
+              "body_type": "res_b",
+              "code": "MktClssCodeNm",
+              "name": "시장분류코드명",
+              "type": "A0001",
+              "required": true,
+              "length": "40",
+              "order": "003.023"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CommdaCode",
+              "name": "통신매체코드",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "003.024"
+            },
+            {
+              "body_type": "res_b",
+              "code": "CommdaCodeNm",
+              "name": "통신매체코드명",
+              "type": "A0001",
+              "required": true,
+              "length": "40",
+              "order": "003.025"
+            },
+            {
+              "body_type": "res_b",
+              "code": "IpAddr",
+              "name": "IP주소",
+              "type": "A0001",
+              "required": true,
+              "length": "16",
+              "order": "003.026"
+            },
+            {
+              "body_type": "res_b",
+              "code": "TrdPtnTpNm",
+              "name": "거래유형구분",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "003.027"
+            },
+            {
+              "body_type": "res_b",
+              "code": "GrpId",
+              "name": "그룹ID",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "003.028"
             },
             {
               "body_type": "req_h",
@@ -1401,14 +1679,6 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CCENQ30100OutBlock3",
-              "name": "CCENQ30100OutBlock3",
-              "type": "A0004",
-              "required": true,
               "order": "004"
             },
             {
@@ -1419,258 +1689,6 @@
               "required": true,
               "length": "18",
               "order": "004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrdDt",
-              "name": "주문일",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "004.001"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrdNo",
-              "name": "주문번호",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "004.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrgOrdNo",
-              "name": "원주문번호",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "004.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrdTime",
-              "name": "주문시각",
-              "type": "A0001",
-              "required": true,
-              "length": "9",
-              "order": "004.004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoIsuNo",
-              "name": "선물옵션종목번호",
-              "type": "A0001",
-              "required": true,
-              "length": "12",
-              "order": "004.005"
-            },
-            {
-              "body_type": "res_b",
-              "code": "IsuNm",
-              "name": "종목명",
-              "type": "A0001",
-              "required": true,
-              "length": "40",
-              "order": "004.006"
-            },
-            {
-              "body_type": "res_b",
-              "code": "BnsTpNm",
-              "name": "매매구분",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "004.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "MrcTpNm",
-              "name": "정정취소구분명",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "004.008"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoOrdprcPtnCode",
-              "name": "선물옵션호가유형코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "004.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoOrdprcPtnNm",
-              "name": "선물옵션호가유형명",
-              "type": "A0001",
-              "required": true,
-              "length": "40",
-              "order": "004.010"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoOrdPrc",
-              "name": "선물옵션주문가격",
-              "type": "A0004",
-              "required": true,
-              "length": "27",
-              "order": "004.011"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrdQty",
-              "name": "주문수량",
-              "type": "A0004",
-              "required": true,
-              "length": "16",
-              "order": "004.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "OrdTpNm",
-              "name": "주문구분명",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "004.013"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ExecTpNm",
-              "name": "체결구분명",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "004.014"
-            },
-            {
-              "body_type": "res_b",
-              "code": "FnoExecPrc",
-              "name": "선물옵션체결가",
-              "type": "A0004",
-              "required": true,
-              "length": "27",
-              "order": "004.015"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ExecQty",
-              "name": "체결수량",
-              "type": "A0004",
-              "required": true,
-              "length": "16",
-              "order": "004.016"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CtrctTime",
-              "name": "약정시각",
-              "type": "A0001",
-              "required": true,
-              "length": "9",
-              "order": "004.017"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CtrctNo",
-              "name": "약정번호",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "004.018"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ExecNo",
-              "name": "체결번호",
-              "type": "A0004",
-              "required": true,
-              "length": "10",
-              "order": "004.019"
-            },
-            {
-              "body_type": "res_b",
-              "code": "BnsplAmt",
-              "name": "매매손익금액",
-              "type": "A0004",
-              "required": true,
-              "length": "16",
-              "order": "004.020"
-            },
-            {
-              "body_type": "res_b",
-              "code": "UnercQty",
-              "name": "미체결수량",
-              "type": "A0004",
-              "required": true,
-              "length": "16",
-              "order": "004.021"
-            },
-            {
-              "body_type": "res_b",
-              "code": "UserId",
-              "name": "사용자ID",
-              "type": "A0001",
-              "required": true,
-              "length": "16",
-              "order": "004.022"
-            },
-            {
-              "body_type": "res_b",
-              "code": "MktClssCodeNm",
-              "name": "시장분류코드명",
-              "type": "A0001",
-              "required": true,
-              "length": "40",
-              "order": "004.023"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CommdaCode",
-              "name": "통신매체코드",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "004.024"
-            },
-            {
-              "body_type": "res_b",
-              "code": "CommdaCodeNm",
-              "name": "통신매체코드명",
-              "type": "A0001",
-              "required": true,
-              "length": "40",
-              "order": "004.025"
-            },
-            {
-              "body_type": "res_b",
-              "code": "IpAddr",
-              "name": "IP주소",
-              "type": "A0001",
-              "required": true,
-              "length": "16",
-              "order": "004.026"
-            },
-            {
-              "body_type": "res_b",
-              "code": "TrdPtnTpNm",
-              "name": "거래유형구분",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "004.027"
-            },
-            {
-              "body_type": "res_b",
-              "code": "GrpId",
-              "name": "그룹ID",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "004.028"
             },
             {
               "body_type": "req_h",
@@ -12289,6 +12307,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t2106OutBlock",
+              "name": "t2106OutBlock",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t2106InBlock",
               "name": "t2106InBlock",
@@ -12312,7 +12338,16 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "001.002"
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nrec",
+              "name": "출력건수",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.001"
             },
             {
               "body_type": "req_b",
@@ -12321,7 +12356,7 @@
               "type": "A0001",
               "required": true,
               "length": "2",
-              "order": "001.003"
+              "order": "001.002"
             },
             {
               "body_type": "req_h",
@@ -12333,11 +12368,28 @@
               "order": "002"
             },
             {
+              "body_type": "res_b",
+              "code": "t2106OutBlock1",
+              "name": "t2106OutBlock1",
+              "type": "A0005",
+              "required": true,
+              "order": "002"
+            },
+            {
               "body_type": "req_b",
               "code": "t2106InBlock1",
               "name": "t2106InBlock1",
               "type": "A0005",
               "required": true,
+              "order": "002"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
               "order": "002"
             },
             {
@@ -12347,95 +12399,7 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "002.002"
-            },
-            {
-              "body_type": "req_b",
-              "code": "gubn",
-              "name": "조건구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.003"
-            },
-            {
-              "body_type": "req_b",
-              "code": "dat1",
-              "name": "데이타1",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.004"
-            },
-            {
-              "body_type": "req_b",
-              "code": "dat2",
-              "name": "데이타2",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.005"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "t2106OutBlock",
-              "name": "t2106OutBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "003"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "nrec",
-              "name": "출력건수",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "003.002"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "t2106OutBlock1",
-              "name": "t2106OutBlock1",
-              "type": "A0005",
-              "required": true,
-              "order": "004"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
+              "order": "002.001"
             },
             {
               "body_type": "res_b",
@@ -12444,7 +12408,16 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004.002"
+              "order": "002.001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "gubn",
+              "name": "조건구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "002.002"
             },
             {
               "body_type": "res_b",
@@ -12453,7 +12426,16 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004.003"
+              "order": "002.002"
+            },
+            {
+              "body_type": "req_b",
+              "code": "dat1",
+              "name": "데이타1",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "002.003"
             },
             {
               "body_type": "res_b",
@@ -12462,19 +12444,55 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "004.004"
+              "order": "002.003"
+            },
+            {
+              "body_type": "req_b",
+              "code": "dat2",
+              "name": "데이타2",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "002.004"
             },
             {
               "body_type": "req_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "003"
+            },
+            {
+              "body_type": "req_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "004"
+            },
+            {
+              "body_type": "res_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "005"
+              "order": "004"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -62733,6 +62751,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t8436OutBlock",
+              "name": "t8436OutBlock",
+              "type": "A0005",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t8436InBlock",
               "name": "t8436InBlock",
@@ -62756,7 +62782,124 @@
               "type": "A0001",
               "required": true,
               "length": "1",
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "hname",
+              "name": "종목명",
+              "type": "A0001",
+              "required": true,
+              "length": "20",
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "shcode",
+              "name": "단축코드",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
               "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "expcode",
+              "name": "확장코드",
+              "type": "A0001",
+              "required": true,
+              "length": "12",
+              "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "etfgubun",
+              "name": "ETF구분(1:ETF2:ETN)",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.004"
+            },
+            {
+              "body_type": "res_b",
+              "code": "uplmtprice",
+              "name": "상한가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.005"
+            },
+            {
+              "body_type": "res_b",
+              "code": "dnlmtprice",
+              "name": "하한가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.006"
+            },
+            {
+              "body_type": "res_b",
+              "code": "jnilclose",
+              "name": "전일가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.007"
+            },
+            {
+              "body_type": "res_b",
+              "code": "memedan",
+              "name": "주문수량단위",
+              "type": "A0001",
+              "required": true,
+              "length": "5",
+              "order": "001.008"
+            },
+            {
+              "body_type": "res_b",
+              "code": "recprice",
+              "name": "기준가",
+              "type": "A0004",
+              "required": true,
+              "length": "8",
+              "order": "001.009"
+            },
+            {
+              "body_type": "res_b",
+              "code": "gubun",
+              "name": "구분(1:코스피2:코스닥)",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.010"
+            },
+            {
+              "body_type": "res_b",
+              "code": "bu12gubun",
+              "name": "증권그룹",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
+              "order": "001.011"
+            },
+            {
+              "body_type": "res_b",
+              "code": "spac_gubun",
+              "name": "기업인수목적회사여부(Y/N)",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "001.012"
+            },
+            {
+              "body_type": "res_b",
+              "code": "filler",
+              "name": "filler(미사용)",
+              "type": "A0001",
+              "required": true,
+              "length": "32",
+              "order": "001.013"
             },
             {
               "body_type": "req_h",
@@ -62768,131 +62911,15 @@
               "order": "002"
             },
             {
-              "body_type": "res_b",
-              "code": "t8436OutBlock",
-              "name": "t8436OutBlock",
-              "type": "A0005",
+              "body_type": "res_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
               "required": true,
+              "length": "10",
               "order": "002"
             },
             {
-              "body_type": "res_b",
-              "code": "hname",
-              "name": "종목명",
-              "type": "A0001",
-              "required": true,
-              "length": "20",
-              "order": "002.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "shcode",
-              "name": "단축코드",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "expcode",
-              "name": "확장코드",
-              "type": "A0001",
-              "required": true,
-              "length": "12",
-              "order": "002.004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "etfgubun",
-              "name": "ETF구분(1:ETF2:ETN)",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.005"
-            },
-            {
-              "body_type": "res_b",
-              "code": "uplmtprice",
-              "name": "상한가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.006"
-            },
-            {
-              "body_type": "res_b",
-              "code": "dnlmtprice",
-              "name": "하한가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.007"
-            },
-            {
-              "body_type": "res_b",
-              "code": "jnilclose",
-              "name": "전일가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.008"
-            },
-            {
-              "body_type": "res_b",
-              "code": "memedan",
-              "name": "주문수량단위",
-              "type": "A0001",
-              "required": true,
-              "length": "5",
-              "order": "002.009"
-            },
-            {
-              "body_type": "res_b",
-              "code": "recprice",
-              "name": "기준가",
-              "type": "A0004",
-              "required": true,
-              "length": "8",
-              "order": "002.010"
-            },
-            {
-              "body_type": "res_b",
-              "code": "gubun",
-              "name": "구분(1:코스피2:코스닥)",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.011"
-            },
-            {
-              "body_type": "res_b",
-              "code": "bu12gubun",
-              "name": "증권그룹",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "002.012"
-            },
-            {
-              "body_type": "res_b",
-              "code": "spac_gubun",
-              "name": "기업인수목적회사여부(Y/N)",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.013"
-            },
-            {
-              "body_type": "res_b",
-              "code": "filler",
-              "name": "filler(미사용)",
-              "type": "A0001",
-              "required": true,
-              "length": "32",
-              "order": "002.014"
-            },
-            {
               "body_type": "req_h",
               "code": "tr_cd",
               "name": "거래 CD",
@@ -62903,11 +62930,11 @@
             },
             {
               "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
               "type": "A0001",
               "required": true,
-              "length": "10",
+              "length": "1",
               "order": "003"
             },
             {
@@ -62921,24 +62948,15 @@
             },
             {
               "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
-            },
-            {
-              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "005"
+              "order": "004"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -71547,6 +71565,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t3102OutBlock",
+              "name": "t3102OutBlock",
+              "type": "A0005",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t3102InBlock",
               "name": "t3102InBlock",
@@ -71570,7 +71596,16 @@
               "type": "A0001",
               "required": true,
               "length": "24",
-              "order": "001.002"
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "sJongcode",
+              "name": "뉴스종목",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.001"
             },
             {
               "body_type": "req_h",
@@ -71583,37 +71618,11 @@
             },
             {
               "body_type": "res_b",
-              "code": "t3102OutBlock",
-              "name": "t3102OutBlock",
-              "type": "A0005",
-              "required": true,
-              "order": "002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "sJongcode",
-              "name": "뉴스종목",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.002"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
               "code": "t3102OutBlock1",
               "name": "t3102OutBlock1",
               "type": "A0005",
               "required": true,
-              "order": "003"
+              "order": "002"
             },
             {
               "body_type": "res_h",
@@ -71622,7 +71631,7 @@
               "type": "A0001",
               "required": true,
               "length": "10",
-              "order": "003"
+              "order": "002"
             },
             {
               "body_type": "res_b",
@@ -71631,16 +71640,16 @@
               "type": "A0001",
               "required": true,
               "length": "100",
-              "order": "003.002"
+              "order": "002.001"
             },
             {
               "body_type": "req_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
+              "code": "tr_cd",
+              "name": "거래 CD",
               "type": "A0001",
               "required": true,
-              "length": "1",
-              "order": "004"
+              "length": "10",
+              "order": "003"
             },
             {
               "body_type": "res_b",
@@ -71648,7 +71657,7 @@
               "name": "t3102OutBlock2",
               "type": "A0003",
               "required": true,
-              "order": "004"
+              "order": "003"
             },
             {
               "body_type": "res_h",
@@ -71657,7 +71666,7 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004"
+              "order": "003"
             },
             {
               "body_type": "res_b",
@@ -71666,19 +71675,28 @@
               "type": "A0001",
               "required": true,
               "length": "300",
-              "order": "004.002"
+              "order": "003.001"
             },
             {
               "body_type": "req_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "004"
+            },
+            {
+              "body_type": "res_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "005"
+              "order": "004"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -82763,7 +82781,6 @@
               "code": "exchgubun",
               "name": "거래소구분코드",
               "type": "A0001",
-              "required": true,
               "length": "1",
               "order": "001.002"
             },
@@ -84235,6 +84252,14 @@
               "order": "001.165"
             },
             {
+              "body_type": "res_b",
+              "code": "krx_mcls_price",
+              "name": "KRX정규종가",
+              "type": "A0004",
+              "length": "8",
+              "order": "001.166"
+            },
+            {
               "body_type": "req_h",
               "code": "authorization",
               "name": "접근토큰",
@@ -84324,6 +84349,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t1104OutBlock",
+              "name": "t1104OutBlock",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t1104InBlock",
               "name": "t1104InBlock",
@@ -84347,6 +84380,15 @@
               "type": "A0001",
               "required": true,
               "length": "6",
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "nrec",
+              "name": "출력건수",
+              "type": "A0001",
+              "required": true,
+              "length": "2",
               "order": "001.001"
             },
             {
@@ -84377,11 +84419,28 @@
               "order": "002"
             },
             {
+              "body_type": "res_b",
+              "code": "t1104OutBlock1",
+              "name": "t1104OutBlock1",
+              "type": "A0005",
+              "required": true,
+              "order": "002"
+            },
+            {
               "body_type": "req_b",
               "code": "t1104InBlock1",
               "name": "t1104InBlock1",
               "type": "A0005",
               "required": true,
+              "order": "002"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
               "order": "002"
             },
             {
@@ -84391,95 +84450,7 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "002.002"
-            },
-            {
-              "body_type": "req_b",
-              "code": "gubn",
-              "name": "조건구분",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.003"
-            },
-            {
-              "body_type": "req_b",
-              "code": "dat1",
-              "name": "데이타1",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "002.004"
-            },
-            {
-              "body_type": "req_b",
-              "code": "dat2",
-              "name": "데이타2",
-              "type": "A0001",
-              "required": true,
-              "length": "8",
-              "order": "002.005"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "t1104OutBlock",
-              "name": "t1104OutBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "003"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "nrec",
-              "name": "출력건수",
-              "type": "A0001",
-              "required": true,
-              "length": "2",
-              "order": "003.002"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
-            },
-            {
-              "body_type": "res_b",
-              "code": "t1104OutBlock1",
-              "name": "t1104OutBlock1",
-              "type": "A0005",
-              "required": true,
-              "order": "004"
-            },
-            {
-              "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
+              "order": "002.001"
             },
             {
               "body_type": "res_b",
@@ -84488,7 +84459,16 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004.002"
+              "order": "002.001"
+            },
+            {
+              "body_type": "req_b",
+              "code": "gubn",
+              "name": "조건구분",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "002.002"
             },
             {
               "body_type": "res_b",
@@ -84497,7 +84477,16 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "004.003"
+              "order": "002.002"
+            },
+            {
+              "body_type": "req_b",
+              "code": "dat1",
+              "name": "데이타1",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "002.003"
             },
             {
               "body_type": "res_b",
@@ -84506,19 +84495,55 @@
               "type": "A0001",
               "required": true,
               "length": "8",
-              "order": "004.004"
+              "order": "002.003"
+            },
+            {
+              "body_type": "req_b",
+              "code": "dat2",
+              "name": "데이타2",
+              "type": "A0001",
+              "required": true,
+              "length": "8",
+              "order": "002.004"
             },
             {
               "body_type": "req_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "003"
+            },
+            {
+              "body_type": "req_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "004"
+            },
+            {
+              "body_type": "res_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "005"
+              "order": "004"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
@@ -84766,6 +84791,14 @@
               "order": "001"
             },
             {
+              "body_type": "res_b",
+              "code": "t1109OutBlock",
+              "name": "t1109OutBlock",
+              "type": "A0003",
+              "required": true,
+              "order": "001"
+            },
+            {
               "body_type": "req_b",
               "code": "t1109InBlock",
               "name": "t1109InBlock",
@@ -84789,7 +84822,16 @@
               "type": "A0001",
               "required": true,
               "length": "6",
-              "order": "001.002"
+              "order": "001.001"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ctsshcode",
+              "name": "종목cts",
+              "type": "A0001",
+              "required": true,
+              "length": "6",
+              "order": "001.001"
             },
             {
               "body_type": "req_b",
@@ -84798,7 +84840,16 @@
               "type": "A0001",
               "required": true,
               "length": "10",
-              "order": "001.003"
+              "order": "001.002"
+            },
+            {
+              "body_type": "res_b",
+              "code": "ctschetime",
+              "name": "체결cts",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "001.002"
             },
             {
               "body_type": "req_b",
@@ -84807,7 +84858,16 @@
               "type": "A0004",
               "required": true,
               "length": "4",
-              "order": "001.004"
+              "order": "001.003"
+            },
+            {
+              "body_type": "res_b",
+              "code": "idx",
+              "name": "IDX",
+              "type": "A0004",
+              "required": true,
+              "length": "4",
+              "order": "001.003"
             },
             {
               "body_type": "req_h",
@@ -84820,55 +84880,11 @@
             },
             {
               "body_type": "res_b",
-              "code": "t1109OutBlock",
-              "name": "t1109OutBlock",
-              "type": "A0003",
-              "required": true,
-              "order": "002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ctsshcode",
-              "name": "종목cts",
-              "type": "A0001",
-              "required": true,
-              "length": "6",
-              "order": "002.002"
-            },
-            {
-              "body_type": "res_b",
-              "code": "ctschetime",
-              "name": "체결cts",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "002.003"
-            },
-            {
-              "body_type": "res_b",
-              "code": "idx",
-              "name": "IDX",
-              "type": "A0004",
-              "required": true,
-              "length": "4",
-              "order": "002.004"
-            },
-            {
-              "body_type": "req_h",
-              "code": "tr_cd",
-              "name": "거래 CD",
-              "type": "A0001",
-              "required": true,
-              "length": "10",
-              "order": "003"
-            },
-            {
-              "body_type": "res_b",
               "code": "t1109OutBlock1",
               "name": "t1109OutBlock1",
               "type": "A0005",
               "required": true,
-              "order": "003"
+              "order": "002"
             },
             {
               "body_type": "res_h",
@@ -84877,7 +84893,7 @@
               "type": "A0001",
               "required": true,
               "length": "10",
-              "order": "003"
+              "order": "002"
             },
             {
               "body_type": "res_b",
@@ -84886,7 +84902,7 @@
               "type": "A0001",
               "required": true,
               "length": "10",
-              "order": "003.002"
+              "order": "002.001"
             },
             {
               "body_type": "res_b",
@@ -84895,7 +84911,7 @@
               "type": "A0004",
               "required": true,
               "length": "8",
-              "order": "003.003"
+              "order": "002.002"
             },
             {
               "body_type": "res_b",
@@ -84904,7 +84920,7 @@
               "type": "A0001",
               "required": true,
               "length": "1",
-              "order": "003.004"
+              "order": "002.003"
             },
             {
               "body_type": "res_b",
@@ -84913,7 +84929,7 @@
               "type": "A0004",
               "required": true,
               "length": "8",
-              "order": "003.005"
+              "order": "002.004"
             },
             {
               "body_type": "res_b",
@@ -84922,7 +84938,7 @@
               "type": "A0004",
               "required": true,
               "length": "6.2",
-              "order": "003.006"
+              "order": "002.005"
             },
             {
               "body_type": "res_b",
@@ -84931,7 +84947,7 @@
               "type": "A0004",
               "required": true,
               "length": "8",
-              "order": "003.007"
+              "order": "002.006"
             },
             {
               "body_type": "res_b",
@@ -84940,7 +84956,7 @@
               "type": "A0004",
               "required": true,
               "length": "9.2",
-              "order": "003.008"
+              "order": "002.007"
             },
             {
               "body_type": "res_b",
@@ -84949,7 +84965,25 @@
               "type": "A0004",
               "required": true,
               "length": "12",
-              "order": "003.009"
+              "order": "002.008"
+            },
+            {
+              "body_type": "req_h",
+              "code": "tr_cd",
+              "name": "거래 CD",
+              "type": "A0001",
+              "required": true,
+              "length": "10",
+              "order": "003"
+            },
+            {
+              "body_type": "res_h",
+              "code": "tr_cont",
+              "name": "연속 거래 여부",
+              "type": "A0001",
+              "required": true,
+              "length": "1",
+              "order": "003"
             },
             {
               "body_type": "req_h",
@@ -84962,24 +84996,15 @@
             },
             {
               "body_type": "res_h",
-              "code": "tr_cont",
-              "name": "연속 거래 여부",
-              "type": "A0001",
-              "required": true,
-              "length": "1",
-              "order": "004"
-            },
-            {
-              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",
               "required": true,
               "length": "18",
-              "order": "005"
+              "order": "004"
             },
             {
-              "body_type": "res_h",
+              "body_type": "req_h",
               "code": "tr_cont_key",
               "name": "연속 거래 Key",
               "type": "A0001",

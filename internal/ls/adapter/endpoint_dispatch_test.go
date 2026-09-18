@@ -152,7 +152,7 @@ func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
 	_, err := a.CallEndpoint(context.Background(), http.MethodPost, internalls.PathStockMarket, internalls.TRStockQuote, map[string]any{
 		"t1102InBlock": map[string]any{
-			"shcode": "078020",
+			"exchgubun": "K",
 		},
 	})
 	if err == nil {
@@ -161,8 +161,8 @@ func TestAdapterCallEndpoint_ValidatesDocumentedRequiredFields(t *testing.T) {
 	if !errors.Is(err, broker.ErrInvalidOrderRequest) {
 		t.Fatalf("error = %v, want ErrInvalidOrderRequest", err)
 	}
-	if !strings.Contains(err.Error(), "exchgubun") {
-		t.Fatalf("error = %v, want missing exchgubun", err)
+	if !strings.Contains(err.Error(), "shcode") {
+		t.Fatalf("error = %v, want missing shcode", err)
 	}
 }
 

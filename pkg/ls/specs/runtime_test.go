@@ -13,9 +13,12 @@ func TestLookupDocumentedEndpointSpec_KnownRESTAndWebSocketTRs(t *testing.T) {
 		t.Fatalf("unexpected t1102 protocol/method: %+v", quote)
 	}
 	if !hasRequiredRequestField(quote, "t1102InBlock") ||
-		!hasRequiredRequestField(quote, "shcode") ||
-		!hasRequiredRequestField(quote, "exchgubun") {
+		!hasRequiredRequestField(quote, "shcode") {
 		t.Fatalf("t1102 required fields missing: %+v", quote.RequestFields)
+	}
+	// LS made exchgubun optional in the 2026-09 docs; it stays documented.
+	if hasRequiredRequestField(quote, "exchgubun") || !hasRequestField(quote, "exchgubun") {
+		t.Fatalf("t1102 exchgubun should be documented and optional: %+v", quote.RequestFields)
 	}
 
 	overseas, ok := LookupDocumentedEndpointSpec("overseas-stock/market-data", "g3101")
@@ -47,6 +50,15 @@ func TestDocumentedEndpointSpecCounts(t *testing.T) {
 	if got := DocumentedWebSocketEndpointSpecCount(); got < 100 {
 		t.Fatalf("DocumentedWebSocketEndpointSpecCount = %d, want >= 100", got)
 	}
+}
+
+func hasRequestField(spec LSEndpointSpec, code string) bool {
+	for _, field := range spec.RequestFields {
+		if field.Code == code {
+			return true
+		}
+	}
+	return false
 }
 
 func hasRequiredRequestField(spec LSEndpointSpec, code string) bool {

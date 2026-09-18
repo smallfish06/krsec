@@ -104,24 +104,6 @@ var DocumentedKISEndpointSpecs = map[string]KISEndpointSpec{
 		VirtualTRID:    "",
 		RequiredFields: []string{"ACNT_PRDT_CD", "BOND_ORD_UNPR", "BOND_RTL_MKET_YN", "BUY_DT", "BUY_SEQ", "CANO", "CTAC_TLNO", "MGCO_APTM_ODNO", "ORD_DVSN", "ORD_QTY2", "ORD_SVR_DVSN_CD", "PDNO", "SAMT_MKET_PTCI_YN", "SLL_AGCO_OPPS_SLL_YN", "SPRX_YN"},
 	},
-	"/uapi/domestic-futureoption/v1/quotations/display-board-callput": {
-		Method:         "GET",
-		RealTRID:       "FHPIF05030100",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_COND_MRKT_CLS_CODE", "FID_COND_MRKT_DIV_CODE", "FID_COND_SCR_DIV_CODE", "FID_MRKT_CLS_CODE", "FID_MRKT_CLS_CODE1", "FID_MTRT_CNT"},
-	},
-	"/uapi/domestic-futureoption/v1/quotations/display-board-futures": {
-		Method:         "GET",
-		RealTRID:       "FHPIF05030200",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_COND_MRKT_CLS_CODE", "FID_COND_MRKT_DIV_CODE", "FID_COND_SCR_DIV_CODE"},
-	},
-	"/uapi/domestic-futureoption/v1/quotations/display-board-option-list": {
-		Method:         "GET",
-		RealTRID:       "FHPIO056104C0",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_COND_MRKT_CLS_CODE", "FID_COND_MRKT_DIV_CODE", "FID_COND_SCR_DIV_CODE"},
-	},
 	"/uapi/domestic-futureoption/v1/quotations/display-board-top": {
 		Method:         "GET",
 		RealTRID:       "FHPIF05030000",
