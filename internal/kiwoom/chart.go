@@ -160,12 +160,10 @@ func (c *Client) InquireTickChart(
 		kiwoomspecs.KiwoomApiDostkChartKa10079Request
 		BaseDt string `json:"base_dt,omitempty"`
 	}{
-		KiwoomApiDostkChartKa10079Request: kiwoomspecs.KiwoomApiDostkChartKa10079Request{
-			StkCd:      symbol,
-			TicScope:   "1",
-			UpdStkpcTp: "1",
-		},
-		BaseDt: baseDate,
+		StkCd:      symbol,
+		TicScope:   "1",
+		UpdStkpcTp: "1",
+		BaseDt:     baseDate,
 	}
 	respObj, err := c.CallDocumentedEndpoint(ctx, "ka10079", PathChart, &req)
 	if err != nil {

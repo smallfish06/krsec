@@ -952,8 +952,6 @@ type KISDomesticFutureoptionV1TradingInquireBalance struct {
 }
 
 type KISDomesticFutureoptionV1TradingInquireBalanceOutput1Item struct {
-	Cano           string `json:"cano"`
-	AcntPrdtCd     string `json:"acnt_prdt_cd"`
 	Pdno           string `json:"pdno"`
 	PrdtTypeCd     string `json:"prdt_type_cd"`
 	ShtnPdno       string `json:"shtn_pdno"`
@@ -1096,8 +1094,6 @@ type KISDomesticFutureoptionV1TradingInquireBalanceValuationPlOutput2Item struct
 }
 
 type KISDomesticFutureoptionV1TradingInquireBalanceValuationPlOutput1Item struct {
-	Cano           string `json:"cano"`
-	AcntPrdtCd     string `json:"acnt_prdt_cd"`
 	Pdno           string `json:"pdno"`
 	PrdtTypeCd     string `json:"prdt_type_cd"`
 	ShtnPdno       string `json:"shtn_pdno"`
@@ -1133,9 +1129,6 @@ type KISDomesticFutureoptionV1TradingInquireCcnl struct {
 
 type KISDomesticFutureoptionV1TradingInquireCcnlOutput1Item struct {
 	OrdGnoBrno           string `json:"ord_gno_brno"`
-	Cano                 string `json:"cano"`
-	CsacName             string `json:"csac_name"`
-	AcntPrdtCd           string `json:"acnt_prdt_cd"`
 	OrdDt                string `json:"ord_dt"`
 	Odno                 string `json:"odno"`
 	OrgnOdno             string `json:"orgn_odno"`
@@ -1361,8 +1354,6 @@ type KISDomesticFutureoptionV1TradingInquireNgtBalanceOutput2Item struct {
 }
 
 type KISDomesticFutureoptionV1TradingInquireNgtBalanceOutput1Item struct {
-	Cano           string `json:"cano"`
-	AcntPrdtCd     string `json:"acnt_prdt_cd"`
 	Pdno           string `json:"pdno"`
 	PrdtTypeCd     string `json:"prdt_type_cd"`
 	ShtnPdno       string `json:"shtn_pdno"`
@@ -1409,9 +1400,6 @@ type KISDomesticFutureoptionV1TradingInquireNgtCcnlOutput2Item struct {
 
 type KISDomesticFutureoptionV1TradingInquireNgtCcnlOutput1Item struct {
 	OrdGnoBrno           string `json:"ord_gno_brno"`
-	Cano                 string `json:"cano"`
-	CsacName             string `json:"csac_name"`
-	AcntPrdtCd           string `json:"acnt_prdt_cd"`
 	OrdDt                string `json:"ord_dt"`
 	Odno                 string `json:"odno"`
 	OrgnOdno             string `json:"orgn_odno"`
@@ -1594,158 +1582,6 @@ type KISDomesticFutureoptionV1TradingOrderRvsecnclRequest struct {
 	RmnQtyYn       string `json:"RMN_QTY_YN"`
 	RvseCnclDvsnCd string `json:"RVSE_CNCL_DVSN_CD"`
 	UnitPrice      string `json:"UNIT_PRICE"`
-}
-
-type KISDomesticStockV1FinanceBalanceSheet struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceBalanceSheetOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceBalanceSheetOutputItem struct {
-	StacYymm  string `json:"stac_yymm"`
-	Cras      string `json:"cras"`
-	Fxas      string `json:"fxas"`
-	TotalAset string `json:"total_aset"`
-	FlowLblt  string `json:"flow_lblt"`
-	FixLblt   string `json:"fix_lblt"`
-	TotalLblt string `json:"total_lblt"`
-	Cpfn      string `json:"cpfn"`
-	CfpSurp   string `json:"cfp_surp"`
-	PrfiSurp  string `json:"prfi_surp"`
-	TotalCptl string `json:"total_cptl"`
-}
-
-type KISDomesticStockV1FinanceBalanceSheetRequest struct {
-	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceFinancialRatio struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceFinancialRatioOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceFinancialRatioOutputItem struct {
-	StacYymm     string `json:"stac_yymm"`
-	Grs          string `json:"grs"`
-	BsopPrfiInrt string `json:"bsop_prfi_inrt"`
-	NtinInrt     string `json:"ntin_inrt"`
-	RoeVal       string `json:"roe_val"`
-	Eps          string `json:"eps"`
-	Sps          string `json:"sps"`
-	Bps          string `json:"bps"`
-	RsrvRate     string `json:"rsrv_rate"`
-	LbltRate     string `json:"lblt_rate"`
-}
-
-type KISDomesticStockV1FinanceFinancialRatioRequest struct {
-	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceGrowthRatio struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceGrowthRatioOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceGrowthRatioOutputItem struct {
-	StacYymm     string `json:"stac_yymm"`
-	Grs          string `json:"grs"`
-	BsopPrfiInrt string `json:"bsop_prfi_inrt"`
-	EqutInrt     string `json:"equt_inrt"`
-	TotlAsetInrt string `json:"totl_aset_inrt"`
-}
-
-type KISDomesticStockV1FinanceGrowthRatioRequest struct {
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidDivClsCode      string `json:"fid_div_cls_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceIncomeStatement struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceIncomeStatementOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceIncomeStatementOutputItem struct {
-	StacYymm     string `json:"stac_yymm"`
-	SaleAccount  string `json:"sale_account"`
-	SaleCost     string `json:"sale_cost"`
-	SaleTotlPrfi string `json:"sale_totl_prfi"`
-	DeprCost     string `json:"depr_cost"`
-	SellMang     string `json:"sell_mang"`
-	BsopPrti     string `json:"bsop_prti"`
-	BsopNonErnn  string `json:"bsop_non_ernn"`
-	BsopNonExpn  string `json:"bsop_non_expn"`
-	OpPrfi       string `json:"op_prfi"`
-	SpecPrfi     string `json:"spec_prfi"`
-	SpecLoss     string `json:"spec_loss"`
-	ThtrNtin     string `json:"thtr_ntin"`
-}
-
-type KISDomesticStockV1FinanceIncomeStatementRequest struct {
-	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceOtherMajorRatios struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceOtherMajorRatiosOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceOtherMajorRatiosOutputItem struct {
-	StacYymm   string `json:"stac_yymm"`
-	PayoutRate string `json:"payout_rate"`
-	Eva        string `json:"eva"`
-	Ebitda     string `json:"ebitda"`
-	EvEbitda   string `json:"ev_ebitda"`
-}
-
-type KISDomesticStockV1FinanceOtherMajorRatiosRequest struct {
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidDivClsCode      string `json:"fid_div_cls_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceProfitRatio struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceProfitRatioOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceProfitRatioOutputItem struct {
-	StacYymm         string `json:"stac_yymm"`
-	CptlNtinRate     string `json:"cptl_ntin_rate"`
-	SelfCptlNtinInrt string `json:"self_cptl_ntin_inrt"`
-	SaleNtinRate     string `json:"sale_ntin_rate"`
-	SaleTotlRate     string `json:"sale_totl_rate"`
-}
-
-type KISDomesticStockV1FinanceProfitRatioRequest struct {
-	FidDivClsCode      string `json:"FID_DIV_CLS_CODE"`
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
-}
-
-type KISDomesticStockV1FinanceStabilityRatio struct {
-	DocumentedResponseBase
-	Output DocumentedSlice[KISDomesticStockV1FinanceStabilityRatioOutputItem] `json:"output,omitempty"`
-}
-
-type KISDomesticStockV1FinanceStabilityRatioOutputItem struct {
-	StacYymm string `json:"stac_yymm"`
-	LbltRate string `json:"lblt_rate"`
-	BramDepn string `json:"bram_depn"`
-	CrntRate string `json:"crnt_rate"`
-	QuckRate string `json:"quck_rate"`
-}
-
-type KISDomesticStockV1FinanceStabilityRatioRequest struct {
-	FidCondMrktDivCode string `json:"fid_cond_mrkt_div_code"`
-	FidDivClsCode      string `json:"fid_div_cls_code"`
-	FidInputIscd       string `json:"fid_input_iscd"`
 }
 
 type KISDomesticStockV1KsdinfoBonusIssue struct {
@@ -2269,24 +2105,17 @@ type KISDomesticStockV1QuotationsCompProgramTradeToday struct {
 }
 
 type KISDomesticStockV1QuotationsCompProgramTradeTodayOutput1Item struct {
-	BsopHour               string `json:"bsop_hour"`
-	ArbtSmtnSelnTrPbmn     string `json:"arbt_smtn_seln_tr_pbmn"`
-	ArbtSmtmSelnTrPbmnRate string `json:"arbt_smtm_seln_tr_pbmn_rate"`
-	ArbtSmtnShnuTrPbmn     string `json:"arbt_smtn_shnu_tr_pbmn"`
-	ArbtSmtmShunTrPbmnRate string `json:"arbt_smtm_shun_tr_pbmn_rate"`
-	NabtSmtnSelnTrPbmn     string `json:"nabt_smtn_seln_tr_pbmn"`
-	NabtSmtmSelnTrPbmnRate string `json:"nabt_smtm_seln_tr_pbmn_rate"`
-	NabtSmtnShnuTrPbmn     string `json:"nabt_smtn_shnu_tr_pbmn"`
-	NabtSmtmShunTrPbmnRate string `json:"nabt_smtm_shun_tr_pbmn_rate"`
-	ArbtSmtnNtbyTrPbmn     string `json:"arbt_smtn_ntby_tr_pbmn"`
-	ArbtSmtmNtbyTrPbmnRate string `json:"arbt_smtm_ntby_tr_pbmn_rate"`
-	NabtSmtnNtbyTrPbmn     string `json:"nabt_smtn_ntby_tr_pbmn"`
-	NabtSmtmNtbyTrPbmnRate string `json:"nabt_smtm_ntby_tr_pbmn_rate"`
-	WholSmtnNtbyTrPbmn     string `json:"whol_smtn_ntby_tr_pbmn"`
-	WholNtbyTrPbmnRate     string `json:"whol_ntby_tr_pbmn_rate"`
-	BstpNmixPrpr           string `json:"bstp_nmix_prpr"`
-	BstpNmixPrdyVrss       string `json:"bstp_nmix_prdy_vrss"`
-	PrdyVrssSign           string `json:"prdy_vrss_sign"`
+	BsopHour           string `json:"bsop_hour"`
+	ArbtSmtnSelnTrPbmn string `json:"arbt_smtn_seln_tr_pbmn"`
+	ArbtSmtnShnuTrPbmn string `json:"arbt_smtn_shnu_tr_pbmn"`
+	NabtSmtnSelnTrPbmn string `json:"nabt_smtn_seln_tr_pbmn"`
+	NabtSmtnShnuTrPbmn string `json:"nabt_smtn_shnu_tr_pbmn"`
+	ArbtSmtnNtbyTrPbmn string `json:"arbt_smtn_ntby_tr_pbmn"`
+	NabtSmtnNtbyTrPbmn string `json:"nabt_smtn_ntby_tr_pbmn"`
+	WholSmtnNtbyTrPbmn string `json:"whol_smtn_ntby_tr_pbmn"`
+	BstpNmixPrpr       string `json:"bstp_nmix_prpr"`
+	BstpNmixPrdyVrss   string `json:"bstp_nmix_prdy_vrss"`
+	PrdyVrssSign       string `json:"prdy_vrss_sign"`
 }
 
 type KISDomesticStockV1QuotationsCompProgramTradeTodayRequest struct {
@@ -3899,7 +3728,7 @@ type KISDomesticStockV1QuotationsInquireTimeDailychartpriceOutput2Item struct {
 
 type KISDomesticStockV1QuotationsInquireTimeDailychartpriceRequest struct {
 	FidCondMrktDivCode string `json:"FID_COND_MRKT_DIV_CODE"`
-	FidFakeTickIncuYn  string `json:"FID_FAKE_TICK_INCU_YN,omitempty"`
+	FidFakeTickIncuYn  string `json:"FID_FAKE_TICK_INCU_YN"`
 	FidInputDate1      string `json:"FID_INPUT_DATE_1"`
 	FidInputHour1      string `json:"FID_INPUT_HOUR_1"`
 	FidInputIscd       string `json:"FID_INPUT_ISCD"`
@@ -6722,7 +6551,6 @@ type KISDomesticStockV1TradingPeriodRights struct {
 }
 
 type KISDomesticStockV1TradingPeriodRightsOutput1Item struct {
-	Acno10         string `json:"acno10"`
 	RghtTypeCd     string `json:"rght_type_cd"`
 	BassDt         string `json:"bass_dt"`
 	RghtCblcTypeCd string `json:"rght_cblc_type_cd"`
@@ -8607,8 +8435,6 @@ type KISOverseasFutureoptionV1TradingInquireCcld struct {
 }
 
 type KISOverseasFutureoptionV1TradingInquireCcldOutputItem struct {
-	Cano            string `json:"cano"`
-	AcntPrdtCd      string `json:"acnt_prdt_cd"`
 	OrdDt           string `json:"ord_dt"`
 	Odno            string `json:"odno"`
 	OrgnOrdDt       string `json:"orgn_ord_dt"`
@@ -8702,8 +8528,6 @@ type KISOverseasFutureoptionV1TradingInquireDailyOrder struct {
 }
 
 type KISOverseasFutureoptionV1TradingInquireDailyOrderOutputItem struct {
-	Cano           string `json:"cano"`
-	AcntPrdtCd     string `json:"acnt_prdt_cd"`
 	Dt             string `json:"dt"`
 	OrdDt          string `json:"ord_dt"`
 	Odno           string `json:"odno"`
@@ -8752,8 +8576,6 @@ type KISOverseasFutureoptionV1TradingInquireDeposit struct {
 type KISOverseasFutureoptionV1TradingInquireDepositOutputItem struct {
 	FmNxdyDnclAmt        string `json:"fm_nxdy_dncl_amt"`
 	FmTotAsstEvluAmt     string `json:"fm_tot_asst_evlu_amt"`
-	Cano                 string `json:"cano"`
-	AcntPrdtCd           string `json:"acnt_prdt_cd"`
 	CrcyCd               string `json:"crcy_cd"`
 	RespDt               string `json:"resp_dt"`
 	FmDncaRmnd           string `json:"fm_dnca_rmnd"`
@@ -8791,8 +8613,6 @@ type KISOverseasFutureoptionV1TradingInquirePeriodCcld struct {
 }
 
 type KISOverseasFutureoptionV1TradingInquirePeriodCcldOutput1Item struct {
-	Cano                  string `json:"cano"`
-	AcntPrdtCd            string `json:"acnt_prdt_cd"`
 	CrcyCd                string `json:"crcy_cd"`
 	FmBuyQty              string `json:"fm_buy_qty"`
 	FmSllQty              string `json:"fm_sll_qty"`
@@ -8847,8 +8667,6 @@ type KISOverseasFutureoptionV1TradingInquirePeriodTrans struct {
 
 type KISOverseasFutureoptionV1TradingInquirePeriodTransOutputItem struct {
 	BassDt         string `json:"bass_dt"`
-	Cano           string `json:"cano"`
-	AcntPrdtCd     string `json:"acnt_prdt_cd"`
 	FmLdgrInogSeq  string `json:"fm_ldgr_inog_seq"`
 	AcntTrTypeName string `json:"acnt_tr_type_name"`
 	CrcyCd         string `json:"crcy_cd"`
@@ -8883,8 +8701,6 @@ type KISOverseasFutureoptionV1TradingInquirePsamount struct {
 }
 
 type KISOverseasFutureoptionV1TradingInquirePsamountOutputItem struct {
-	Cano                string `json:"cano"`
-	AcntPrdtCd          string `json:"acnt_prdt_cd"`
 	OvrsFutrFxPdno      string `json:"ovrs_futr_fx_pdno"`
 	CrcyCd              string `json:"crcy_cd"`
 	SllBuyDvsnCd        string `json:"sll_buy_dvsn_cd"`
@@ -8910,8 +8726,6 @@ type KISOverseasFutureoptionV1TradingInquireUnpd struct {
 }
 
 type KISOverseasFutureoptionV1TradingInquireUnpdOutputItem struct {
-	Cano             string `json:"cano"`
-	AcntPrdtCd       string `json:"acnt_prdt_cd"`
 	OvrsFutrFxPdno   string `json:"ovrs_futr_fx_pdno"`
 	PrdtTypeCd       string `json:"prdt_type_cd"`
 	CrcyCd           string `json:"crcy_cd"`
@@ -8941,8 +8755,6 @@ type KISOverseasFutureoptionV1TradingMarginDetail struct {
 }
 
 type KISOverseasFutureoptionV1TradingMarginDetailOutputItem struct {
-	Cano                     string `json:"cano"`
-	AcntPrdtCd               string `json:"acnt_prdt_cd"`
 	CrcyCd                   string `json:"crcy_cd"`
 	RespDt                   string `json:"resp_dt"`
 	AcntNetRiskMgnaAplyYn    string `json:"acnt_net_risk_mgna_aply_yn"`
@@ -9940,6 +9752,7 @@ type KISOverseasStockV1RankingMarketCapOutput2Item struct {
 
 type KISOverseasStockV1RankingMarketCapRequest struct {
 	Auth    string `json:"AUTH"`
+	CurrGb  string `json:"CURR_GB"`
 	Excd    string `json:"EXCD"`
 	Keyb    string `json:"KEYB"`
 	VolRang string `json:"VOL_RANG"`
@@ -11078,13 +10891,6 @@ var documentedEndpointResponseFactories = map[string]func() DocumentedEndpointRe
 	"/uapi/domestic-futureoption/v1/trading/ngt-margin-detail":            func() DocumentedEndpointResponse { return &KISDomesticFutureoptionV1TradingNgtMarginDetail{} },
 	"/uapi/domestic-futureoption/v1/trading/order":                        func() DocumentedEndpointResponse { return &KISDomesticFutureoptionV1TradingOrder{} },
 	"/uapi/domestic-futureoption/v1/trading/order-rvsecncl":               func() DocumentedEndpointResponse { return &KISDomesticFutureoptionV1TradingOrderRvsecncl{} },
-	"/uapi/domestic-stock/v1/finance/balance-sheet":                       func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceBalanceSheet{} },
-	"/uapi/domestic-stock/v1/finance/financial-ratio":                     func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceFinancialRatio{} },
-	"/uapi/domestic-stock/v1/finance/growth-ratio":                        func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceGrowthRatio{} },
-	"/uapi/domestic-stock/v1/finance/income-statement":                    func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceIncomeStatement{} },
-	"/uapi/domestic-stock/v1/finance/other-major-ratios":                  func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceOtherMajorRatios{} },
-	"/uapi/domestic-stock/v1/finance/profit-ratio":                        func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceProfitRatio{} },
-	"/uapi/domestic-stock/v1/finance/stability-ratio":                     func() DocumentedEndpointResponse { return &KISDomesticStockV1FinanceStabilityRatio{} },
 	"/uapi/domestic-stock/v1/ksdinfo/bonus-issue":                         func() DocumentedEndpointResponse { return &KISDomesticStockV1KsdinfoBonusIssue{} },
 	"/uapi/domestic-stock/v1/ksdinfo/cap-dcrs":                            func() DocumentedEndpointResponse { return &KISDomesticStockV1KsdinfoCapDcrs{} },
 	"/uapi/domestic-stock/v1/ksdinfo/dividend":                            func() DocumentedEndpointResponse { return &KISDomesticStockV1KsdinfoDividend{} },
@@ -11357,13 +11163,6 @@ var documentedEndpointRequestFactories = map[string]func() any{
 	"/uapi/domestic-futureoption/v1/trading/ngt-margin-detail":                func() any { return &KISDomesticFutureoptionV1TradingNgtMarginDetailRequest{} },
 	"/uapi/domestic-futureoption/v1/trading/order":                            func() any { return &KISDomesticFutureoptionV1TradingOrderRequest{} },
 	"/uapi/domestic-futureoption/v1/trading/order-rvsecncl":                   func() any { return &KISDomesticFutureoptionV1TradingOrderRvsecnclRequest{} },
-	"/uapi/domestic-stock/v1/finance/balance-sheet":                           func() any { return &KISDomesticStockV1FinanceBalanceSheetRequest{} },
-	"/uapi/domestic-stock/v1/finance/financial-ratio":                         func() any { return &KISDomesticStockV1FinanceFinancialRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/growth-ratio":                            func() any { return &KISDomesticStockV1FinanceGrowthRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/income-statement":                        func() any { return &KISDomesticStockV1FinanceIncomeStatementRequest{} },
-	"/uapi/domestic-stock/v1/finance/other-major-ratios":                      func() any { return &KISDomesticStockV1FinanceOtherMajorRatiosRequest{} },
-	"/uapi/domestic-stock/v1/finance/profit-ratio":                            func() any { return &KISDomesticStockV1FinanceProfitRatioRequest{} },
-	"/uapi/domestic-stock/v1/finance/stability-ratio":                         func() any { return &KISDomesticStockV1FinanceStabilityRatioRequest{} },
 	"/uapi/domestic-stock/v1/ksdinfo/bonus-issue":                             func() any { return &KISDomesticStockV1KsdinfoBonusIssueRequest{} },
 	"/uapi/domestic-stock/v1/ksdinfo/cap-dcrs":                                func() any { return &KISDomesticStockV1KsdinfoCapDcrsRequest{} },
 	"/uapi/domestic-stock/v1/ksdinfo/dividend":                                func() any { return &KISDomesticStockV1KsdinfoDividendRequest{} },

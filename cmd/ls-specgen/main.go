@@ -12,41 +12,38 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
 const (
-	defaultPortalURL      = "https://openapi.ls-sec.co.kr/apiservice"
-	defaultAPIListURL     = "https://openapi.ls-sec.co.kr/api/apis/public/api-list"
-	defaultTRListURL      = "https://openapi.ls-sec.co.kr/api/apis/guide/tr"
-	defaultPropertyURL    = "https://openapi.ls-sec.co.kr/api/apis/guide/tr/property"
+	// defaultGuideURL is the official LS API guide file offered for download
+	// on every openapi.ls-sec.co.kr page.
+	defaultGuideURL       = "https://openapi.ls-sec.co.kr/api/apis/public/tr-guides.json"
 	defaultSnapshotPath   = "pkg/ls/specs/documented_endpoints.json"
 	defaultSpecsOutPath   = "pkg/ls/specs/documented_specs_generated.go"
 	documentFetchAttempts = 3
 	maxDocumentBytes      = 16 << 20
 )
 
+// lsFieldTypeCodes maps the guide's field type names to the portal type codes
+// that LSFieldSpec.Type exposes.
+var lsFieldTypeCodes = map[string]string{
+	"String":       "A0001",
+	"Object":       "A0003",
+	"Number":       "A0004",
+	"Object Array": "A0005",
+}
+
 type snapshot struct {
 	Source    string             `json:"source,omitempty"`
-	FetchedAt string             `json:"fetched_at,omitempty"`
-	Groups    []groupSnapshot    `json:"groups,omitempty"`
 	Endpoints []endpointSnapshot `json:"endpoints"`
 }
 
-type groupSnapshot struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 type endpointSnapshot struct {
-	GroupID         string       `json:"group_id,omitempty"`
 	GroupName       string       `json:"group_name,omitempty"`
-	APIID           string       `json:"api_id"`
 	APIName         string       `json:"api_name"`
 	Path            string       `json:"path"`
 	Method          string       `json:"method"`
@@ -58,12 +55,9 @@ type endpointSnapshot struct {
 }
 
 type trSnapshot struct {
-	ID                string             `json:"id"`
 	Name              string             `json:"name"`
 	Code              string             `json:"code"`
 	TransactionPerSec string             `json:"transaction_per_sec,omitempty"`
-	ReqExample        string             `json:"req_example,omitempty"`
-	ResExample        string             `json:"res_example,omitempty"`
 	Properties        []propertySnapshot `json:"properties,omitempty"`
 }
 
@@ -78,36 +72,60 @@ type propertySnapshot struct {
 	Description string `json:"description,omitempty"`
 }
 
-type apiRecord struct {
-	ID              string      `json:"id"`
-	Name            string      `json:"name"`
-	AccessURL       string      `json:"accessUrl"`
-	Description     looseString `json:"description"`
-	HTTPMethod      string      `json:"httpMethod"`
-	Domain          string      `json:"domain"`
-	ProtocolType    string      `json:"protocolType"`
-	SimulatedDomain looseString `json:"simulatedDomain"`
-	Open            bool        `json:"open"`
+// guideDocument is the subset of tr-guides.json the generator reads.
+type guideDocument struct {
+	Defaults guideDefaults `json:"defaults"`
+	Servers  []guideServer `json:"servers"`
+	APIs     []guideAPI    `json:"apis"`
 }
 
-type trRecord struct {
-	ID                string      `json:"id"`
-	TRName            string      `json:"trName"`
-	TRCode            string      `json:"trCode"`
-	TransactionPerSec looseString `json:"transactionPerSec"`
-	ReqExample        looseString `json:"reqExample"`
-	ResExample        looseString `json:"resExample"`
+type guideDefaults struct {
+	Method        string `json:"method"`
+	FieldRequired *bool  `json:"fieldRequired"`
 }
 
-type propertyRecord struct {
-	BodyType       string      `json:"bodyType"`
-	PropertyCD     looseString `json:"propertyCd"`
-	PropertyName   looseString `json:"propertyNm"`
-	PropertyType   looseString `json:"propertyType"`
-	PropertyLength looseString `json:"propertyLength"`
-	PropertyOrder  looseString `json:"propertyOrder"`
-	RequireYN      looseString `json:"requireYn"`
-	Description    looseString `json:"description"`
+type guideServer struct {
+	Protocol      string `json:"protocol"`
+	URL           string `json:"url"`
+	SimulationURL string `json:"simulationUrl"`
+}
+
+type guideAPI struct {
+	Categories    []string           `json:"categories"`
+	Name          string             `json:"name"`
+	Description   string             `json:"description"`
+	Protocol      string             `json:"protocol"`
+	Path          string             `json:"path"`
+	Method        string             `json:"method"`
+	CommonHeaders guideHeaders       `json:"commonHeaders"`
+	Transactions  []guideTransaction `json:"transactions"`
+}
+
+type guideHeaders struct {
+	Request  []guideField `json:"request"`
+	Response []guideField `json:"response"`
+}
+
+type guideTransaction struct {
+	Code              string       `json:"code"`
+	Name              string       `json:"name"`
+	TransactionPerSec looseString  `json:"transactionPerSec"`
+	Request           guideMessage `json:"request"`
+	Response          guideMessage `json:"response"`
+}
+
+type guideMessage struct {
+	Headers []guideField `json:"headers"`
+	Body    []guideField `json:"body"`
+}
+
+type guideField struct {
+	Element  string       `json:"element"`
+	Name     string       `json:"name"`
+	Type     string       `json:"type"`
+	Length   looseString  `json:"length"`
+	Required *bool        `json:"required"`
+	Fields   []guideField `json:"fields"`
 }
 
 type looseString string
@@ -167,22 +185,15 @@ func printUsage() {
 
 func runFetch(args []string) error {
 	fs := flag.NewFlagSet("fetch", flag.ContinueOnError)
-	portalURL := fs.String("portal-url", defaultPortalURL, "LS API guide URL")
-	apiListURL := fs.String("api-list-url", defaultAPIListURL, "LS API list base URL")
-	trListURL := fs.String("tr-list-url", defaultTRListURL, "LS TR list base URL")
-	propertyURL := fs.String("property-url", defaultPropertyURL, "LS TR property base URL")
+	guideURL := fs.String("guide-url", defaultGuideURL, "LS API guide JSON URL")
 	out := fs.String("out", defaultSnapshotPath, "snapshot JSON output path")
-	workers := fs.Int("workers", 8, "parallel property fetch workers")
 	timeout := fs.Duration("timeout", 30*time.Second, "HTTP timeout")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
-	if *workers <= 0 {
-		return fmt.Errorf("workers must be > 0")
-	}
 
 	client := &http.Client{Timeout: *timeout}
-	snap, err := fetchSnapshot(client, *portalURL, *apiListURL, *trListURL, *propertyURL, *workers)
+	snap, err := fetchSnapshot(client, *guideURL)
 	if err != nil {
 		return err
 	}
@@ -210,23 +221,16 @@ func runGenerate(args []string) error {
 
 func runRefresh(args []string) error {
 	fs := flag.NewFlagSet("refresh", flag.ContinueOnError)
-	portalURL := fs.String("portal-url", defaultPortalURL, "LS API guide URL")
-	apiListURL := fs.String("api-list-url", defaultAPIListURL, "LS API list base URL")
-	trListURL := fs.String("tr-list-url", defaultTRListURL, "LS TR list base URL")
-	propertyURL := fs.String("property-url", defaultPropertyURL, "LS TR property base URL")
+	guideURL := fs.String("guide-url", defaultGuideURL, "LS API guide JSON URL")
 	snapshotPath := fs.String("snapshot", defaultSnapshotPath, "snapshot JSON path")
 	specOut := fs.String("spec-out", defaultSpecsOutPath, "documented specs Go output path")
-	workers := fs.Int("workers", 8, "parallel property fetch workers")
 	timeout := fs.Duration("timeout", 30*time.Second, "HTTP timeout")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
-	if *workers <= 0 {
-		return fmt.Errorf("workers must be > 0")
-	}
 
 	client := &http.Client{Timeout: *timeout}
-	snap, err := fetchSnapshot(client, *portalURL, *apiListURL, *trListURL, *propertyURL, *workers)
+	snap, err := fetchSnapshot(client, *guideURL)
 	if err != nil {
 		return err
 	}
@@ -262,243 +266,164 @@ func runCheck(args []string) error {
 	return nil
 }
 
-func fetchSnapshot(
-	client *http.Client,
-	portalURL string,
-	apiListURL string,
-	trListURL string,
-	propertyURL string,
-	workers int,
-) (*snapshot, error) {
-	groups, err := fetchGroups(client, portalURL)
+func fetchSnapshot(client *http.Client, guideURL string) (*snapshot, error) {
+	data, err := getBytes(client, guideURL)
 	if err != nil {
 		return nil, err
 	}
-	if len(groups) == 0 {
-		return nil, fmt.Errorf("no LS API groups discovered from %s", portalURL)
+	var doc guideDocument
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, fmt.Errorf("decode LS API guide %s: %w", guideURL, err)
+	}
+	snap, err := snapshotFromGuide(&doc)
+	if err != nil {
+		return nil, fmt.Errorf("LS API guide %s: %w", guideURL, err)
+	}
+	snap.Source = guideURL
+	return snap, nil
+}
+
+// snapshotFromGuide converts the guide document into the committed snapshot
+// layout: one endpoint per guide API, one TR per transaction.
+func snapshotFromGuide(doc *guideDocument) (*snapshot, error) {
+	fieldRequired := true
+	if doc.Defaults.FieldRequired != nil {
+		fieldRequired = *doc.Defaults.FieldRequired
+	}
+	servers := make(map[string]guideServer, len(doc.Servers))
+	for _, server := range doc.Servers {
+		servers[strings.ToUpper(strings.TrimSpace(server.Protocol))] = server
 	}
 
 	var endpoints []endpointSnapshot
-	for _, group := range groups {
-		records, err := fetchAPIList(client, apiListURL, group.ID)
-		if err != nil {
-			return nil, fmt.Errorf("fetch API list for %s: %w", group.ID, err)
+	for _, api := range doc.APIs {
+		path := normalizePath(api.Path)
+		protocol := strings.ToUpper(strings.TrimSpace(api.Protocol))
+		if path == "" || protocol == "" {
+			continue
 		}
-		for _, record := range records {
-			path := normalizePath(record.AccessURL)
-			apiID := strings.TrimSpace(record.ID)
-			if apiID == "" || path == "" {
+		method := strings.ToUpper(strings.TrimSpace(api.Method))
+		if method == "" {
+			method = strings.ToUpper(strings.TrimSpace(doc.Defaults.Method))
+		}
+		server := servers[protocol]
+		ep := endpointSnapshot{
+			GroupName:       firstNonEmpty(api.Categories),
+			APIName:         strings.TrimSpace(api.Name),
+			Path:            path,
+			Method:          method,
+			Protocol:        protocol,
+			Domain:          strings.TrimRight(strings.TrimSpace(server.URL), "/"),
+			SimulatedDomain: strings.TrimRight(strings.TrimSpace(server.SimulationURL), "/"),
+			Description:     strings.TrimSpace(api.Description),
+		}
+		for _, tx := range api.Transactions {
+			code := strings.TrimSpace(tx.Code)
+			if code == "" {
 				continue
 			}
-			trs, err := fetchTRList(client, trListURL, apiID)
+			props, err := transactionProperties(api.CommonHeaders, tx, fieldRequired)
 			if err != nil {
-				return nil, fmt.Errorf("fetch TR list for %s %s: %w", path, apiID, err)
+				return nil, fmt.Errorf("%s %s: %w", path, code, err)
 			}
-			if len(trs) == 0 {
-				continue
-			}
-			endpoints = append(endpoints, endpointSnapshot{
-				GroupID:         group.ID,
-				GroupName:       group.Name,
-				APIID:           apiID,
-				APIName:         strings.TrimSpace(record.Name),
-				Path:            path,
-				Method:          strings.ToUpper(strings.TrimSpace(record.HTTPMethod)),
-				Protocol:        strings.ToUpper(strings.TrimSpace(record.ProtocolType)),
-				Domain:          strings.TrimRight(strings.TrimSpace(record.Domain), "/"),
-				SimulatedDomain: strings.TrimRight(strings.TrimSpace(string(record.SimulatedDomain)), "/"),
-				Description:     strings.TrimSpace(string(record.Description)),
-				TRs:             trs,
+			ep.TRs = append(ep.TRs, trSnapshot{
+				Name:              strings.TrimSpace(tx.Name),
+				Code:              code,
+				TransactionPerSec: strings.TrimSpace(string(tx.TransactionPerSec)),
+				Properties:        props,
 			})
+		}
+		if len(ep.TRs) > 0 {
+			endpoints = append(endpoints, ep)
 		}
 	}
 	if len(endpoints) == 0 {
-		return nil, fmt.Errorf("no LS TRs discovered from %s", portalURL)
+		return nil, errors.New("no LS TRs found")
 	}
-
-	if err := fetchProperties(client, propertyURL, endpoints, workers); err != nil {
-		return nil, err
-	}
-	sortSnapshot(groups, endpoints)
-	return &snapshot{
-		Source:    portalURL,
-		Groups:    groups,
-		Endpoints: endpoints,
-	}, nil
+	sortEndpoints(endpoints)
+	return &snapshot{Endpoints: endpoints}, nil
 }
 
-func fetchGroups(client *http.Client, portalURL string) ([]groupSnapshot, error) {
-	body, err := getBytes(client, portalURL)
-	if err != nil {
-		return nil, err
+// transactionProperties flattens one transaction's headers and body into
+// snapshot properties. A transaction without headers of its own uses the
+// API's common headers.
+func transactionProperties(common guideHeaders, tx guideTransaction, fieldRequired bool) ([]propertySnapshot, error) {
+	requestHeaders := tx.Request.Headers
+	if len(requestHeaders) == 0 {
+		requestHeaders = common.Request
 	}
-	text := html.UnescapeString(string(body))
-	re := regexp.MustCompile(`loadApiList\("([^"]+)",\s*"((?:\\.|[^"])*)"\)`)
-	matches := re.FindAllStringSubmatch(text, -1)
-	seen := make(map[string]struct{}, len(matches))
-	groups := make([]groupSnapshot, 0, len(matches))
-	for _, m := range matches {
-		id := strings.TrimSpace(m[1])
-		name := decodeJSONString(m[2])
-		if id == "" {
+	responseHeaders := tx.Response.Headers
+	if len(responseHeaders) == 0 {
+		responseHeaders = common.Response
+	}
+
+	var props []propertySnapshot
+	for _, part := range []struct {
+		bodyType string
+		fields   []guideField
+	}{
+		{"req_h", requestHeaders},
+		{"req_b", tx.Request.Body},
+		{"res_h", responseHeaders},
+		{"res_b", tx.Response.Body},
+	} {
+		var err error
+		props, err = appendFieldProperties(props, part.bodyType, "", part.fields, fieldRequired)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return props, nil
+}
+
+// appendFieldProperties appends fields in document order. Order is the
+// 1-based position, dotted under the parent block ("001", "001.002").
+func appendFieldProperties(props []propertySnapshot, bodyType, parentOrder string, fields []guideField, fieldRequired bool) ([]propertySnapshot, error) {
+	for i, field := range fields {
+		code := cleanPropertyCode(field.Element)
+		if code == "" {
 			continue
 		}
-		if _, ok := seen[id]; ok {
-			continue
+		order := fmt.Sprintf("%03d", i+1)
+		if parentOrder != "" {
+			order = parentOrder + "." + order
 		}
-		seen[id] = struct{}{}
-		groups = append(groups, groupSnapshot{ID: id, Name: strings.TrimSpace(name)})
-	}
-	return groups, nil
-}
-
-func fetchAPIList(client *http.Client, apiListURL, groupID string) ([]apiRecord, error) {
-	var out []apiRecord
-	if err := getJSON(client, joinURL(apiListURL, groupID), &out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func fetchTRList(client *http.Client, trListURL, apiID string) ([]trSnapshot, error) {
-	data, err := getBytes(client, joinURL(trListURL, apiID))
-	if err != nil {
-		return nil, err
-	}
-	if len(bytes.TrimSpace(data)) == 0 {
-		return nil, nil
-	}
-
-	var records []trRecord
-	if err := json.Unmarshal(data, &records); err != nil {
-		return nil, fmt.Errorf("decode TR list: %w", err)
-	}
-	trs := make([]trSnapshot, 0, len(records))
-	for _, record := range records {
-		id := strings.TrimSpace(record.ID)
-		code := strings.TrimSpace(record.TRCode)
-		if id == "" || code == "" {
-			continue
-		}
-		trs = append(trs, trSnapshot{
-			ID:                id,
-			Name:              strings.TrimSpace(record.TRName),
-			Code:              code,
-			TransactionPerSec: strings.TrimSpace(string(record.TransactionPerSec)),
-		})
-	}
-	sort.Slice(trs, func(i, j int) bool {
-		return strings.ToLower(trs[i].Code) < strings.ToLower(trs[j].Code)
-	})
-	return trs, nil
-}
-
-func fetchProperties(client *http.Client, propertyURL string, endpoints []endpointSnapshot, workers int) error {
-	type job struct {
-		endpoint int
-		tr       int
-		id       string
-	}
-	type result struct {
-		endpoint   int
-		tr         int
-		properties []propertySnapshot
-		err        error
-	}
-
-	jobs := make(chan job)
-	results := make(chan result)
-	var wg sync.WaitGroup
-	for range workers {
-		wg.Go(func() {
-			for j := range jobs {
-				props, err := fetchTRProperties(client, propertyURL, j.id)
-				results <- result{endpoint: j.endpoint, tr: j.tr, properties: props, err: err}
-			}
-		})
-	}
-
-	total := 0
-	go func() {
-		for epIdx := range endpoints {
-			for trIdx := range endpoints[epIdx].TRs {
-				total++
-				jobs <- job{endpoint: epIdx, tr: trIdx, id: endpoints[epIdx].TRs[trIdx].ID}
+		var typeCode string
+		if name := strings.TrimSpace(field.Type); name != "" {
+			var ok bool
+			if typeCode, ok = lsFieldTypeCodes[name]; !ok {
+				return nil, fmt.Errorf("field %s: unknown LS field type %q", code, name)
 			}
 		}
-		close(jobs)
-		wg.Wait()
-		close(results)
-	}()
-
-	var firstErr error
-	count := 0
-	for res := range results {
-		count++
-		if res.err != nil && firstErr == nil {
-			firstErr = res.err
-		}
-		if res.err == nil {
-			endpoints[res.endpoint].TRs[res.tr].Properties = res.properties
-		}
-	}
-	if firstErr != nil {
-		return firstErr
-	}
-	if count != total {
-		return fmt.Errorf("property fetch count mismatch: got %d want %d", count, total)
-	}
-	return nil
-}
-
-func fetchTRProperties(client *http.Client, propertyURL, trID string) ([]propertySnapshot, error) {
-	data, err := getBytes(client, joinURL(propertyURL, trID))
-	if err != nil {
-		return nil, err
-	}
-	if len(bytes.TrimSpace(data)) == 0 {
-		return nil, nil
-	}
-
-	var records []propertyRecord
-	if err := json.Unmarshal(data, &records); err != nil {
-		return nil, fmt.Errorf("decode TR properties: %w", err)
-	}
-	props := make([]propertySnapshot, 0, len(records))
-	for _, record := range records {
-		code := cleanPropertyCode(string(record.PropertyCD))
-		bodyType := strings.ToLower(strings.TrimSpace(record.BodyType))
-		if code == "" || bodyType == "" {
-			continue
+		required := fieldRequired
+		if field.Required != nil {
+			required = *field.Required
 		}
 		props = append(props, propertySnapshot{
 			BodyType: bodyType,
 			Code:     code,
-			Name:     strings.TrimSpace(string(record.PropertyName)),
-			Type:     strings.TrimSpace(string(record.PropertyType)),
-			Required: strings.EqualFold(strings.TrimSpace(string(record.RequireYN)), "Y"),
-			Length:   cleanPropertyLength(string(record.PropertyLength)),
-			Order:    strings.TrimSpace(string(record.PropertyOrder)),
+			Name:     strings.TrimSpace(field.Name),
+			Type:     typeCode,
+			Required: required,
+			Length:   strings.TrimSpace(string(field.Length)),
+			Order:    order,
 		})
+		var err error
+		props, err = appendFieldProperties(props, bodyType, order, field.Fields, fieldRequired)
+		if err != nil {
+			return nil, err
+		}
 	}
-	sort.SliceStable(props, func(i, j int) bool {
-		return props[i].Order < props[j].Order
-	})
 	return props, nil
 }
 
-func getJSON(client *http.Client, url string, out any) error {
-	data, err := getBytes(client, url)
-	if err != nil {
-		return err
+func firstNonEmpty(values []string) string {
+	for _, value := range values {
+		if value = strings.TrimSpace(value); value != "" {
+			return value
+		}
 	}
-	if len(bytes.TrimSpace(data)) == 0 {
-		return nil
-	}
-	if err := json.Unmarshal(data, out); err != nil {
-		return fmt.Errorf("decode %s: %w", url, err)
-	}
-	return nil
+	return ""
 }
 
 func getBytes(client *http.Client, url string) ([]byte, error) {
@@ -523,7 +448,7 @@ func getBytesOnce(client *http.Client, url string) ([]byte, bool, error) {
 	if err != nil {
 		return nil, false, err
 	}
-	req.Header.Set("Accept", "application/json,text/html;q=0.9,*/*;q=0.8")
+	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "krsec-ls-specgen/1.0")
 
 	resp, err := client.Do(req)
@@ -548,10 +473,7 @@ func getBytesOnce(client *http.Client, url string) ([]byte, bool, error) {
 	return data, false, nil
 }
 
-func sortSnapshot(groups []groupSnapshot, endpoints []endpointSnapshot) {
-	sort.SliceStable(groups, func(i, j int) bool {
-		return groups[i].Name < groups[j].Name
-	})
+func sortEndpoints(endpoints []endpointSnapshot) {
 	sort.SliceStable(endpoints, func(i, j int) bool {
 		a, b := endpoints[i], endpoints[j]
 		if a.GroupName != b.GroupName {
@@ -563,11 +485,18 @@ func sortSnapshot(groups []groupSnapshot, endpoints []endpointSnapshot) {
 		if a.Path != b.Path {
 			return a.Path < b.Path
 		}
-		return a.APIID < b.APIID
+		return a.APIName < b.APIName
 	})
 	for epIdx := range endpoints {
-		sort.SliceStable(endpoints[epIdx].TRs, func(i, j int) bool {
-			return strings.ToLower(endpoints[epIdx].TRs[i].Code) < strings.ToLower(endpoints[epIdx].TRs[j].Code)
+		trs := endpoints[epIdx].TRs
+		// Codes that differ only in case (KOSPI "S3_" vs ELW "s3_") share one
+		// generated key, so break ties on the exact code to keep the winner stable.
+		sort.SliceStable(trs, func(i, j int) bool {
+			a, b := strings.ToLower(trs[i].Code), strings.ToLower(trs[j].Code)
+			if a != b {
+				return a < b
+			}
+			return trs[i].Code < trs[j].Code
 		})
 	}
 }
@@ -753,10 +682,6 @@ func normalizePath(path string) string {
 	return path
 }
 
-func joinURL(base, id string) string {
-	return strings.TrimRight(strings.TrimSpace(base), "/") + "/" + strings.TrimLeft(strings.TrimSpace(id), "/")
-}
-
 func cleanPropertyCode(code string) string {
 	code = html.UnescapeString(code)
 	code = strings.ReplaceAll(code, "\u00a0", " ")
@@ -764,29 +689,6 @@ func cleanPropertyCode(code string) string {
 	code = strings.TrimLeft(code, "- ")
 	code = strings.TrimSpace(code)
 	return code
-}
-
-// cleanPropertyLength normalizes the portal's propertyLength: the API emits
-// the literal string "null" (not JSON null) for block-header rows.
-func cleanPropertyLength(raw string) string {
-	length := strings.TrimSpace(raw)
-	if strings.EqualFold(length, "null") {
-		return ""
-	}
-	return length
-}
-
-func decodeJSONString(raw string) string {
-	raw = strings.TrimSpace(raw)
-	if raw == "" {
-		return ""
-	}
-	raw = strings.ReplaceAll(raw, `\/`, `/`)
-	out, err := strconv.Unquote(`"` + raw + `"`)
-	if err != nil {
-		return raw
-	}
-	return out
 }
 
 func quote(s string) string {

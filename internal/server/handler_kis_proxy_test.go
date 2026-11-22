@@ -87,8 +87,8 @@ func TestHandleKISProxy_CachesPublicQuoteResponse(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0", "price": "70000"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0", "price": "70000"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -125,8 +125,8 @@ func TestHandleKISProxy_DoesNotCacheTradingEndpoints(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -150,8 +150,8 @@ func TestHandleKISProxy_RateLimitsOutboundCalls(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := NewWithBrokersOptions(
 		"127.0.0.1",
@@ -191,8 +191,8 @@ func TestHandleKISProxy_ServesStaleCacheOnEndpointError(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0", "price": "70000"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0", "price": "70000"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -234,8 +234,8 @@ func TestHandleKISProxy_DefaultRouteAndFirstKISAccount(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0", "msg_cd": "MCA00000"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0", "msg_cd": "MCA00000"},
 	}
 	kiwoomBroker := &proxyStubBroker{name: "KIWOOM"}
 
@@ -288,8 +288,8 @@ func TestHandleKISProxy_GETBodyCompatibility(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -315,8 +315,8 @@ func TestHandleKISProxy_StaticFlatRequestCompatibility(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -342,8 +342,8 @@ func TestHandleKISProxy_TRIDOptional(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -365,7 +365,7 @@ func TestHandleKISProxy_TRIDOptional(t *testing.T) {
 func TestHandleKISProxy_InvalidAccount(t *testing.T) {
 	t.Parallel()
 
-	kisBroker := &proxyKISBroker{proxyStubBroker: proxyStubBroker{name: "KIS"}}
+	kisBroker := &proxyKISBroker{name: "KIS"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
 		[]config.AccountConfig{{AccountID: "kis-acc", Broker: "kis"}},
@@ -402,8 +402,8 @@ func TestHandleKISProxy_StrictOnlyUndocumentedPathReturnsNotFound(t *testing.T) 
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -426,8 +426,8 @@ func TestHandleKISProxy_MethodNormalizedToUpper(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},
@@ -450,8 +450,8 @@ func TestHandleKISProxy_InvalidMethodRejected(t *testing.T) {
 	t.Parallel()
 
 	kisBroker := &proxyKISBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIS"},
-		resp:            map[string]any{"rt_cd": "0"},
+		name: "KIS",
+		resp: map[string]any{"rt_cd": "0"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kis-acc": kisBroker},

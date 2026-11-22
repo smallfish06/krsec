@@ -42,8 +42,8 @@ func TestHandleKiwoomProxy_DefaultRouteAndFirstKiwoomAccount(t *testing.T) {
 	t.Parallel()
 
 	kiwoomBroker := &proxyKiwoomBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
+		name: "KIWOOM",
+		resp: map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 
@@ -96,7 +96,7 @@ func TestHandleKiwoomProxy_DefaultRouteAndFirstKiwoomAccount(t *testing.T) {
 func TestHandleKiwoomProxy_MissingAPIID(t *testing.T) {
 	t.Parallel()
 
-	kiwoomBroker := &proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}
+	kiwoomBroker := &proxyKiwoomBroker{name: "KIWOOM"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
 		[]config.AccountConfig{{AccountID: "kiwoom-acc", Broker: "kiwoom"}},
@@ -114,7 +114,7 @@ func TestHandleKiwoomProxy_MissingAPIID(t *testing.T) {
 func TestHandleKiwoomProxy_InvalidAccount(t *testing.T) {
 	t.Parallel()
 
-	kiwoomBroker := &proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}
+	kiwoomBroker := &proxyKiwoomBroker{name: "KIWOOM"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
 		[]config.AccountConfig{{AccountID: "kiwoom-acc", Broker: "kiwoom"}},
@@ -151,8 +151,8 @@ func TestHandleKiwoomProxy_StaticRoute(t *testing.T) {
 	t.Parallel()
 
 	kiwoomBroker := &proxyKiwoomBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
+		name: "KIWOOM",
+		resp: map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
@@ -191,8 +191,8 @@ func TestHandleKiwoomProxy_MethodNormalizedToUpper(t *testing.T) {
 	t.Parallel()
 
 	kiwoomBroker := &proxyKiwoomBroker{
-		proxyStubBroker: proxyStubBroker{name: "KIWOOM"},
-		resp:            map[string]any{"return_code": 0, "return_msg": "ok"},
+		name: "KIWOOM",
+		resp: map[string]any{"return_code": 0, "return_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
@@ -214,7 +214,7 @@ func TestHandleKiwoomProxy_MethodNormalizedToUpper(t *testing.T) {
 func TestHandleKiwoomProxy_InvalidMethodRejected(t *testing.T) {
 	t.Parallel()
 
-	kiwoomBroker := &proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}
+	kiwoomBroker := &proxyKiwoomBroker{name: "KIWOOM"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"kiwoom-acc": kiwoomBroker},
 		[]config.AccountConfig{{AccountID: "kiwoom-acc", Broker: "kiwoom"}},
@@ -253,7 +253,7 @@ func TestHandleKiwoomProxyContinuationHeaders(t *testing.T) {
 		{"/kiwoom/dostk/chart/ka10081", `{"stk_cd":"005930","base_dt":"20260912","upd_stkpc_tp":"1"}`},
 	} {
 		t.Run(route.path, func(t *testing.T) {
-			brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}, resp: map[string]any{"stk_cd": "005930"}}, next: kiwoomspecs.Continuation{ContYN: "Y", NextKey: "page2"}}
+			brk := &proxyPagedKiwoomBroker{name: "KIWOOM", resp: map[string]any{"stk_cd": "005930"}, next: kiwoomspecs.Continuation{ContYN: "Y", NextKey: "page2"}}
 			s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
 			req := httptest.NewRequest(http.MethodPost, route.path, bytes.NewBufferString(route.body))
 			req.Header.Set("cont-yn", "Y")
@@ -278,7 +278,7 @@ func TestHandleKiwoomProxyContinuationHeaders(t *testing.T) {
 }
 
 func TestHandleKiwoomProxyContinuationBody(t *testing.T) {
-	brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}, resp: map[string]any{}}, next: kiwoomspecs.Continuation{ContYN: "N"}}
+	brk := &proxyPagedKiwoomBroker{name: "KIWOOM", resp: map[string]any{}, next: kiwoomspecs.Continuation{ContYN: "N"}}
 	s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
 	req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/chart", bytes.NewBufferString(`{"api_id":"ka10081","body":{"stk_cd":"005930"},"continuation":{"cont_yn":"Y","next_key":"page1"}}`))
 	rr := performFiberRequest(t, s, req)
@@ -293,7 +293,7 @@ func TestHandleKiwoomProxyRejectsBadContinuation(t *testing.T) {
 		{"N", "page1", `{"api_id":"ka10001","body":{"stk_cd":"005930"}}`},
 		{"Y", "page1", `{"api_id":"ka10001","body":{"stk_cd":"005930"},"continuation":{"cont_yn":"Y","next_key":"other"}}`},
 	} {
-		brk := &proxyPagedKiwoomBroker{proxyKiwoomBroker: proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}}
+		brk := &proxyPagedKiwoomBroker{name: "KIWOOM"}
 		s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
 		req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/stkinfo", bytes.NewBufferString(test.body))
 		req.Header.Set("cont-yn", test.cont)
@@ -306,7 +306,7 @@ func TestHandleKiwoomProxyRejectsBadContinuation(t *testing.T) {
 }
 
 func TestHandleKiwoomLegacyAdapterRejectsCursor(t *testing.T) {
-	brk := &proxyKiwoomBroker{proxyStubBroker: proxyStubBroker{name: "KIWOOM"}}
+	brk := &proxyKiwoomBroker{name: "KIWOOM"}
 	s := newOrderTestServer(map[string]broker.Broker{"kiwoom": brk}, []config.AccountConfig{{AccountID: "kiwoom", Broker: "kiwoom"}})
 	req := httptest.NewRequest(http.MethodPost, "/kiwoom/dostk/stkinfo/ka10001", bytes.NewBufferString(`{"stk_cd":"005930"}`))
 	req.Header.Set("cont-yn", "Y")

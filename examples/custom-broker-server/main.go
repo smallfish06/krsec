@@ -318,4 +318,3 @@ func main() {
 func sampleOrder() string {
 	return `{"symbol":"005930","market":"KRX","side":"buy","type":"market","quantity":1}`
 }
-

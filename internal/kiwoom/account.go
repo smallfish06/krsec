@@ -267,11 +267,9 @@ func (c *Client) InquirePositionsByAsset(
 		kiwoomspecs.KiwoomApiDostkAcntKt00018Request
 		StkBondTp string `json:"stk_bond_tp,omitempty"`
 	}{
-		KiwoomApiDostkAcntKt00018Request: kiwoomspecs.KiwoomApiDostkAcntKt00018Request{
-			QryTp:      queryType,
-			DmstStexTp: exchange,
-		},
-		StkBondTp: strings.TrimSpace(stockBondType),
+		QryTp:      queryType,
+		DmstStexTp: exchange,
+		StkBondTp:  strings.TrimSpace(stockBondType),
 	}
 
 	resObj, err := c.CallDocumentedEndpoint(ctx, "kt00018", PathAccount, &req)

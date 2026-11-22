@@ -27,7 +27,7 @@ func (a *Adapter) collectEndpointRowsUntil(ctx context.Context, path, apiID stri
 	var rows []map[string]any
 	continuation := kiwoomspecs.Continuation{}
 	seen := make(map[string]struct{})
-	for page := 0; page < maxPages; page++ {
+	for page := range maxPages {
 		result, err := a.CallEndpointPage(ctx, http.MethodPost, path, apiID, request, continuation)
 		if err != nil {
 			return nil, fmt.Errorf("kiwoom %s page %d: %w", apiID, page+1, err)

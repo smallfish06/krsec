@@ -3,7 +3,7 @@
   "info": {
     "description": "토스증권 트레이딩 Open API 의 REST 스펙입니다. 실시간 체결·호가·본인 주문 이벤트 스트리밍은 REST 가 아닌 웹소켓 API(`wss://openapi-ws.tossinvest.com/ws/v1`)로 제공되며, 별도의 AsyncAPI 3.0 문서 (https://openapi.tossinvest.com/openapi-docs/latest/asyncapi.json)가 실시간 스펙의 source of truth 입니다.",
     "title": "토스증권 Open API",
-    "version": "1.2.17"
+    "version": "1.2.28"
   },
   "servers": [
     {
@@ -172,7 +172,7 @@
           "Conditional Order"
         ],
         "summary": "조건주문 수정",
-        "description": "조건주문을 수정합니다. 조건주문 전체를 재설정하므로 본문에 `type`·`expireDate`·`first`(필요 시 `second`) 를 모두 전달합니다.\n수량(`quantity`)은 각 감시 조건(`first`/`second`) 안에 입력합니다.\n(등록과 달리 `expireDate` 가 필수입니다.) 종목은 `conditionalOrderId` 로 식별되므로 본문에 `symbol` 은 필요 없습니다.\n본문의 `type` 은 변경 결과 타입이며, 타입 전환(예: SINGLE→OCO)이 허용됩니다. 응답의 `type` 으로 확인하세요.\n\n`conditionalOrderId` 로 수정 대상을 식별합니다.\n\n**주의**: 수정은 기존 조건주문을 취소하고 새 조건주문을 생성하는 방식으로 동작합니다.\n따라서 수정 후에는 **새로운 `conditionalOrderId` 가 발급되고 기존 ID 는 무효화**됩니다.\n이후 조회·수정·취소에는 반드시 응답으로 반환된 `conditionalOrderId` 를 사용하세요.\n\n**Rate Limits Group**: `CONDITIONAL_ORDER`\n",
+        "description": "조건주문을 수정합니다. 조건주문 전체를 재설정하므로 본문에 `type`·`quantity`·`orderType`·`expireDate`·`first`(필요 시 `second`) 를 모두 전달합니다.\n종목은 `conditionalOrderId` 로 식별되므로 본문에 `symbol` 은 필요 없습니다.\n본문의 `type` 은 변경 결과 타입이며, 타입 전환(예: SINGLE→OCO)이 허용됩니다. 응답의 `type` 으로 확인하세요.\n\n`conditionalOrderId` 로 수정 대상을 식별합니다.\n\n**주의**: 수정은 기존 조건주문을 취소하고 새 조건주문을 생성하는 방식으로 동작합니다.\n따라서 수정 후에는 **새로운 `conditionalOrderId` 가 발급되고 기존 ID 는 무효화**됩니다.\n이후 조회·수정·취소에는 반드시 응답으로 반환된 `conditionalOrderId` 를 사용하세요.\n\n**수정 가능 상태**: 감시 중(`WATCHING`)·일시정지(`PAUSED`) 조건주문만 수정할 수 있습니다.\n조건이 충족되어 주문이 생성 중(`ORDERING`)이거나 주문이 접수된(`ORDERED`) 조건주문, 종료된(`COMPLETED`·`EXPIRED`) 조건주문은\n`422 modify-restricted` 로 거절됩니다. 감시 중이라도 조건 충족 여부를 판정하는 중에는 거절될 수 있습니다.\n주문이 접수된 조건주문은 취소한 뒤 새로 생성하세요. 단, 취소해도 이미 접수된 주문은 취소되지 않으므로 필요하면 주문 취소 API 로 함께 취소하세요.\n\n**Rate Limits Group**: `CONDITIONAL_ORDER`\n",
         "operationId": "modifyConditionalOrder",
         "parameters": [
           {
@@ -516,6 +516,116 @@
         ]
       }
     },
+    "/api/v1/rankings/investor-trading": {
+      "get": {
+        "tags": [
+          "Ranking"
+        ],
+        "summary": "투자자별 순매수·순매도 랭킹 조회",
+        "description": "국내(KR) 종목의 외국인·기관·개인 순매수 상위와 순매도 상위 종목을 한 번에 조회합니다.\n투자자별로 순매수(`netBuyRankings`)·순매도(`netSellRankings`) 목록을 거래액 순으로 최대 100위까지 제공합니다.\n\n- 대상은 국내(KR) 종목이며 ETF 를 포함합니다. 순매수·순매도 거래액은 KRX·NXT 통합 기준입니다.\n- 거래액은 원화(KRW) 정수이며 항상 양수입니다. `netBuyAmount` 는 매수 거래액에서 매도 거래액을, `netSellAmount` 는 매도 거래액에서 매수 거래액을 뺀 값입니다.\n- `count` 는 투자자별 순매수·순매도 목록에 각각 적용됩니다. 응답 항목 수는 `count` 보다 적을 수 있습니다.\n- 시세(현재가·등락률)는 포함하지 않습니다. 필요하면 응답의 `symbol` 로 `GET /api/v1/prices` 를 조회하세요.\n\n**데이터 적시성**: 최근 영업일 기준으로만 제공하며 과거 날짜는 조회할 수 없습니다.\n투자자마다 갱신 시점이 달라 `rankedAt` 이 서로 다를 수 있습니다.\n- 외국인·기관은 장중에 잠정치로 제공되고, 개인은 정규장 종료 후 제공됩니다. 정규장 종료 전까지 개인은 직전 영업일 기준입니다.\n- 정규장 종료 후에도 NXT 거래 반영으로 저녁(20시경)까지 값이 바뀔 수 있습니다.\n- 조회 시점에 따라 이전 시각 기준 데이터가 제공될 수 있으므로, 기준 시각은 `rankedAt` 으로 확인하세요.\n  데이터를 제공할 수 없는 경우 `rankedAt` 은 null 이며, 목록이 비어 있을 수 있습니다.\n\n**Rate Limits Group**: `RANKING`\n",
+        "operationId": "getInvestorTradingRankings",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query"
+          }
+        ]
+      }
+    },
+    "/api/v1/sectors": {
+      "get": {
+        "tags": [
+          "Sector"
+        ],
+        "summary": "섹터 목록 조회",
+        "description": "토스증권 섹터 분류 전체를 계층 정보와 함께 한 번에 반환합니다.\n\n- 섹터는 토스증권 자체 산업 분류로, 한 종목이 여러 섹터에 속할 수 있습니다.\n- `depth` 0 = 대분류, 1 = 중분류, 2 = 소분류이며, `parentSectorId` 로 상위 섹터를 따라가면 전체 계층을 만들 수 있습니다.\n- 정렬은 `depth` 오름차순, 같은 depth 안에서는 `sectorId` 오름차순(숫자 기준)입니다.\n- 자주 바뀌지 않으므로 하루 한 번만 조회해 저장해 두고 쓰는 것을 권장합니다. 다른 섹터 API 의 `sectorId` 입력값은 이 목록에서 확인합니다.\n\n**Rate Limits Group**: `SECTOR`\n",
+        "operationId": "listSectors"
+      }
+    },
+    "/api/v1/sectors/rankings": {
+      "get": {
+        "tags": [
+          "Sector"
+        ],
+        "summary": "섹터 랭킹 조회",
+        "description": "지정한 시장(`marketCountry`) · 기간(`duration`) · 기준(`type`)의 섹터 랭킹을 조회합니다. 상위 100위까지 한 번에 제공합니다.\n\n- 대상은 대분류(`depth` 0)와 중분류(`depth` 1) 섹터이며, 소분류(`depth` 2)는 포함되지 않습니다.\n- 소속 종목이 너무 적거나 해당 시장·기간의 데이터가 없는 섹터는 랭킹에 나타나지 않습니다.\n- `TOP_GAINERS` 는 `changeRate`, `MARKET_TRADING_AMOUNT` 는 `tradingAmount` 가 랭킹 기준값입니다. `tradingAmount` · `marketCapitalization` 은 데이터가 없으면 null 이고, `changeRate` 는 항상 값이 있습니다.\n- 금액은 US 도 원화(KRW) 환산값이며 통화는 각 항목의 `currency` 로 표기됩니다.\n- 응답 항목 수는 100건보다 적을 수 있고, 데이터가 없는 조합은 에러가 아닌 빈 `rankings` 배열로 응답합니다.\n\n**Rate Limits Group**: `SECTOR_RANKING`\n",
+        "operationId": "getSectorRankings",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "name": "marketCountry",
+            "in": "query"
+          },
+          {
+            "name": "duration",
+            "in": "query"
+          }
+        ]
+      }
+    },
+    "/api/v1/sectors/{sectorId}": {
+      "get": {
+        "tags": [
+          "Sector"
+        ],
+        "summary": "섹터 상세 조회",
+        "description": "섹터의 기본 정보(이름 · 계층 · 한 줄 요약)와 지정한 시장(`marketCountry`) 기준 기간별 등락률을 조회합니다.\n\n- 기본 정보는 시장과 무관하며, `performance.changeRates` 만 `marketCountry` 기준입니다.\n- `changeRates` 는 `duration` 순서(`1d` → `1y`)로 항상 6건이며, 데이터가 없는 기간은 `changeRate` 가 null 입니다 (예: 해당 시장에 구성 종목이 없는 섹터).\n- 등락률은 소수비율입니다.\n- 목록(`GET /api/v1/sectors`)에 없는 `sectorId` 는 404 `sector-not-found` 로 응답합니다.\n\n**Rate Limits Group**: `SECTOR`\n",
+        "operationId": "getSector",
+        "parameters": [
+          {
+            "name": "sectorId",
+            "in": "path"
+          },
+          {
+            "name": "marketCountry",
+            "in": "query"
+          }
+        ]
+      }
+    },
+    "/api/v1/sectors/{sectorId}/etfs": {
+      "get": {
+        "tags": [
+          "Sector"
+        ],
+        "summary": "섹터 관련 ETF 조회",
+        "description": "이 섹터로 분류된 ETF 전체를 지정한 시장(`marketCountry`) 기준으로 반환합니다 (하위 섹터 미포함).\n\n- 직전 분기 시가총액이 큰 순서이며, 시가총액 정보가 없는 ETF 는 뒤에 옵니다.\n- 심볼과 이름만 제공합니다. 시세는 `GET /api/v1/prices`, 종목 기본 정보는 `GET /api/v1/stocks` 를 사용하세요.\n- 상장폐지된 ETF 는 제외됩니다.\n- 목록(`GET /api/v1/sectors`)에 없는 `sectorId` 는 404 `sector-not-found` 로 응답합니다.\n\n**Rate Limits Group**: `SECTOR`\n",
+        "operationId": "getSectorEtfs",
+        "parameters": [
+          {
+            "name": "sectorId",
+            "in": "path"
+          },
+          {
+            "name": "marketCountry",
+            "in": "query"
+          }
+        ]
+      }
+    },
+    "/api/v1/sectors/{sectorId}/stocks": {
+      "get": {
+        "tags": [
+          "Sector"
+        ],
+        "summary": "섹터 구성 주식 조회",
+        "description": "섹터(하위 섹터 포함)에 속한 보통주 전체를 지정한 시장(`marketCountry`) 기준으로 시가총액 내림차순 반환합니다.\n\n- `volume` · `tradingAmount` 는 당일 누적값이며, 시세가 없는 종목은 null 입니다.\n- 금액은 US 종목도 원화(KRW) 환산값이며 통화는 각 항목의 `currency` 로 표기됩니다.\n- 상장폐지된 종목은 제외됩니다.\n- 목록(`GET /api/v1/sectors`)에 없는 `sectorId` 는 404 `sector-not-found` 로 응답합니다.\n\n**Rate Limits Group**: `SECTOR`\n",
+        "operationId": "getSectorStocks",
+        "parameters": [
+          {
+            "name": "sectorId",
+            "in": "path"
+          },
+          {
+            "name": "marketCountry",
+            "in": "query"
+          }
+        ]
+      }
+    },
     "/api/v1/sellable-quantity": {
       "get": {
         "tags": [
@@ -722,6 +832,41 @@
           },
           {
             "name": "count",
+            "in": "query"
+          }
+        ]
+      }
+    },
+    "/api/v1/transactions": {
+      "get": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "거래내역 조회",
+        "description": "계좌의 거래내역을 조회합니다. 매매, 입출금, 환전, 배당, 이자, 수수료, 증권 입출고가 대상이며 국내(KR)와 미국(US)을 한 목록으로 반환합니다.\n옵션·채권 거래도 같은 거래 유형으로 포함되며, 상품 구분은 `assetClass` 로 합니다.\n\n조회 조건에 맞는 미결제 내역을 먼저 보여주고, 이어서 결제 완료 내역을 보여줍니다. 각 그룹 안에서는 다음 시각이 최신인 순서로 정렬합니다.\n- 미결제: 국내주식은 합산된 내역의 첫 체결시각, 미국 주식은 주문시각, 미국 옵션·채권은 체결시각\n- 결제 완료: 거래 처리시각. 매매는 결제 처리시각이며, 주문·체결시각과 다릅니다.\n\n### 상품별 거래내역 제공 단위\n\n| 상품 | 미결제 | 결제 완료 |\n|---|---|---|\n| 국내주식 | 같은 주문일·종목·매매방향의 체결 내역을 합산 | 체결가 등 결제 기준이 같은 내역을 합산. 미결제와 합산 기준이 다름 |\n| 미국 주식 | 주문별 체결 내역을 합산 | 주문별 체결 내역을 합산 |\n| 미국 옵션·채권 | 체결별 | 체결별 |\n\n국내주식은 미결제 한 건이 결제 후 여러 건의 결제 내역으로 바뀔 수 있습니다.\n날짜 필터는 결제일 기준이며 미결제는 예상 결제일에 적용됩니다. `to`가 오늘이면 예상 결제일이 미래인 미결제는 제외됩니다.\n미결제까지 조회하려면 `to`를 생략하거나 예상 결제일까지 지정하세요.\n거래내역에 해당하는 주문의 식별자는 제공하지 않습니다.\n\n응답 예시는 형식과 필드 의미를 설명하기 위한 가상 거래이며, 실제 체결 가격·수수료율·세율·환율을 나타내지 않습니다.\n\n**Rate Limits Group**: `TRANSACTION`\n",
+        "operationId": "getTransactions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AccountSeq"
+          },
+          {
+            "name": "transactionTypes",
+            "in": "query"
+          },
+          {
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "name": "to",
+            "in": "query"
+          },
+          {
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "name": "limit",
             "in": "query"
           }
         ]
@@ -991,6 +1136,23 @@
       "InternalErrorRanking": {
         "description": "랭킹 조회 중 일시적 오류"
       },
+      "InternalErrorSector": {
+        "content": {
+          "application/json": {
+            "example": {
+              "error": {
+                "code": "internal-error",
+                "message": "처리 중 문제가 생겼어요. 잠시 후 다시 시도해주세요.",
+                "requestId": "01HXYZABCDEFG123456789"
+              }
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "섹터 정보 조회 중 일시적 오류"
+      },
       "InternalErrorStock": {
         "content": {
           "application/json": {
@@ -1024,6 +1186,23 @@
           }
         },
         "description": "수급·투자자 동향 조회 중 일시적 오류"
+      },
+      "InternalErrorTransaction": {
+        "content": {
+          "application/json": {
+            "example": {
+              "error": {
+                "code": "internal-error",
+                "message": "처리 중 문제가 생겼어요. 잠시 후 다시 시도해주세요.",
+                "requestId": "01HXYZABCDEFG123456789"
+              }
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "거래내역 조회 중 일시적 오류"
       },
       "NotFound": {
         "content": {
@@ -1122,6 +1301,23 @@
             }
           }
         }
+      },
+      "SectorNotFound": {
+        "content": {
+          "application/json": {
+            "example": {
+              "error": {
+                "code": "sector-not-found",
+                "message": "섹터를 찾을 수 없습니다.",
+                "requestId": "01HXYZABCDEFG123456789"
+              }
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "섹터를 찾을 수 없음"
       },
       "ServiceUnavailable": {
         "content": {
@@ -1315,6 +1511,16 @@
           "result"
         ],
         "type": "object"
+      },
+      "AssetClass": {
+        "description": "거래 상품군.\n- `STOCK`: 주식. ETF·리츠·ETN 은 주식처럼 거래되므로 `STOCK` 이며, 세부 분류는 `GET /api/v1/stocks/{symbol}` 의 `securityType` 으로 확인합니다.\n- `BOND`: 채권. `symbol` 은 null 이고 `isinCode` 로 식별합니다.\n- `OPTION`: 옵션. `symbol` 은 OCC 옵션 심볼이며 `isinCode` 는 null 입니다.\n\n클라이언트는 unknown enum 값을 허용하도록 구현해야 합니다.\n",
+        "enum": [
+          "STOCK",
+          "BOND",
+          "OPTION"
+        ],
+        "example": "STOCK",
+        "type": "string"
       },
       "BuyingPowerResponse": {
         "properties": {
@@ -1538,6 +1744,15 @@
               "null"
             ]
           },
+          "orderSide": {
+            "description": "매매 유형 (매수/매도). 조건 충족 시 이 유형으로 주문을 냅니다. 등록 요청의 `orderSide` 와 같은 값입니다.",
+            "enum": [
+              "BUY",
+              "SELL"
+            ],
+            "example": "SELL",
+            "type": "string"
+          },
           "status": {
             "description": "조건(leg) 단위 상태. 최상위 조건주문 `status` 와 달리 leg 전용인 `HOLDING`·`CANCELED` 를 포함합니다.\n- `HOLDING`: 선행 조건(OTO first) 체결 전 대기 (leg 전용)\n- `CANCELED`: 취소됨 (완료된 OCO 에서 자동취소된 반대편 조건)\n",
             "enum": [
@@ -1590,7 +1805,8 @@
         },
         "required": [
           "type",
-          "status"
+          "status",
+          "orderSide"
         ],
         "type": "object"
       },
@@ -1610,7 +1826,7 @@
             "type": "boolean"
           },
           "expireDate": {
-            "description": "조건주문 만료일 (YYYY-MM-DD, 필수). 만료일까지 조건이 충족되지 않으면 자동 만료됩니다.",
+            "description": "조건주문 만료일 (YYYY-MM-DD, 필수). 오늘로부터 최대 1년까지 지정할 수 있습니다. 만료일까지 조건이 충족되지 않으면 자동 만료됩니다.",
             "example": "2026-09-10",
             "format": "date",
             "type": "string"
@@ -1809,7 +2025,7 @@
             "type": "boolean"
           },
           "expireDate": {
-            "description": "조건주문 만료일 (수정 시 필수)",
+            "description": "조건주문 만료일 (수정 시 필수). 오늘로부터 최대 1년까지 지정할 수 있습니다.",
             "example": "2026-09-10",
             "format": "date",
             "type": "string"
@@ -2405,6 +2621,39 @@
         },
         "type": "object"
       },
+      "InvestorNetTradingRanking": {
+        "properties": {
+          "netBuyRankings": {
+            "description": "순매수 상위 종목 (`netBuyAmount` 내림차순). 항목 수는 `count` 이하일 수 있습니다.",
+            "items": {
+              "$ref": "#/components/schemas/NetBuyRankingItem"
+            },
+            "type": "array"
+          },
+          "netSellRankings": {
+            "description": "순매도 상위 종목 (`netSellAmount` 내림차순). 항목 수는 `count` 이하일 수 있습니다.",
+            "items": {
+              "$ref": "#/components/schemas/NetSellRankingItem"
+            },
+            "type": "array"
+          },
+          "rankedAt": {
+            "description": "해당 투자자 랭킹의 마지막 갱신 시각입니다. 투자자마다 갱신 시점이 달라 서로 다를 수 있습니다.\n데이터를 제공할 수 없는 경우 null 입니다.\n",
+            "example": "2026-10-20T15:41:19+09:00",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "rankedAt",
+          "netBuyRankings",
+          "netSellRankings"
+        ],
+        "type": "object"
+      },
       "InvestorTradingAmount": {
         "properties": {
           "buyAmount": {
@@ -2425,6 +2674,40 @@
         "required": [
           "buyAmount",
           "sellAmount"
+        ],
+        "type": "object"
+      },
+      "InvestorTradingRankingResponse": {
+        "properties": {
+          "foreigner": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InvestorNetTradingRanking"
+              }
+            ],
+            "description": "외국인"
+          },
+          "individual": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InvestorNetTradingRanking"
+              }
+            ],
+            "description": "개인"
+          },
+          "institution": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InvestorNetTradingRanking"
+              }
+            ],
+            "description": "기관"
+          }
+        },
+        "required": [
+          "foreigner",
+          "institution",
+          "individual"
         ],
         "type": "object"
       },
@@ -2812,6 +3095,68 @@
         ],
         "type": "object"
       },
+      "NetBuyRankingItem": {
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "netBuyAmount": {
+            "description": "순매수 거래액 (매수 − 매도). 원화(KRW) 정수, 항상 양수",
+            "example": "386487682000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "rank": {
+            "description": "순위. 1부터 시작",
+            "example": 1,
+            "type": "integer"
+          },
+          "symbol": {
+            "description": "종목 심볼. 6자리 종목코드 (숫자 또는 영문·숫자 조합; 예: 005930, 0167A0)",
+            "example": "005930",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rank",
+          "symbol",
+          "currency",
+          "netBuyAmount"
+        ],
+        "type": "object"
+      },
+      "NetSellRankingItem": {
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "netSellAmount": {
+            "description": "순매도 거래액 (매도 − 매수). 원화(KRW) 정수, 항상 양수",
+            "example": "391201805000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "rank": {
+            "description": "순위. 1부터 시작",
+            "example": 1,
+            "type": "integer"
+          },
+          "symbol": {
+            "description": "종목 심볼. 6자리 종목코드 (숫자 또는 영문·숫자 조합; 예: 005930, 0167A0)",
+            "example": "000660",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rank",
+          "symbol",
+          "currency",
+          "netSellAmount"
+        ],
+        "type": "object"
+      },
       "OAuth2ErrorResponse": {
         "description": "OAuth2 토큰 발급 실패 응답.\n`/oauth2/token` 엔드포인트는 BFF 공통 `ErrorResponse` envelope 이 아닌 OAuth2 표준 포맷으로 응답합니다.\n클라이언트는 `code` 가 아닌 `error` 필드로 에러를 식별해야 합니다.\n",
         "properties": {
@@ -2848,7 +3193,7 @@
         "properties": {
           "client_id": {
             "description": "발급받은 클라이언트 ID",
-            "example": "c_01HXYZABCDEFG123456789",
+            "example": "tsck_live_example-client-id",
             "type": "string"
           },
           "client_secret": {
@@ -3528,6 +3873,37 @@
         ],
         "type": "object"
       },
+      "PaginatedTransactionResponse": {
+        "description": "거래내역 페이징 응답.\n조회 조건에 맞는 미결제 내역을 먼저 반환하고, 각 그룹 안에서는 해당 내역의 정렬 기준 시각이 최신인 순서로 정렬합니다.\n미결제의 정렬 기준은 국내주식 합산 내역의 첫 체결시각, 미국 주식 주문시각, 미국 옵션·채권 체결시각입니다.\n결제 완료 내역은 거래 처리시각 기준입니다. 매매는 결제 처리시각이며, 주문·체결시각과 다릅니다.\n국내주식은 미결제 한 건이 결제 후 여러 건의 결제 내역으로 바뀔 수 있습니다.\n반환 건수가 `limit`보다 적거나 0건이어도 다음 페이지가 있을 수 있으므로 `hasNext`로 종료 여부를 확인하세요.\n다음 페이지가 있으면 `nextCursor` 에 커서가, `hasNext` 에 `true` 가 내려옵니다.\n",
+        "properties": {
+          "hasNext": {
+            "description": "다음 페이지 존재 여부",
+            "example": false,
+            "type": "boolean"
+          },
+          "nextCursor": {
+            "description": "다음 페이지 커서. 다음 페이지가 없으면 null입니다. 값의 길이와 내부 구조에 의존하지 말고 그대로 전달하세요. 문서 예시의 커서는 실제 요청에 사용할 수 없는 가상 값입니다.",
+            "example": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transactions": {
+            "description": "거래 목록. 조건에 맞는 미결제 내역을 먼저 반환하며, 각 그룹 안에서는 정렬 기준 시각의 최신순입니다.",
+            "items": {
+              "$ref": "#/components/schemas/Transaction"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "transactions",
+          "nextCursor",
+          "hasNext"
+        ],
+        "type": "object"
+      },
       "PreMarketSession": {
         "description": "프리마켓 세션",
         "properties": {
@@ -3918,6 +4294,332 @@
         "required": [
           "startTime",
           "endTime"
+        ],
+        "type": "object"
+      },
+      "Sector": {
+        "properties": {
+          "depth": {
+            "description": "계층 깊이. 0 = 대분류, 1 = 중분류, 2 = 소분류",
+            "example": 1,
+            "type": "integer"
+          },
+          "name": {
+            "description": "섹터명",
+            "example": "반도체",
+            "type": "string"
+          },
+          "parentSectorId": {
+            "description": "상위 섹터의 `sectorId`. 대분류(`depth` 0)는 null",
+            "example": "10",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sectorId": {
+            "description": "섹터 식별자. 다른 섹터 API 의 경로 파라미터 `sectorId` 로 사용합니다.",
+            "example": "100",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sectorId",
+          "name",
+          "depth",
+          "parentSectorId"
+        ],
+        "type": "object"
+      },
+      "SectorChangeRate": {
+        "properties": {
+          "changeRate": {
+            "description": "기간 등락률, 소수비율 (`0.0179` = 1.79%).\n해당 기간의 데이터가 없으면 null 입니다.\n",
+            "example": "0.0179",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration": {
+            "description": "등락률 산정 기간. 모든 기간은 거래일 기준입니다.\n- `1d`: 1일\n- `1w`: 1주\n- `1mo`: 1개월\n- `3mo`: 3개월\n- `6mo`: 6개월\n- `1y`: 1년\n",
+            "enum": [
+              "1d",
+              "1w",
+              "1mo",
+              "3mo",
+              "6mo",
+              "1y"
+            ],
+            "example": "1d",
+            "type": "string"
+          }
+        },
+        "required": [
+          "duration",
+          "changeRate"
+        ],
+        "type": "object"
+      },
+      "SectorDetailResponse": {
+        "properties": {
+          "depth": {
+            "description": "계층 깊이. 0 = 대분류, 1 = 중분류, 2 = 소분류",
+            "example": 1,
+            "type": "integer"
+          },
+          "name": {
+            "description": "섹터명",
+            "example": "반도체",
+            "type": "string"
+          },
+          "parentSectorId": {
+            "description": "상위 섹터의 `sectorId`. 대분류(`depth` 0)는 null",
+            "example": "10",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "performance": {
+            "$ref": "#/components/schemas/SectorPerformance"
+          },
+          "sectorId": {
+            "description": "섹터 식별자",
+            "example": "100",
+            "type": "string"
+          },
+          "summary": {
+            "description": "섹터 한 줄 요약. 등록되지 않은 섹터는 null",
+            "example": "반도체 설계·제조 전문 회사들",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "sectorId",
+          "name",
+          "depth",
+          "parentSectorId",
+          "summary",
+          "performance"
+        ],
+        "type": "object"
+      },
+      "SectorEtf": {
+        "properties": {
+          "name": {
+            "description": "ETF 명",
+            "example": "KODEX 반도체",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "ETF 심볼. KR: 6자리 종목코드 (예: 091160), US: 영문 티커 (예: SOXX)",
+            "example": "091160",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "name"
+        ],
+        "type": "object"
+      },
+      "SectorEtfsResponse": {
+        "properties": {
+          "etfs": {
+            "description": "관련 ETF 목록 (직전 분기 시가총액이 큰 순서, 시가총액 정보가 없는 ETF 는 뒤). 해당 시장에 관련 ETF 가 없으면 빈 배열.",
+            "items": {
+              "$ref": "#/components/schemas/SectorEtf"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "etfs"
+        ],
+        "type": "object"
+      },
+      "SectorPerformance": {
+        "description": "요청한 `marketCountry` 시장 기준 기간별 등락률",
+        "properties": {
+          "changeRates": {
+            "description": "기간별 등락률. `duration` 순서(`1d` → `1y`)로 항상 6건",
+            "items": {
+              "$ref": "#/components/schemas/SectorChangeRate"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "changeRates"
+        ],
+        "type": "object"
+      },
+      "SectorRankingItem": {
+        "properties": {
+          "changeRate": {
+            "description": "`duration` 기간 등락률, 소수비율 (`0.0179` = 1.79%). `TOP_GAINERS` 의 랭킹 기준값입니다.\n항상 값이 있으며, 데이터가 없는 섹터는 `0` 입니다.\n",
+            "example": "0.0179",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "marketCapitalization": {
+            "description": "이 섹터에 속한 종목들의 시가총액 합계. 하위 섹터는 포함하지 않습니다.\n통화는 `currency` 를 따르며 US 도 원화(KRW) 환산값입니다. 데이터가 없으면 null 입니다.\n",
+            "example": "612000000000000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "description": "섹터명",
+            "example": "반도체",
+            "type": "string"
+          },
+          "rank": {
+            "description": "순위. 1부터 시작",
+            "example": 1,
+            "type": "integer"
+          },
+          "sectorId": {
+            "description": "섹터 식별자",
+            "example": "100",
+            "type": "string"
+          },
+          "tradingAmount": {
+            "description": "`duration` 누적 거래대금. `MARKET_TRADING_AMOUNT` 의 랭킹 기준값입니다.\n통화는 `currency` 를 따르며 US 도 원화(KRW) 환산값입니다. 데이터가 없으면 null 입니다.\n",
+            "example": "2411000000000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "rank",
+          "sectorId",
+          "name",
+          "changeRate",
+          "tradingAmount",
+          "marketCapitalization",
+          "currency"
+        ],
+        "type": "object"
+      },
+      "SectorRankingResponse": {
+        "properties": {
+          "rankings": {
+            "description": "섹터 랭킹 목록 (순위 오름차순, 최대 100건). 데이터가 없으면 빈 배열.",
+            "items": {
+              "$ref": "#/components/schemas/SectorRankingItem"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "rankings"
+        ],
+        "type": "object"
+      },
+      "SectorStock": {
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "marketCapitalization": {
+            "description": "시가총액 (매일 갱신). 통화는 `currency` 를 따르며 US 종목도 원화(KRW) 환산값입니다. 데이터가 없으면 null",
+            "example": "388035900000000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "description": "종목명",
+            "example": "삼성전자",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "종목 심볼. KR: 6자리 종목코드 (숫자 또는 영문·숫자 조합; 예: 005930, 0101N0), US: 영문 티커 (예: AAPL)",
+            "example": "005930",
+            "type": "string"
+          },
+          "tradingAmount": {
+            "description": "당일 누적 거래대금. 통화는 `currency` 를 따르며 US 종목도 원화(KRW) 환산값입니다. 시세 데이터가 없으면 null",
+            "example": "1041436650000",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "volume": {
+            "description": "당일 누적 거래량 (주). 시세 데이터가 없으면 null",
+            "example": "18432100",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "symbol",
+          "name",
+          "volume",
+          "tradingAmount",
+          "marketCapitalization",
+          "currency"
+        ],
+        "type": "object"
+      },
+      "SectorStocksResponse": {
+        "properties": {
+          "stocks": {
+            "description": "구성 주식 목록 (시가총액 내림차순). 하위 섹터의 종목을 포함합니다. 해당 시장에 구성 주식이 없으면 빈 배열.",
+            "items": {
+              "$ref": "#/components/schemas/SectorStock"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "stocks"
+        ],
+        "type": "object"
+      },
+      "SectorsResponse": {
+        "properties": {
+          "sectors": {
+            "description": "섹터 목록 (`depth` 오름차순, 같은 depth 안에서는 `sectorId` 오름차순)",
+            "items": {
+              "$ref": "#/components/schemas/Sector"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "sectors"
         ],
         "type": "object"
       },
@@ -4527,6 +5229,187 @@
           "currency"
         ],
         "type": "object"
+      },
+      "Transaction": {
+        "description": "모든 금액(`filledPrice`·`amount`·`commission`·`tax`·`netAmount`)은 `currency` 통화이며 부호(+/−)가 없습니다.\n일반 거래의 금액 방향은 `transactionType`으로 구분합니다.\n`isCancellation=true`이면 취소 거래입니다. `transactionType`은 취소 대상 거래(원거래)의 유형을 유지합니다.\n예를 들어 입금(`DEPOSIT`)을 취소한 내역은 `DEPOSIT`으로 표시되지만, 취소 금액은 계좌에서 빠져나갑니다.\n원거래는 목록에 표시되지 않고, 취소 거래만 표시됩니다. 따라서 거래 금액을 합산한 값이 해당 기간의 실제 계좌 잔액 변화와 일치하지 않을 수 있습니다.\n옵션·채권 거래도 같은 `transactionType` 으로 나오며 상품은 `assetClass` 로 구분합니다.\n",
+        "properties": {
+          "amount": {
+            "description": "`currency` 통화 기준 거래금액. 합산 내역은 거래금액의 합계를 제공하며, 단가가 null일 수 있으므로 단가와 수량으로 재계산하지 않습니다.\n증권 입출고(`SECURITIES_TRANSFER_IN`·`SECURITIES_TRANSFER_OUT`)는 null 입니다.\n",
+            "example": "567.36",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assetClass": {
+            "description": "거래 상품을 구분하는 값입니다. 종목과 관련된 거래(매매·입출고·배당, 채권 이자·만기·이자 세금)면 유형과 무관하게 채우고,\n종목과 관련 없는 현금 거래(은행 입출금·환전·수수료 등)는 null 입니다.\n거래 시장은 `marketCountry` 가 나타냅니다.\n",
+            "example": "STOCK",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AssetClass"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "commission": {
+            "description": "수수료. 입출고·환전을 포함한 모든 유형에서 해당 거래의 금액을 제공하며, 값이 없으면 `\"0\"`입니다.",
+            "example": "0.57",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "currency": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Currency"
+              }
+            ],
+            "description": "이 거래의 모든 금액이 표시된 통화. `KR` 거래는 `KRW`, `US` 거래는 `USD`",
+            "example": "USD"
+          },
+          "exchangeRate": {
+            "description": "해당 거래의 환율 (1 USD당 KRW). `currency`가 `USD`인 결제 완료 거래에 제공하며, 값이 없으면 null입니다. 증권 입출고는 null입니다.\n미결제는 상품과 무관하게 null입니다. `KRW` 거래는 환전을 포함해 null입니다.\n환전 한 건의 환율은 `USD` 쪽 거래에서 확인합니다.\n",
+            "example": "1386.00",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "filledPrice": {
+            "description": "매매 단가. `BUY`·`SELL`에 제공하며 그 외는 null입니다.\n국내주식 미결제(주문일·종목·매매방향별 합산)와 미국 주식 미결제(주문별 체결 누계)는 null 입니다.\n국내주식 결제 완료 내역과 미국 옵션·채권은 해당 내역의 체결단가를 제공합니다. 미국 주식 결제 완료 내역은 주문별 평균 체결단가를 제공합니다.\n단가를 확인할 수 없으면 null입니다. 거래내역 한 건이 개별 체결 한 건을 의미하지는 않습니다.\n옵션은 주당 프리미엄이며 1계약 = 100주이므로 `amount = filledPrice × quantity × 100` 입니다.\n채권은 경과이자를 포함한 채권 1개당 달러 가격입니다. 액면 100 기준 호가가 아니며, `amount = filledPrice × quantity` 입니다.\n",
+            "example": "189.12",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isCancellation": {
+            "description": "국내 거래의 취소 여부. true이면 거래를 취소한 내역이며, 원거래는 목록에서 제외됩니다.\n취소 내역의 거래 유형은 원래 유형을 유지합니다. 입금(`DEPOSIT`) 취소는 계좌에서 금액이 빠져나가며, 출금(`WITHDRAWAL`) 취소는 계좌로 금액이 돌아옵니다.\n거래를 취소하는 대신 반대 방향의 새 거래로 처리한 경우에는 false이며, 기존 거래와 새 거래가 함께 조회됩니다.\n모든 취소 방식을 나타내는 값은 아닙니다.\n",
+            "example": false,
+            "type": "boolean"
+          },
+          "isinCode": {
+            "description": "국제증권식별번호 (ISO 6166). 주식·채권 거래에 채웁니다. 옵션은 ISIN 이 없고 현금 거래는 종목이 없어 null 입니다.\n거래 시점의 ISIN 이므로, 국내 종목의 액면분할·병합 이후에는 `GET /api/v1/stocks/{symbol}` 의 현재 값과 다를 수 있습니다.\n채권은 `symbol` 이 없어 이 값이 유일한 식별자입니다.\n",
+            "example": "US0378331005",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "marketCountry": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MarketCountry"
+              }
+            ],
+            "description": "거래가 속한 시장.\n종목 거래는 거래된 시장입니다. 현금·환전 거래는 통화가 `KRW`이면 `KR`, `USD`이면 `US`입니다.\n환전 한 건은 `KR` 거래와 `US` 거래, 두 건으로 나뉩니다.\n",
+            "example": "US"
+          },
+          "netAmount": {
+            "description": "수수료와 세금을 반영한 정산 금액입니다. 결제 완료 내역은 정산된 금액이며, 미결제 내역은 결제 전에 계산된 금액입니다.\n부호 없이 절대값으로 제공합니다. 취소 여부에 따른 금액 방향은 `isCancellation` 설명을 참고하세요.\n상품별 정산 규칙과 반올림 때문에 `amount`·`commission`·`tax`로 직접 계산한 값과 다를 수 있으므로, 계산하지 말고 이 값을 사용합니다.\n예수금 변동과 같지 않을 수 있습니다.\n증권 입출고(`SECURITIES_TRANSFER_IN`·`SECURITIES_TRANSFER_OUT`)는 null 입니다.\n\n일반 거래(`isCancellation=false`)의 현금 방향은 다음과 같습니다.\n- 유입: `SELL`, `DEPOSIT`, `EXCHANGE_IN`, `DIVIDEND`, `INTEREST`\n- 유출: `BUY`, `WITHDRAWAL`, `EXCHANGE_OUT`, `FEE`\n",
+            "example": "567.93",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "description": "수량. `BUY`·`SELL`·`SECURITIES_TRANSFER_IN`·`SECURITIES_TRANSFER_OUT` 에 제공하며 그 외는 null 입니다.\n옵션은 계약 수, 채권은 채권 개수입니다.\n`DIVIDEND` 는 null 입니다. 주식배당은 `SECURITIES_TRANSFER_IN` 으로 나오며 수량이 있습니다.\n",
+            "example": "3",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "settled": {
+            "description": "결제 완료 여부. 미결제는 false이며, 예상 결제일이 오늘 또는 과거여도 미결제일 수 있습니다.",
+            "example": true,
+            "type": "boolean"
+          },
+          "settlementDate": {
+            "description": "KST 기준 결제일 (YYYY-MM-DD). 모든 거래에 제공합니다.\n결제된 매매는 결제일, 그 외 결제 완료 내역은 거래가 처리된 날짜이며 미결제 거래는 예상 결제일입니다. 미국 거래는 현지 결제일과 다를 수 있습니다.\n결제 여부는 날짜가 미래인지로 추정하지 말고 `settled`로 확인합니다.\n미결제 상태로 나오는 거래는 매매(`BUY`·`SELL`)뿐이며, 입출금·환전·배당·이자 등은 항상 결제된 상태로 조회됩니다.\n",
+            "example": "2026-09-18",
+            "format": "date",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "종목 심볼. 주식·옵션 거래에 제공하며, 주식 심볼을 확인할 수 없으면 null입니다.\n- 주식(`assetClass=STOCK`): `GET /api/v1/stocks/{symbol}` 등 다른 API 에 그대로 쓸 수 있는 심볼 (KRX 6자리 종목코드, US 티커)\n- 옵션(`assetClass=OPTION`): OCC 옵션 심볼 (기초자산 + 만기 `YYMMDD` + `C`/`P` + 행사가 8자리, 예 `AAPL261218C00150000`).\n  옵션 계약 식별자이므로 다른 API 의 `symbol` 로 넣을 수 없습니다. `assetClass` 를 먼저 확인하세요.\n- 채권(`assetClass=BOND`): 심볼이 없어 null. `isinCode` 로 식별합니다.\n- 현금 거래(`assetClass` 가 null): null\n",
+            "example": "AAPL",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tax": {
+            "description": "해당 거래에 기록된 세금 합계. 값이 없으면 `\"0\"`입니다. 미국 채권 이자 입금의 세금은 `\"0\"`이며, 별도로 출금되는 원화 세금은 `WITHDRAWAL` 거래로 제공합니다. 이 경우 `amount`와 `tax`에 같은 세액이 표시될 수 있으며, `amount`에서 `tax`를 다시 차감하지 않습니다.",
+            "example": "0",
+            "format": "decimal",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "transactionTime": {
+            "description": "결제 완료 내역의 거래 처리일시(KST, +09:00). 매매는 결제 처리시각이며 주문시각이나 체결시각이 아닙니다.\n국내 취소거래는 취소 시점입니다. 미결제는 null입니다.\n조회 기간은 이 시각이 아닌 settlementDate 기준입니다.\n",
+            "example": "2026-10-16T06:30:00+09:00",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transactionType": {
+            "$ref": "#/components/schemas/TransactionType"
+          }
+        },
+        "required": [
+          "transactionType",
+          "marketCountry",
+          "currency",
+          "symbol",
+          "assetClass",
+          "isinCode",
+          "quantity",
+          "filledPrice",
+          "amount",
+          "commission",
+          "tax",
+          "netAmount",
+          "exchangeRate",
+          "settlementDate",
+          "settled",
+          "transactionTime",
+          "isCancellation"
+        ],
+        "type": "object"
+      },
+      "TransactionType": {
+        "description": "거래 유형. 요청 `transactionTypes` 와 같은 값 체계입니다.\n매수·매도는 미결제와 결제 완료 내역을 모두 포함하며, 결제 완료 여부는 `settled`로 구분합니다.\n- `BUY`: 매수\n- `SELL`: 매도\n- `SECURITIES_TRANSFER_IN`: 증권 입고 (타사 이관, 주식배당 등)\n- `SECURITIES_TRANSFER_OUT`: 증권 출고 (타사 이관, 옵션 만기 청산 등)\n- `DEPOSIT`: 현금 입금 (은행 이체, 채권 만기 원리금 등)\n- `WITHDRAWAL`: 현금 출금 (은행 이체, 채권 이자 세금 등)\n- `EXCHANGE_IN`: 환전으로 받은 통화의 입금\n- `EXCHANGE_OUT`: 환전으로 낸 통화의 출금\n- `DIVIDEND`: 배당금 입금\n- `INTEREST`: 이자 입금 (예탁금이용료, 채권 이자)\n- `FEE`: 수수료 출금(외화보관수수료 등). 매매 수수료는 별도 거래가 아닌 매매 거래의 `commission`에 포함됩니다.\n\n옵션·채권 거래도 위 유형으로 나오며 상품은 `assetClass` 로 구분합니다.\n\n클라이언트는 unknown enum 값을 허용하도록 구현해야 합니다.\n",
+        "enum": [
+          "BUY",
+          "SELL",
+          "SECURITIES_TRANSFER_IN",
+          "SECURITIES_TRANSFER_OUT",
+          "DEPOSIT",
+          "WITHDRAWAL",
+          "EXCHANGE_IN",
+          "EXCHANGE_OUT",
+          "DIVIDEND",
+          "INTEREST",
+          "FEE"
+        ],
+        "example": "BUY",
+        "type": "string"
       },
       "UsAfterMarketSession": {
         "description": "애프터마켓 세션",

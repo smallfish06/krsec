@@ -253,8 +253,8 @@ func runKiwoomAccount(results *[]smokeResult, acc config.AccountConfig, tm token
 
 func runLSAccount(results *[]smokeResult, acc config.AccountConfig, tm tokencache.Manager) {
 	a := pkgls.NewAdapterWithOptions(acc.Sandbox, acc.AccountID, pkgls.Options{
-		Options:    pkgadapter.Options{TokenManager: tm},
-		MACAddress: acc.MACAddress,
+		TokenManager: tm,
+		MACAddress:   acc.MACAddress,
 	})
 	creds := broker.Credentials{AppKey: acc.AppKey, AppSecret: acc.AppSecret}
 

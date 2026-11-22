@@ -18,7 +18,6 @@ func TestNewEndpointDispatcher_IncludesRequiredKISRoutes(t *testing.T) {
 	required := []string{
 		kis.PathDomesticStockInquireDailyItemChartPrice,
 		kis.PathDomesticStockTradingInquirePsblRvseCncl,
-		kis.PathDomesticStockFinancialRatio,
 		kis.PathDomesticStockDividend,
 		kis.PathDomesticBondInquirePrice,
 		"/uapi/domestic-bond/v1/quotations/inquire-daily-price",

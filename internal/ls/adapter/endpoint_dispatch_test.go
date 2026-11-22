@@ -183,7 +183,7 @@ func TestAdapterCallEndpoint_RejectsWebSocketTRForRESTDispatch(t *testing.T) {
 	t.Parallel()
 
 	a := NewAdapterWithOptions(false, "ls-main", &testTokenManager{}, "", nil, t.TempDir())
-	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/websocket/overseas-stock", internalls.TRRealtimeOverseasTrade, map[string]any{})
+	_, err := a.CallEndpoint(context.Background(), http.MethodPost, "/websocket", internalls.TRRealtimeOverseasTrade, map[string]any{})
 	if err == nil {
 		t.Fatal("expected websocket rejection, got nil")
 	}

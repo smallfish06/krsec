@@ -154,7 +154,7 @@ func TestOHLCVRejectsInvalidInputBeforeDispatch(t *testing.T) {
 
 func historyFixture(overseas bool, end time.Time, count int) map[string]any {
 	rows := make([]map[string]string, 0, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		date := end.AddDate(0, 0, -i).Format("20060102")
 		if overseas {
 			rows = append(rows, map[string]string{"xymd": date, "open": "100", "high": "105", "low": "99", "clos": "104", "tvol": "1000"})

@@ -282,7 +282,8 @@ make toss-spec-refresh   # Toss OpenAPI snapshot 갱신 + generated 파일 재�
 
 - LS 문서 스펙은 `pkg/ls/specs/documented_endpoints.json` snapshot으로 버전 관리합니다.
 - 런타임은 웹사이트를 조회하지 않고, snapshot에서 생성된 코드만 사용합니다.
-- `cmd/ls-specgen`은 LS 공식 API 가이드의 REST/WEBSOCKET TR 목록과 request/response field 속성을 수집합니다.
+- `cmd/ls-specgen`은 LS 공식 API 가이드 원본 파일(`tr-guides.json`)에서 REST/WEBSOCKET TR 목록과 request/response field 속성을 생성합니다.
+- LS 가이드는 실시간 TR을 모두 `/websocket` 한 경로로 문서화합니다. 실시간 spec 조회 키도 `/websocket|<tr_cd>`입니다.
 - CI는 `make ls-spec-check`로 generated 파일 drift를 차단합니다.
 
 ### Toss spec 관리
