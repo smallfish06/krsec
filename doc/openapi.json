@@ -3778,12 +3778,6 @@
 			},
 			"KISDomesticFutureoptionV1TradingInquireBalanceOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"cblc_qty": {
 						"type": "string"
 					},
@@ -3828,8 +3822,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"cblc_qty",
 					"ccld_avg_unpr1",
 					"evlu_amt",
@@ -4216,12 +4208,6 @@
 			},
 			"KISDomesticFutureoptionV1TradingInquireBalanceValuationPlOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"cblc_qty1": {
 						"type": "string"
 					},
@@ -4266,8 +4252,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"cblc_qty1",
 					"ccld_avg_unpr1",
 					"evlu_amt",
@@ -4620,16 +4604,7 @@
 			},
 			"KISDomesticFutureoptionV1TradingInquireCcnlOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
 					"avg_idx": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
-					"csac_name": {
 						"type": "string"
 					},
 					"ingr_trad_rjct_rson_cd": {
@@ -4703,10 +4678,7 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
 					"avg_idx",
-					"cano",
-					"csac_name",
 					"ingr_trad_rjct_rson_cd",
 					"ingr_trad_rjct_rson_name",
 					"nmpr_type_cd",
@@ -5233,12 +5205,6 @@
 			},
 			"KISDomesticFutureoptionV1TradingInquireNgtBalanceOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"cblc_qty": {
 						"type": "string"
 					},
@@ -5289,8 +5255,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"cblc_qty",
 					"ccld_avg_unpr1",
 					"evlu_amt",
@@ -5520,16 +5484,7 @@
 			},
 			"KISDomesticFutureoptionV1TradingInquireNgtCcnlOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
 					"avg_idx": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
-					"csac_name": {
 						"type": "string"
 					},
 					"ingr_trad_rjct_rson_cd": {
@@ -5600,10 +5555,7 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
 					"avg_idx",
-					"cano",
-					"csac_name",
 					"ingr_trad_rjct_rson_cd",
 					"ingr_trad_rjct_rson_name",
 					"nmpr_type_name",
@@ -6259,579 +6211,6 @@
 					"RMN_QTY_YN",
 					"RVSE_CNCL_DVSN_CD",
 					"UNIT_PRICE"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceBalanceSheet": {
-				"description": "KISDomesticStockV1FinanceBalanceSheet schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceBalanceSheetOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceBalanceSheetOutputItem": {
-				"properties": {
-					"cfp_surp": {
-						"type": "string"
-					},
-					"cpfn": {
-						"type": "string"
-					},
-					"cras": {
-						"type": "string"
-					},
-					"fix_lblt": {
-						"type": "string"
-					},
-					"flow_lblt": {
-						"type": "string"
-					},
-					"fxas": {
-						"type": "string"
-					},
-					"prfi_surp": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					},
-					"total_aset": {
-						"type": "string"
-					},
-					"total_cptl": {
-						"type": "string"
-					},
-					"total_lblt": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"cfp_surp",
-					"cpfn",
-					"cras",
-					"fix_lblt",
-					"flow_lblt",
-					"fxas",
-					"prfi_surp",
-					"stac_yymm",
-					"total_aset",
-					"total_cptl",
-					"total_lblt"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceBalanceSheetRequest": {
-				"description": "KISDomesticStockV1FinanceBalanceSheetRequest schema",
-				"properties": {
-					"FID_DIV_CLS_CODE": {
-						"type": "string"
-					},
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"FID_DIV_CLS_CODE",
-					"fid_cond_mrkt_div_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceFinancialRatio": {
-				"description": "KISDomesticStockV1FinanceFinancialRatio schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceFinancialRatioOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceFinancialRatioOutputItem": {
-				"properties": {
-					"bps": {
-						"type": "string"
-					},
-					"bsop_prfi_inrt": {
-						"type": "string"
-					},
-					"eps": {
-						"type": "string"
-					},
-					"grs": {
-						"type": "string"
-					},
-					"lblt_rate": {
-						"type": "string"
-					},
-					"ntin_inrt": {
-						"type": "string"
-					},
-					"roe_val": {
-						"type": "string"
-					},
-					"rsrv_rate": {
-						"type": "string"
-					},
-					"sps": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"bps",
-					"bsop_prfi_inrt",
-					"eps",
-					"grs",
-					"lblt_rate",
-					"ntin_inrt",
-					"roe_val",
-					"rsrv_rate",
-					"sps",
-					"stac_yymm"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceFinancialRatioRequest": {
-				"description": "KISDomesticStockV1FinanceFinancialRatioRequest schema",
-				"properties": {
-					"FID_DIV_CLS_CODE": {
-						"type": "string"
-					},
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"FID_DIV_CLS_CODE",
-					"fid_cond_mrkt_div_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceGrowthRatio": {
-				"description": "KISDomesticStockV1FinanceGrowthRatio schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceGrowthRatioOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceGrowthRatioOutputItem": {
-				"properties": {
-					"bsop_prfi_inrt": {
-						"type": "string"
-					},
-					"equt_inrt": {
-						"type": "string"
-					},
-					"grs": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					},
-					"totl_aset_inrt": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"bsop_prfi_inrt",
-					"equt_inrt",
-					"grs",
-					"stac_yymm",
-					"totl_aset_inrt"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceGrowthRatioRequest": {
-				"description": "KISDomesticStockV1FinanceGrowthRatioRequest schema",
-				"properties": {
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_div_cls_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"fid_cond_mrkt_div_code",
-					"fid_div_cls_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceIncomeStatement": {
-				"description": "KISDomesticStockV1FinanceIncomeStatement schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceIncomeStatementOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceIncomeStatementOutputItem": {
-				"properties": {
-					"bsop_non_ernn": {
-						"type": "string"
-					},
-					"bsop_non_expn": {
-						"type": "string"
-					},
-					"bsop_prti": {
-						"type": "string"
-					},
-					"depr_cost": {
-						"type": "string"
-					},
-					"op_prfi": {
-						"type": "string"
-					},
-					"sale_account": {
-						"type": "string"
-					},
-					"sale_cost": {
-						"type": "string"
-					},
-					"sale_totl_prfi": {
-						"type": "string"
-					},
-					"sell_mang": {
-						"type": "string"
-					},
-					"spec_loss": {
-						"type": "string"
-					},
-					"spec_prfi": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					},
-					"thtr_ntin": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"bsop_non_ernn",
-					"bsop_non_expn",
-					"bsop_prti",
-					"depr_cost",
-					"op_prfi",
-					"sale_account",
-					"sale_cost",
-					"sale_totl_prfi",
-					"sell_mang",
-					"spec_loss",
-					"spec_prfi",
-					"stac_yymm",
-					"thtr_ntin"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceIncomeStatementRequest": {
-				"description": "KISDomesticStockV1FinanceIncomeStatementRequest schema",
-				"properties": {
-					"FID_DIV_CLS_CODE": {
-						"type": "string"
-					},
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"FID_DIV_CLS_CODE",
-					"fid_cond_mrkt_div_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceOtherMajorRatios": {
-				"description": "KISDomesticStockV1FinanceOtherMajorRatios schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceOtherMajorRatiosOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceOtherMajorRatiosOutputItem": {
-				"properties": {
-					"ebitda": {
-						"type": "string"
-					},
-					"ev_ebitda": {
-						"type": "string"
-					},
-					"eva": {
-						"type": "string"
-					},
-					"payout_rate": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"ebitda",
-					"ev_ebitda",
-					"eva",
-					"payout_rate",
-					"stac_yymm"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceOtherMajorRatiosRequest": {
-				"description": "KISDomesticStockV1FinanceOtherMajorRatiosRequest schema",
-				"properties": {
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_div_cls_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"fid_cond_mrkt_div_code",
-					"fid_div_cls_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceProfitRatio": {
-				"description": "KISDomesticStockV1FinanceProfitRatio schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceProfitRatioOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceProfitRatioOutputItem": {
-				"properties": {
-					"cptl_ntin_rate": {
-						"type": "string"
-					},
-					"sale_ntin_rate": {
-						"type": "string"
-					},
-					"sale_totl_rate": {
-						"type": "string"
-					},
-					"self_cptl_ntin_inrt": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"cptl_ntin_rate",
-					"sale_ntin_rate",
-					"sale_totl_rate",
-					"self_cptl_ntin_inrt",
-					"stac_yymm"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceProfitRatioRequest": {
-				"description": "KISDomesticStockV1FinanceProfitRatioRequest schema",
-				"properties": {
-					"FID_DIV_CLS_CODE": {
-						"type": "string"
-					},
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"FID_DIV_CLS_CODE",
-					"fid_cond_mrkt_div_code",
-					"fid_input_iscd"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceStabilityRatio": {
-				"description": "KISDomesticStockV1FinanceStabilityRatio schema",
-				"properties": {
-					"msg1": {
-						"type": "string"
-					},
-					"msg_cd": {
-						"type": "string"
-					},
-					"output": {
-						"items": {
-							"$ref": "#/components/schemas/KISDomesticStockV1FinanceStabilityRatioOutputItem"
-						},
-						"type": [
-							"array",
-							"null"
-						]
-					},
-					"rt_cd": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceStabilityRatioOutputItem": {
-				"properties": {
-					"bram_depn": {
-						"type": "string"
-					},
-					"crnt_rate": {
-						"type": "string"
-					},
-					"lblt_rate": {
-						"type": "string"
-					},
-					"quck_rate": {
-						"type": "string"
-					},
-					"stac_yymm": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"bram_depn",
-					"crnt_rate",
-					"lblt_rate",
-					"quck_rate",
-					"stac_yymm"
-				],
-				"type": "object"
-			},
-			"KISDomesticStockV1FinanceStabilityRatioRequest": {
-				"description": "KISDomesticStockV1FinanceStabilityRatioRequest schema",
-				"properties": {
-					"fid_cond_mrkt_div_code": {
-						"type": "string"
-					},
-					"fid_div_cls_code": {
-						"type": "string"
-					},
-					"fid_input_iscd": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"fid_cond_mrkt_div_code",
-					"fid_div_cls_code",
-					"fid_input_iscd"
 				],
 				"type": "object"
 			},
@@ -8841,15 +8220,6 @@
 			},
 			"KISDomesticStockV1QuotationsCompProgramTradeTodayOutput1Item": {
 				"properties": {
-					"arbt_smtm_ntby_tr_pbmn_rate": {
-						"type": "string"
-					},
-					"arbt_smtm_seln_tr_pbmn_rate": {
-						"type": "string"
-					},
-					"arbt_smtm_shun_tr_pbmn_rate": {
-						"type": "string"
-					},
 					"arbt_smtn_ntby_tr_pbmn": {
 						"type": "string"
 					},
@@ -8868,15 +8238,6 @@
 					"bstp_nmix_prpr": {
 						"type": "string"
 					},
-					"nabt_smtm_ntby_tr_pbmn_rate": {
-						"type": "string"
-					},
-					"nabt_smtm_seln_tr_pbmn_rate": {
-						"type": "string"
-					},
-					"nabt_smtm_shun_tr_pbmn_rate": {
-						"type": "string"
-					},
 					"nabt_smtn_ntby_tr_pbmn": {
 						"type": "string"
 					},
@@ -8889,31 +8250,21 @@
 					"prdy_vrss_sign": {
 						"type": "string"
 					},
-					"whol_ntby_tr_pbmn_rate": {
-						"type": "string"
-					},
 					"whol_smtn_ntby_tr_pbmn": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"arbt_smtm_ntby_tr_pbmn_rate",
-					"arbt_smtm_seln_tr_pbmn_rate",
-					"arbt_smtm_shun_tr_pbmn_rate",
 					"arbt_smtn_ntby_tr_pbmn",
 					"arbt_smtn_seln_tr_pbmn",
 					"arbt_smtn_shnu_tr_pbmn",
 					"bsop_hour",
 					"bstp_nmix_prdy_vrss",
 					"bstp_nmix_prpr",
-					"nabt_smtm_ntby_tr_pbmn_rate",
-					"nabt_smtm_seln_tr_pbmn_rate",
-					"nabt_smtm_shun_tr_pbmn_rate",
 					"nabt_smtn_ntby_tr_pbmn",
 					"nabt_smtn_seln_tr_pbmn",
 					"nabt_smtn_shnu_tr_pbmn",
 					"prdy_vrss_sign",
-					"whol_ntby_tr_pbmn_rate",
 					"whol_smtn_ntby_tr_pbmn"
 				],
 				"type": "object"
@@ -15194,6 +14545,7 @@
 				},
 				"required": [
 					"FID_COND_MRKT_DIV_CODE",
+					"FID_FAKE_TICK_INCU_YN",
 					"FID_INPUT_DATE_1",
 					"FID_INPUT_HOUR_1",
 					"FID_INPUT_ISCD",
@@ -26066,9 +25418,6 @@
 			},
 			"KISDomesticStockV1TradingPeriodRightsOutput1Item": {
 				"properties": {
-					"acno10": {
-						"type": "string"
-					},
 					"bass_dt": {
 						"type": "string"
 					},
@@ -26155,7 +25504,6 @@
 					}
 				},
 				"required": [
-					"acno10",
 					"bass_dt",
 					"cash_dfrm_dt",
 					"cblc_qty",
@@ -33366,16 +32714,10 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquireCcldOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
 					"acnt_type_cd": {
 						"type": "string"
 					},
 					"bass_pric_type_cd": {
-						"type": "string"
-					},
-					"cano": {
 						"type": "string"
 					},
 					"ccld_cndt_cd": {
@@ -33461,10 +32803,8 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
 					"acnt_type_cd",
 					"bass_pric_type_cd",
-					"cano",
 					"ccld_cndt_cd",
 					"ccld_dtl_dtime",
 					"erlm_dtl_dtime",
@@ -33736,12 +33076,6 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquireDailyOrderOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"ccld_cndt_cd": {
 						"type": "string"
 					},
@@ -33819,8 +33153,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"ccld_cndt_cd",
 					"ccld_dtl_dtime",
 					"cplx_ord_dvsn_cd",
@@ -33923,12 +33255,6 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquireDepositOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"crcy_cd": {
 						"type": "string"
 					},
@@ -34000,8 +33326,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"crcy_cd",
 					"fm_add_mgn_amt",
 					"fm_brkg_mgn_amt",
@@ -34087,12 +33411,6 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquirePeriodCcldOutput1Item": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"crcy_cd": {
 						"type": "string"
 					},
@@ -34134,8 +33452,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"crcy_cd",
 					"fm_buy_qty",
 					"fm_fee",
@@ -34297,16 +33613,10 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquirePeriodTransOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
 					"acnt_tr_type_name": {
 						"type": "string"
 					},
 					"bass_dt": {
-						"type": "string"
-					},
-					"cano": {
 						"type": "string"
 					},
 					"crcy_cd": {
@@ -34350,10 +33660,8 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
 					"acnt_tr_type_name",
 					"bass_dt",
-					"cano",
 					"crcy_cd",
 					"fm_bf_dncl_amt",
 					"fm_dncl_amt",
@@ -34440,12 +33748,6 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquirePsamountOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"crcy_cd": {
 						"type": "string"
 					},
@@ -34472,8 +33774,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"crcy_cd",
 					"fm_lqd_psbl_qty",
 					"fm_mkpr_tot_ord_psbl_qty",
@@ -34543,12 +33843,6 @@
 			},
 			"KISOverseasFutureoptionV1TradingInquireUnpdOutputItem": {
 				"properties": {
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
-						"type": "string"
-					},
 					"crcy_cd": {
 						"type": "string"
 					},
@@ -34590,8 +33884,6 @@
 					}
 				},
 				"required": [
-					"acnt_prdt_cd",
-					"cano",
 					"crcy_cd",
 					"ecis_rsvn_ord_yn",
 					"fm_ccld_avg_pric",
@@ -34663,12 +33955,6 @@
 			"KISOverseasFutureoptionV1TradingMarginDetailOutputItem": {
 				"properties": {
 					"acnt_net_risk_mgna_aply_yn": {
-						"type": "string"
-					},
-					"acnt_prdt_cd": {
-						"type": "string"
-					},
-					"cano": {
 						"type": "string"
 					},
 					"crcy_cd": {
@@ -34812,8 +34098,6 @@
 				},
 				"required": [
 					"acnt_net_risk_mgna_aply_yn",
-					"acnt_prdt_cd",
-					"cano",
 					"crcy_cd",
 					"fm_add_mgn_amt",
 					"fm_avg_dsct_mgn_amt",
@@ -38508,6 +37792,9 @@
 					"AUTH": {
 						"type": "string"
 					},
+					"CURR_GB": {
+						"type": "string"
+					},
 					"EXCD": {
 						"type": "string"
 					},
@@ -38520,6 +37807,7 @@
 				},
 				"required": [
 					"AUTH",
+					"CURR_GB",
 					"EXCD",
 					"KEYB",
 					"VOL_RANG"
@@ -46206,6 +45494,9 @@
 					"acc_trde_prica": {
 						"type": "string"
 					},
+					"acc_trde_qty": {
+						"type": "string"
+					},
 					"bank": {
 						"type": "string"
 					},
@@ -46383,6 +45674,12 @@
 					},
 					"trde_qty": {
 						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
 					}
 				},
 				"type": "object"
@@ -46425,6 +45722,9 @@
 			},
 			"KiwoomApiDostkChartKa10080ResponseItem": {
 				"properties": {
+					"acc_trde_qty": {
+						"type": "string"
+					},
 					"cntr_tm": {
 						"type": "string"
 					},
@@ -46447,6 +45747,12 @@
 						"type": "string"
 					},
 					"trde_qty": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
 						"type": "string"
 					}
 				},
@@ -46516,6 +45822,12 @@
 					},
 					"trde_tern_rt": {
 						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
 					}
 				},
 				"type": "object"
@@ -46583,6 +45895,12 @@
 						"type": "string"
 					},
 					"trde_tern_rt": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
 						"type": "string"
 					}
 				},
@@ -46652,6 +45970,12 @@
 					},
 					"trde_tern_rt": {
 						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
 					}
 				},
 				"type": "object"
@@ -46710,6 +46034,444 @@
 						"type": "string"
 					},
 					"trde_qty": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11079Request": {
+				"description": "KiwoomApiDostkChartKa11079Request schema",
+				"properties": {
+					"stk_cd": {
+						"type": "string"
+					},
+					"tic_scope": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11079Response": {
+				"description": "KiwoomApiDostkChartKa11079Response schema",
+				"properties": {
+					"last_tic_cnt": {
+						"type": "string"
+					},
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11079ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11079ResponseItem": {
+				"properties": {
+					"cntr_tm": {
+						"type": "string"
+					},
+					"cur_prc": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11080Request": {
+				"description": "KiwoomApiDostkChartKa11080Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"tic_scope": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11080Response": {
+				"description": "KiwoomApiDostkChartKa11080Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11080ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11080ResponseItem": {
+				"properties": {
+					"acc_trde_qty": {
+						"type": "string"
+					},
+					"cntr_tm": {
+						"type": "string"
+					},
+					"cur_prc": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11081Request": {
+				"description": "KiwoomApiDostkChartKa11081Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11081Response": {
+				"description": "KiwoomApiDostkChartKa11081Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11081ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11081ResponseItem": {
+				"properties": {
+					"cur_prc": {
+						"type": "string"
+					},
+					"dt": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"trde_tern_rt": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11082Request": {
+				"description": "KiwoomApiDostkChartKa11082Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11082Response": {
+				"description": "KiwoomApiDostkChartKa11082Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11082ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11082ResponseItem": {
+				"properties": {
+					"cur_prc": {
+						"type": "string"
+					},
+					"dt": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"trde_tern_rt": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11083Request": {
+				"description": "KiwoomApiDostkChartKa11083Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11083Response": {
+				"description": "KiwoomApiDostkChartKa11083Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11083ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11083ResponseItem": {
+				"properties": {
+					"cur_prc": {
+						"type": "string"
+					},
+					"dt": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"trde_tern_rt": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11094Request": {
+				"description": "KiwoomApiDostkChartKa11094Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11094Response": {
+				"description": "KiwoomApiDostkChartKa11094Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkChartKa11094ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkChartKa11094ResponseItem": {
+				"properties": {
+					"cur_prc": {
+						"type": "string"
+					},
+					"dt": {
+						"type": "string"
+					},
+					"high_pric": {
+						"type": "string"
+					},
+					"low_pric": {
+						"type": "string"
+					},
+					"open_pric": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					},
+					"upd_rt": {
+						"type": "string"
+					},
+					"upd_stkpc_tp": {
 						"type": "string"
 					}
 				},
@@ -49175,6 +48937,550 @@
 						"type": "string"
 					},
 					"trde_qty": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKa14640Request": {
+				"description": "KiwoomApiDostkFracKa14640Request schema",
+				"properties": {
+					"mrkt_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKa14640Response": {
+				"description": "KiwoomApiDostkFracKa14640Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkFracKa14640ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKa14640ResponseItem": {
+				"properties": {
+					"cur_prc": {
+						"type": "string"
+					},
+					"flu_rt": {
+						"type": "string"
+					},
+					"jm_sosuyn": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14401Request": {
+				"description": "KiwoomApiDostkFracKt14401Request schema",
+				"properties": {
+					"ord_amt": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14401Response": {
+				"description": "KiwoomApiDostkFracKt14401Response schema",
+				"properties": {
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_exct_dt": {
+						"type": "string"
+					},
+					"ord_rqst_no": {
+						"type": "string"
+					},
+					"ord_time_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14402Request": {
+				"description": "KiwoomApiDostkFracKt14402Request schema",
+				"properties": {
+					"ord_qty": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14402Response": {
+				"description": "KiwoomApiDostkFracKt14402Response schema",
+				"properties": {
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_exct_dt": {
+						"type": "string"
+					},
+					"ord_rqst_no": {
+						"type": "string"
+					},
+					"ord_time_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14403Request": {
+				"description": "KiwoomApiDostkFracKt14403Request schema",
+				"properties": {
+					"ord_exct_dt": {
+						"type": "string"
+					},
+					"ord_rqst_no": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14403Response": {
+				"description": "KiwoomApiDostkFracKt14403Response schema",
+				"properties": {
+					"filler": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14404Request": {
+				"description": "KiwoomApiDostkFracKt14404Request schema",
+				"properties": {
+					"cncl_yn": {
+						"type": "string"
+					},
+					"cntr_yn": {
+						"type": "string"
+					},
+					"dcpn_proc_tp": {
+						"type": "string"
+					},
+					"fr_ord_dt": {
+						"type": "string"
+					},
+					"mrkt_deal_tp": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"to_ord_dt": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14404Response": {
+				"description": "KiwoomApiDostkFracKt14404Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkFracKt14404ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14404ResponseItem": {
+				"properties": {
+					"cmsn": {
+						"type": "string"
+					},
+					"cncl_yn": {
+						"type": "string"
+					},
+					"cncl_yn_nm": {
+						"type": "string"
+					},
+					"cntr_amt": {
+						"type": "string"
+					},
+					"cntr_dt": {
+						"type": "string"
+					},
+					"cntr_qty": {
+						"type": "string"
+					},
+					"cntr_time": {
+						"type": "string"
+					},
+					"cntr_uv": {
+						"type": "string"
+					},
+					"dcpn_proc_yn": {
+						"type": "string"
+					},
+					"dcpn_proc_yn_nm": {
+						"type": "string"
+					},
+					"ord_amt": {
+						"type": "string"
+					},
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_exct_time": {
+						"type": "string"
+					},
+					"ord_no": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_time": {
+						"type": "string"
+					},
+					"ord_time_tp": {
+						"type": "string"
+					},
+					"proc_cntn": {
+						"type": "string"
+					},
+					"rqst_base_pric": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"slby_tp_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"tax": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14405Request": {
+				"description": "KiwoomApiDostkFracKt14405Request schema",
+				"properties": {
+					"slby_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14405Response": {
+				"description": "KiwoomApiDostkFracKt14405Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkFracKt14405ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14405ResponseItem": {
+				"properties": {
+					"dcpn_proc_tp": {
+						"type": "string"
+					},
+					"ord_amt": {
+						"type": "string"
+					},
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_exct_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_rqst_no": {
+						"type": "string"
+					},
+					"ord_time": {
+						"type": "string"
+					},
+					"ord_time_tp": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"proc_cntn": {
+						"type": "string"
+					},
+					"proc_tp_nm": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"slby_tp_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14406Request": {
+				"description": "KiwoomApiDostkFracKt14406Request schema",
+				"properties": {
+					"slby_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14406Response": {
+				"description": "KiwoomApiDostkFracKt14406Response schema",
+				"properties": {
+					"buy_alowa": {
+						"type": "string"
+					},
+					"sell_alowq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14407Request": {
+				"description": "KiwoomApiDostkFracKt14407Request schema",
+				"properties": {
+					"qry_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14407Response": {
+				"description": "KiwoomApiDostkFracKt14407Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkFracKt14407ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					},
+					"tot_book_amt2": {
+						"type": "string"
+					},
+					"tot_est_amt": {
+						"type": "string"
+					},
+					"tot_lspft": {
+						"type": "string"
+					},
+					"tot_lspft_ratio": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14407ResponseItem": {
+				"properties": {
+					"avg_prc": {
+						"type": "string"
+					},
+					"book_amt2": {
+						"type": "string"
+					},
+					"cmsn": {
+						"type": "string"
+					},
+					"cnvt_frcs_qty": {
+						"type": "string"
+					},
+					"cur_prc": {
+						"type": "string"
+					},
+					"est_amt": {
+						"type": "string"
+					},
+					"est_lspft": {
+						"type": "string"
+					},
+					"est_ratio": {
+						"type": "string"
+					},
+					"pl_prch_prc": {
+						"type": "string"
+					},
+					"pred_buyq": {
+						"type": "string"
+					},
+					"pred_net_trde_qty": {
+						"type": "string"
+					},
+					"pred_sellq": {
+						"type": "string"
+					},
+					"qty": {
+						"type": "string"
+					},
+					"real_qty": {
+						"type": "string"
+					},
+					"sell_alowq": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"tax": {
+						"type": "string"
+					},
+					"tdy_buyq": {
+						"type": "string"
+					},
+					"tdy_net_trde_qty": {
+						"type": "string"
+					},
+					"tdy_sellq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14430Request": {
+				"description": "KiwoomApiDostkFracKt14430Request schema",
+				"properties": {
+					"qry_fr_dt": {
+						"type": "string"
+					},
+					"qry_to_dt": {
+						"type": "string"
+					},
+					"stat_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14430Response": {
+				"description": "KiwoomApiDostkFracKt14430Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkFracKt14430ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14430ResponseItem": {
+				"properties": {
+					"cnvt_dt": {
+						"type": "string"
+					},
+					"cnvt_rqst_qty": {
+						"type": "string"
+					},
+					"cnvt_time": {
+						"type": "string"
+					},
+					"rqst_dt": {
+						"type": "string"
+					},
+					"rqst_time": {
+						"type": "string"
+					},
+					"seq": {
+						"type": "string"
+					},
+					"stat_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14641Request": {
+				"description": "KiwoomApiDostkFracKt14641Request schema",
+				"properties": {
+					"stk_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkFracKt14641Response": {
+				"description": "KiwoomApiDostkFracKt14641Response schema",
+				"properties": {
+					"dcpn_ord_alow_yn": {
 						"type": "string"
 					}
 				},
@@ -51662,6 +51968,439 @@
 				},
 				"type": "object"
 			},
+			"KiwoomApiDostkOrdrKt03311Request": {
+				"description": "KiwoomApiDostkOrdrKt03311Request schema",
+				"properties": {
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03311Response": {
+				"description": "KiwoomApiDostkOrdrKt03311Response schema",
+				"properties": {
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03312Request": {
+				"description": "KiwoomApiDostkOrdrKt03312Request schema",
+				"properties": {
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03312Response": {
+				"description": "KiwoomApiDostkOrdrKt03312Response schema",
+				"properties": {
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03313Request": {
+				"description": "KiwoomApiDostkOrdrKt03313Request schema",
+				"properties": {
+					"ord_dt": {
+						"type": "string"
+					},
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03313Response": {
+				"description": "KiwoomApiDostkOrdrKt03313Response schema"
+			},
+			"KiwoomApiDostkOrdrKt03315Request": {
+				"description": "KiwoomApiDostkOrdrKt03315Request schema",
+				"properties": {
+					"crd_deal_tp": {
+						"type": "string"
+					},
+					"crd_loan_dt": {
+						"type": "string"
+					},
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03315Response": {
+				"description": "KiwoomApiDostkOrdrKt03315Response schema",
+				"properties": {
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03316Request": {
+				"description": "KiwoomApiDostkOrdrKt03316Request schema",
+				"properties": {
+					"crd_deal_tp": {
+						"type": "string"
+					},
+					"crd_loan_dt": {
+						"type": "string"
+					},
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03316Response": {
+				"description": "KiwoomApiDostkOrdrKt03316Response schema",
+				"properties": {
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03317Request": {
+				"description": "KiwoomApiDostkOrdrKt03317Request schema",
+				"properties": {
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"ord_dt": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03317Response": {
+				"description": "KiwoomApiDostkOrdrKt03317Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03317ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03317ResponseItem": {
+				"properties": {
+					"accm_cntr_qty": {
+						"type": "string"
+					},
+					"auto_abnd_dt": {
+						"type": "string"
+					},
+					"auto_abnd_yn": {
+						"type": "string"
+					},
+					"crd_deal_tp": {
+						"type": "string"
+					},
+					"crd_deal_tp_nm": {
+						"type": "string"
+					},
+					"crd_loan_dt": {
+						"type": "string"
+					},
+					"dmst_stex_tp_nm": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"inpt_dt": {
+						"type": "string"
+					},
+					"inpt_time": {
+						"type": "string"
+					},
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_no": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"orig_ord_qty": {
+						"type": "string"
+					},
+					"proc_cntn": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_ord_tp_nm": {
+						"type": "string"
+					},
+					"rsrv_rgst_dt": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"slby_tp_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					},
+					"trde_tp_nm": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03318Request": {
+				"description": "KiwoomApiDostkOrdrKt03318Request schema",
+				"properties": {
+					"base_dt": {
+						"type": "string"
+					},
+					"base_dt_tp": {
+						"type": "string"
+					},
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"qry_tp": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03318Response": {
+				"description": "KiwoomApiDostkOrdrKt03318Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03318ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkOrdrKt03318ResponseItem": {
+				"properties": {
+					"abnd_work_time": {
+						"type": "string"
+					},
+					"accm_cntr_qty": {
+						"type": "string"
+					},
+					"crd_deal_tp": {
+						"type": "string"
+					},
+					"crd_deal_tp_nm": {
+						"type": "string"
+					},
+					"crd_loan_dt": {
+						"type": "string"
+					},
+					"dmst_stex_tp": {
+						"type": "string"
+					},
+					"end_dt": {
+						"type": "string"
+					},
+					"ord_dt": {
+						"type": "string"
+					},
+					"ord_qty": {
+						"type": "string"
+					},
+					"ord_uv": {
+						"type": "string"
+					},
+					"orig_ord_qty": {
+						"type": "string"
+					},
+					"orig_ord_uv": {
+						"type": "string"
+					},
+					"proc_cntn": {
+						"type": "string"
+					},
+					"rgst_dt": {
+						"type": "string"
+					},
+					"rgst_seq": {
+						"type": "string"
+					},
+					"rsrv_ord_tp": {
+						"type": "string"
+					},
+					"rsrv_ord_tp_nm": {
+						"type": "string"
+					},
+					"rsrv_rgst_dt": {
+						"type": "string"
+					},
+					"slby_tp": {
+						"type": "string"
+					},
+					"slby_tp_nm": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"strt_dt": {
+						"type": "string"
+					},
+					"trde_tp": {
+						"type": "string"
+					},
+					"trde_tp_nm": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
 			"KiwoomApiDostkOrdrKt10000Request": {
 				"description": "KiwoomApiDostkOrdrKt10000Request schema",
 				"properties": {
@@ -53919,6 +54658,238 @@
 						"type": "string"
 					},
 					"sel_qty": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11310Request": {
+				"description": "KiwoomApiDostkRkinfoKa11310Request schema",
+				"properties": {
+					"crd_tp": {
+						"type": "string"
+					},
+					"mac_cnd_max": {
+						"type": "string"
+					},
+					"mac_cnd_max_sign": {
+						"type": "string"
+					},
+					"mac_cnd_min": {
+						"type": "string"
+					},
+					"mac_cnd_min_sign": {
+						"type": "string"
+					},
+					"mac_cnd_usr": {
+						"type": "string"
+					},
+					"mac_tp": {
+						"type": "string"
+					},
+					"mrkt_tp": {
+						"type": "string"
+					},
+					"pric_cnd_usr": {
+						"type": "string"
+					},
+					"pric_tp": {
+						"type": "string"
+					},
+					"price_cnd_max": {
+						"type": "string"
+					},
+					"price_cnd_max_sign": {
+						"type": "string"
+					},
+					"price_cnd_min": {
+						"type": "string"
+					},
+					"price_cnd_min_sign": {
+						"type": "string"
+					},
+					"qry_tp": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"stk_tp": {
+						"type": "string"
+					},
+					"trde_prica_cnd_max": {
+						"type": "string"
+					},
+					"trde_prica_cnd_max_sign": {
+						"type": "string"
+					},
+					"trde_prica_cnd_min": {
+						"type": "string"
+					},
+					"trde_prica_cnd_min_sgin": {
+						"type": "string"
+					},
+					"trde_prica_cnd_usr": {
+						"type": "string"
+					},
+					"trde_prica_tp": {
+						"type": "string"
+					},
+					"trde_qty_tp": {
+						"type": "string"
+					},
+					"updown_incls": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11310Response": {
+				"description": "KiwoomApiDostkRkinfoKa11310Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11310ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11310ResponseItem": {
+				"properties": {
+					"buy_req": {
+						"type": "string"
+					},
+					"cntr_str": {
+						"type": "string"
+					},
+					"cur_prc": {
+						"type": "string"
+					},
+					"flu_rt": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"pred_pre_sig": {
+						"type": "string"
+					},
+					"pred_rt": {
+						"type": "string"
+					},
+					"rank": {
+						"type": "string"
+					},
+					"sel_req": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					},
+					"trde_qty": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11370Request": {
+				"description": "KiwoomApiDostkRkinfoKa11370Request schema",
+				"properties": {
+					"dt": {
+						"type": "string"
+					},
+					"krx_after_tp": {
+						"type": "string"
+					},
+					"mrkt_tp": {
+						"type": "string"
+					},
+					"sort_tp_1": {
+						"type": "string"
+					},
+					"sort_tp_2": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11370Response": {
+				"description": "KiwoomApiDostkRkinfoKa11370Response schema",
+				"properties": {
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11370ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkRkinfoKa11370ResponseItem": {
+				"properties": {
+					"disp_gap": {
+						"type": "string"
+					},
+					"disp_rt": {
+						"type": "string"
+					},
+					"krx_cur_prc": {
+						"type": "string"
+					},
+					"krx_flu_rt": {
+						"type": "string"
+					},
+					"krx_pred_pre": {
+						"type": "string"
+					},
+					"krx_pred_pre_sig": {
+						"type": "string"
+					},
+					"krx_trde_prica": {
+						"type": "string"
+					},
+					"krx_trde_qty": {
+						"type": "string"
+					},
+					"nxt_cur_prc": {
+						"type": "string"
+					},
+					"nxt_flu_rt": {
+						"type": "string"
+					},
+					"nxt_pred_pre": {
+						"type": "string"
+					},
+					"nxt_pred_pre_sig": {
+						"type": "string"
+					},
+					"nxt_trde_prica": {
+						"type": "string"
+					},
+					"nxt_trde_qty": {
+						"type": "string"
+					},
+					"rank": {
 						"type": "string"
 					},
 					"stk_cd": {
@@ -57459,6 +58430,150 @@
 				"description": "KiwoomApiDostkStkinfoKt20017Response schema",
 				"properties": {
 					"crd_alow_yn": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa06550Request": {
+				"description": "KiwoomApiDostkThmeKa06550Request schema",
+				"properties": {
+					"date_tp": {
+						"type": "string"
+					},
+					"stex_tp": {
+						"type": "string"
+					},
+					"thema_grp_cd": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa06550Response": {
+				"description": "KiwoomApiDostkThmeKa06550Response schema",
+				"properties": {
+					"dt_prft_rt": {
+						"type": "string"
+					},
+					"flu_rt": {
+						"type": "string"
+					},
+					"result_list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkThmeKa06550ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa06550ResponseItem": {
+				"properties": {
+					"acc_trde_qty": {
+						"type": "string"
+					},
+					"buy_bid": {
+						"type": "string"
+					},
+					"buy_req": {
+						"type": "string"
+					},
+					"cur_prc": {
+						"type": "string"
+					},
+					"dt_prft_rt_n": {
+						"type": "string"
+					},
+					"flu_rt": {
+						"type": "string"
+					},
+					"flu_sig": {
+						"type": "string"
+					},
+					"mac": {
+						"type": "string"
+					},
+					"pred_pre": {
+						"type": "string"
+					},
+					"sel_bid": {
+						"type": "string"
+					},
+					"sel_req": {
+						"type": "string"
+					},
+					"stk_cd": {
+						"type": "string"
+					},
+					"stk_nm": {
+						"type": "string"
+					},
+					"trde_prica": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa10106Request": {
+				"description": "KiwoomApiDostkThmeKa10106Request schema"
+			},
+			"KiwoomApiDostkThmeKa10106Response": {
+				"description": "KiwoomApiDostkThmeKa10106Response schema",
+				"properties": {
+					"list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10106ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa10106ResponseItem": {
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa10107Request": {
+				"description": "KiwoomApiDostkThmeKa10107Request schema",
+				"properties": {
+					"code": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa10107Response": {
+				"description": "KiwoomApiDostkThmeKa10107Response schema",
+				"properties": {
+					"list": {
+						"items": {
+							"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10107ResponseItem"
+						},
+						"type": [
+							"array",
+							"null"
+						]
+					}
+				},
+				"type": "object"
+			},
+			"KiwoomApiDostkThmeKa10107ResponseItem": {
+				"properties": {
+					"code": {
 						"type": "string"
 					}
 				},
@@ -72295,566 +73410,6 @@
 					}
 				},
 				"summary": "Call KIS static endpoint /kis/domestic-futureoption/v1/trading/order-rvsecncl",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/balance-sheet": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/balance-sheet.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/balance-sheet",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceBalanceSheetRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceBalanceSheetRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceBalanceSheet"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/balance-sheet",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/financial-ratio": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/financial-ratio.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/financial-ratio",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceFinancialRatioRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceFinancialRatioRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceFinancialRatio"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/financial-ratio",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/growth-ratio": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/growth-ratio.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/growth-ratio",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceGrowthRatioRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceGrowthRatioRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceGrowthRatio"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/growth-ratio",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/income-statement": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/income-statement.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/income-statement",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceIncomeStatementRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceIncomeStatementRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceIncomeStatement"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/income-statement",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/other-major-ratios": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/other-major-ratios.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/other-major-ratios",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceOtherMajorRatiosRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceOtherMajorRatiosRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceOtherMajorRatios"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/other-major-ratios",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/profit-ratio": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/profit-ratio.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/profit-ratio",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceProfitRatioRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceProfitRatioRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceProfitRatio"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/profit-ratio",
-				"tags": [
-					"KIS"
-				]
-			}
-		},
-		"/kis/domestic-stock/v1/finance/stability-ratio": {
-			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKISProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented KIS proxy route for GET /uapi/domestic-stock/v1/finance/stability-ratio.",
-				"operationId": "POST_/kis/domestic-stock/v1/finance/stability-ratio",
-				"parameters": [
-					{
-						"description": "Optional account selector when multiple KIS accounts exist.",
-						"in": "query",
-						"name": "account_id",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "header",
-						"name": "Accept",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/KISDomesticStockV1FinanceStabilityRatioRequest"
-							}
-						}
-					},
-					"description": "Request body for *specs.KISDomesticStockV1FinanceStabilityRatioRequest",
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/KISDomesticStockV1FinanceStabilityRatio"
-								}
-							}
-						},
-						"description": "OK"
-					},
-					"400": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Bad Request _(validation or deserialization error)_"
-					},
-					"500": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/HTTPError"
-								}
-							}
-						},
-						"description": "Internal Server Error _(panics)_"
-					}
-				},
-				"summary": "Call KIS static endpoint /kis/domestic-stock/v1/finance/stability-ratio",
 				"tags": [
 					"KIS"
 				]
@@ -95116,6 +95671,582 @@
 				]
 			}
 		},
+		"/kiwoom/dostk/chart/ka11079": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11079).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11079",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11079Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11079Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11079Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11079",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/chart/ka11080": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11080).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11080",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11080Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11080Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11080Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11080",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/chart/ka11081": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11081).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11081",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11081Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11081Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11081Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11081",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/chart/ka11082": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11082).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11082",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11082Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11082Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11082Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11082",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/chart/ka11083": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11083).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11083",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11083Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11083Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11083Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11083",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/chart/ka11094": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka11094).",
+				"operationId": "POST_/kiwoom/dostk/chart/ka11094",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkChartKa11094Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkChartKa11094Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkChartKa11094Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/chart/ka11094",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
 		"/kiwoom/dostk/chart/ka20004": {
 			"post": {
 				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/chart (api_id=ka20004).",
@@ -98668,6 +99799,966 @@
 				]
 			}
 		},
+		"/kiwoom/dostk/frac/ka14640": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=ka14640).",
+				"operationId": "POST_/kiwoom/dostk/frac/ka14640",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKa14640Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKa14640Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKa14640Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/ka14640",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14401": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14401).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14401",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14401Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14401Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14401Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14401",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14402": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14402).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14402",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14402Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14402Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14402Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14402",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14403": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14403).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14403",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14403Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14403Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14403Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14403",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14404": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14404).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14404",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14404Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14404Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14404Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14404",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14405": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14405).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14405",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14405Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14405Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14405Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14405",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14406": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14406).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14406",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14406Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14406Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14406Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14406",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14407": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14407).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14407",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14407Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14407Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14407Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14407",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14430": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14430).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14430",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14430Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14430Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14430Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14430",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/frac/kt14641": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frac (api_id=kt14641).",
+				"operationId": "POST_/kiwoom/dostk/frac/kt14641",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkFracKt14641Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkFracKt14641Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkFracKt14641Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/frac/kt14641",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
 		"/kiwoom/dostk/frgnistt/ka10008": {
 			"post": {
 				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/frgnistt (api_id=ka10008).",
@@ -101255,6 +103346,678 @@
 					}
 				},
 				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/mrkcond/ka90013",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03311": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03311).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03311",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03311Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03311Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03311Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03311",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03312": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03312).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03312",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03312Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03312Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03312Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03312",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03313": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03313).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03313",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03313Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03313Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03313Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03313",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03315": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03315).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03315",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03315Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03315Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03315Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03315",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03316": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03316).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03316",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03316Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03316Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03316Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03316",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03317": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03317).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03317",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03317Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03317Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03317Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03317",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/ordr/kt03318": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/ordr (api_id=kt03318).",
+				"operationId": "POST_/kiwoom/dostk/ordr/kt03318",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03318Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkOrdrKt03318Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkOrdrKt03318Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/ordr/kt03318",
 				"tags": [
 					"Kiwoom"
 				]
@@ -104327,6 +107090,198 @@
 					}
 				},
 				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/rkinfo/ka10065",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/rkinfo/ka11310": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/rkinfo (api_id=ka11310).",
+				"operationId": "POST_/kiwoom/dostk/rkinfo/ka11310",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11310Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkRkinfoKa11310Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11310Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/rkinfo/ka11310",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/rkinfo/ka11370": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/rkinfo (api_id=ka11370).",
+				"operationId": "POST_/kiwoom/dostk/rkinfo/ka11370",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11370Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkRkinfoKa11370Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkRkinfoKa11370Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/rkinfo/ka11370",
 				"tags": [
 					"Kiwoom"
 				]
@@ -108551,6 +111506,294 @@
 					}
 				},
 				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/stkinfo/kt20017",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/thme/ka06550": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/thme (api_id=ka06550).",
+				"operationId": "POST_/kiwoom/dostk/thme/ka06550",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkThmeKa06550Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkThmeKa06550Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkThmeKa06550Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/thme/ka06550",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/thme/ka10106": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/thme (api_id=ka10106).",
+				"operationId": "POST_/kiwoom/dostk/thme/ka10106",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10106Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkThmeKa10106Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10106Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/thme/ka10106",
+				"tags": [
+					"Kiwoom"
+				]
+			}
+		},
+		"/kiwoom/dostk/thme/ka10107": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleKiwoomProxyStatic.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nStatic documented Kiwoom proxy route for POST /api/dostk/thme (api_id=ka10107).",
+				"operationId": "POST_/kiwoom/dostk/thme/ka10107",
+				"parameters": [
+					{
+						"description": "Optional account selector when multiple Kiwoom accounts exist.",
+						"in": "query",
+						"name": "account_id",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Use Y with next-key to request the next page. Response headers expose both values.",
+						"in": "header",
+						"name": "cont-yn",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Continuation key from the preceding response; send together with cont-yn=Y.",
+						"in": "header",
+						"name": "next-key",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10107Request"
+							}
+						}
+					},
+					"description": "Request body for *specs.KiwoomApiDostkThmeKa10107Request",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KiwoomApiDostkThmeKa10107Response"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					}
+				},
+				"summary": "Call Kiwoom static endpoint /kiwoom/dostk/thme/ka10107",
 				"tags": [
 					"Kiwoom"
 				]
