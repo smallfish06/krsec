@@ -68,7 +68,7 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 	rows := make([]broker.OHLCV, 0, 100)
 	seen := make(map[time.Time]struct{})
 	cursor := to
-	for page := 0; page < maxOHLCVPages; page++ {
+	for range maxOHLCVPages {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}

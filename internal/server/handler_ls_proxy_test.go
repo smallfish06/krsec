@@ -42,8 +42,8 @@ func TestHandleLSProxy_DefaultRouteAndFirstLSAccount(t *testing.T) {
 	t.Parallel()
 
 	lsBroker := &proxyLSBroker{
-		proxyStubBroker: proxyStubBroker{name: "LS"},
-		resp:            map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
+		name: "LS",
+		resp: map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 
@@ -96,7 +96,7 @@ func TestHandleLSProxy_DefaultRouteAndFirstLSAccount(t *testing.T) {
 func TestHandleLSProxy_MissingTRCD(t *testing.T) {
 	t.Parallel()
 
-	lsBroker := &proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}
+	lsBroker := &proxyLSBroker{name: "LS"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"ls-acc": lsBroker},
 		[]config.AccountConfig{{AccountID: "ls-acc", Broker: "ls"}},
@@ -136,8 +136,8 @@ func TestHandleLSProxy_MethodNormalizedToUpper(t *testing.T) {
 	t.Parallel()
 
 	lsBroker := &proxyLSBroker{
-		proxyStubBroker: proxyStubBroker{name: "LS"},
-		resp:            map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
+		name: "LS",
+		resp: map[string]any{"rsp_cd": "00000", "rsp_msg": "ok"},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"ls-acc": lsBroker},
@@ -159,7 +159,7 @@ func TestHandleLSProxy_MethodNormalizedToUpper(t *testing.T) {
 func TestHandleLSProxy_InvalidMethodRejected(t *testing.T) {
 	t.Parallel()
 
-	lsBroker := &proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}
+	lsBroker := &proxyLSBroker{name: "LS"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"ls-acc": lsBroker},
 		[]config.AccountConfig{{AccountID: "ls-acc", Broker: "ls"}},
@@ -185,11 +185,11 @@ type paginatedLSBroker struct {
 func (b *paginatedLSBroker) CallEndpointPage(_ context.Context, _, _, _ string, request any, continuation ls.Continuation) (*ls.EndpointPage, error) {
 	b.continuation = continuation
 	b.gotReq = request
-	return &ls.EndpointPage{Data: map[string]any{"rsp_cd": "00000"}, Continuation: ls.Continuation{TRCont: "Y", TRContKey: "following-page"}}, nil
+	return &ls.EndpointPage{Data: map[string]any{"rsp_cd": "00000"}, TRCont: "Y", TRContKey: "following-page"}, nil
 }
 
 func TestHandleLSProxyPreservesContinuationOutsidePayload(t *testing.T) {
-	b := &paginatedLSBroker{proxyLSBroker: proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}}
+	b := &paginatedLSBroker{name: "LS"}
 	s := newOrderTestServer(map[string]broker.Broker{"ls": b}, []config.AccountConfig{{AccountID: "ls", Broker: "ls"}})
 	req := httptest.NewRequest(http.MethodPost, "/ls/stock/accno", bytes.NewBufferString(`{"tr_cd":"t0425","tr_cont":"Y","tr_cont_key":"next-page","body":{"t0425InBlock":{"expcode":"005930"}}}`))
 	rr := performFiberRequest(t, s, req)
@@ -209,7 +209,7 @@ func TestHandleLSProxyPreservesContinuationOutsidePayload(t *testing.T) {
 }
 
 func TestHandleLSProxyRejectsContinuationForLegacyAdapter(t *testing.T) {
-	b := &proxyLSBroker{proxyStubBroker: proxyStubBroker{name: "LS"}}
+	b := &proxyLSBroker{name: "LS"}
 	s := newOrderTestServer(map[string]broker.Broker{"ls": b}, []config.AccountConfig{{AccountID: "ls", Broker: "ls"}})
 	rr := performFiberRequest(t, s, httptest.NewRequest(http.MethodPost, "/ls/stock/accno", bytes.NewBufferString(`{"tr_cd":"t0425","tr_cont":"Y","tr_cont_key":"next"}`)))
 	if rr.Code != http.StatusBadRequest || b.called {

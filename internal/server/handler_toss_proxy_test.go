@@ -41,8 +41,8 @@ func TestHandleTossProxy_DefaultMethodAndFirstTossAccount(t *testing.T) {
 	t.Parallel()
 
 	tossBroker := &proxyTossBroker{
-		proxyStubBroker: proxyStubBroker{name: "TOSS"},
-		resp:            map[string]any{"result": []any{}},
+		name: "TOSS",
+		resp: map[string]any{"result": []any{}},
 	}
 	kisBroker := &proxyStubBroker{name: "KIS"}
 	s := newOrderTestServer(
@@ -80,7 +80,7 @@ func TestHandleTossProxy_DefaultMethodAndFirstTossAccount(t *testing.T) {
 func TestHandleTossProxy_AmbiguousPathRequiresMethod(t *testing.T) {
 	t.Parallel()
 
-	tossBroker := &proxyTossBroker{proxyStubBroker: proxyStubBroker{name: "TOSS"}}
+	tossBroker := &proxyTossBroker{name: "TOSS"}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"toss-acc": tossBroker},
 		[]config.AccountConfig{{AccountID: "toss-acc", Broker: "toss", AccountSeq: "1"}},
@@ -101,8 +101,8 @@ func TestHandleTossProxy_TemplatePathAndAccountScopedPost(t *testing.T) {
 	t.Parallel()
 
 	tossBroker := &proxyTossBroker{
-		proxyStubBroker: proxyStubBroker{name: "TOSS"},
-		resp:            map[string]any{"result": map[string]any{"orderId": "new-id"}},
+		name: "TOSS",
+		resp: map[string]any{"result": map[string]any{"orderId": "new-id"}},
 	}
 	s := newOrderTestServer(
 		map[string]broker.Broker{"toss-acc": tossBroker},

@@ -159,7 +159,7 @@ func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.O
 	seenExecutions := map[string]bool{}
 	var fills []broker.OrderFill
 	date := meta.PlacedAt.In(lsOrderLocation).Format("20060102")
-	for pageNumber := 0; pageNumber < maxOrderPages; pageNumber++ {
+	for range maxOrderPages {
 		page, callErr := a.client.CallEndpointPage(ctx, "POST", ls.PathStockAccount, "CSPAQ13700", map[string]any{
 			"CSPAQ13700InBlock1": map[string]any{"OrdMktCode": "00", "BnsTpCode": "0", "IsuNo": "A" + meta.Symbol, "ExecYn": "1", "OrdDt": date, "SrtOrdNo2": 0, "BkseqTpCode": "1", "OrdPtnCode": "00"},
 		}, continuation)
@@ -221,7 +221,7 @@ func (a *Adapter) currentOrder(ctx context.Context, id string) (orderContext, ma
 	seen := map[string]bool{}
 	var found map[string]any
 	var foundJSON string
-	for pageNumber := 0; pageNumber < maxOrderPages; pageNumber++ {
+	for range maxOrderPages {
 		page, callErr := a.client.CallEndpointPage(ctx, "POST", ls.PathStockAccount, "t0425", map[string]any{
 			"t0425InBlock": map[string]any{"expcode": meta.Symbol, "chegb": "0", "medosu": "0", "sortgb": "1", "cts_ordno": cursor},
 		}, continuation)

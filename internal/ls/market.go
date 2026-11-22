@@ -224,7 +224,7 @@ func (c *Client) InquireBalance(ctx context.Context) (map[string]any, []map[stri
 	cursor := ""
 	continuation := Continuation{}
 	seen := make(map[string]bool)
-	for pageNumber := 0; pageNumber < 100; pageNumber++ {
+	for range 100 {
 		page, err := c.CallEndpointPage(ctx, httpMethodPost, PathStockAccount, TRStockBalance, map[string]any{
 			"t0424InBlock": map[string]any{"prcgb": "1", "chegb": "2", "dangb": "0", "charge": "1", "cts_expcode": cursor},
 		}, continuation)

@@ -83,8 +83,7 @@ func validateTossProxyRequest(req *tossProxyRequest) error {
 }
 
 func proxyRequestValidationError(err error, messages map[string]string) error {
-	var invalidValidationErr *validator.InvalidValidationError
-	if errors.As(err, &invalidValidationErr) {
+	if _, ok := errors.AsType[*validator.InvalidValidationError](err); ok {
 		return errors.New("invalid request body")
 	}
 
