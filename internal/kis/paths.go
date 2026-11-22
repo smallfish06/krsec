@@ -22,7 +22,6 @@ const (
 	PathDomesticStockVolumeRank                 = "/uapi/domestic-stock/v1/quotations/volume-rank"
 	PathDomesticStockRankingMarketCap           = "/uapi/domestic-stock/v1/ranking/market-cap"
 	PathDomesticStockRankingFluctuation         = "/uapi/domestic-stock/v1/ranking/fluctuation"
-	PathDomesticStockFinancialRatio             = "/uapi/domestic-stock/v1/finance/financial-ratio"
 	PathDomesticStockDividend                   = "/uapi/domestic-stock/v1/ksdinfo/dividend"
 )
 

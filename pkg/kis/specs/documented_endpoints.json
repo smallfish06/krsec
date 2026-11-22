@@ -4289,84 +4289,74 @@
           "order": "006"
         },
         {
-          "code": "cano",
+          "code": "pdno",
           "type": "A0001",
           "order": "006.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "006.002"
         },
         {
-          "code": "pdno",
+          "code": "shtn_pdno",
           "type": "A0001",
           "order": "006.003"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "006.004"
         },
         {
-          "code": "shtn_pdno",
+          "code": "sll_buy_dvsn_name",
           "type": "A0001",
           "order": "006.005"
         },
         {
-          "code": "prdt_name",
+          "code": "cblc_qty",
           "type": "A0001",
           "order": "006.006"
         },
         {
-          "code": "sll_buy_dvsn_name",
+          "code": "excc_unpr",
           "type": "A0001",
           "order": "006.007"
         },
         {
-          "code": "cblc_qty",
+          "code": "ccld_avg_unpr1",
           "type": "A0001",
           "order": "006.008"
         },
         {
-          "code": "excc_unpr",
+          "code": "idx_clpr",
           "type": "A0001",
           "order": "006.009"
         },
         {
-          "code": "ccld_avg_unpr1",
+          "code": "pchs_amt",
           "type": "A0001",
           "order": "006.010"
         },
         {
-          "code": "idx_clpr",
+          "code": "evlu_amt",
           "type": "A0001",
           "order": "006.011"
         },
         {
-          "code": "pchs_amt",
+          "code": "evlu_pfls_amt",
           "type": "A0001",
           "order": "006.012"
         },
         {
-          "code": "evlu_amt",
+          "code": "trad_pfls_amt",
           "type": "A0001",
           "order": "006.013"
         },
         {
-          "code": "evlu_pfls_amt",
-          "type": "A0001",
-          "order": "006.014"
-        },
-        {
-          "code": "trad_pfls_amt",
-          "type": "A0001",
-          "order": "006.015"
-        },
-        {
           "code": "lqd_psbl_qty",
           "type": "A0001",
-          "order": "006.016"
+          "order": "006.014"
         },
         {
           "code": "output2",
@@ -4934,84 +4924,74 @@
           "order": "005"
         },
         {
-          "code": "cano",
+          "code": "pdno",
           "type": "A0001",
           "order": "005.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "005.002"
         },
         {
-          "code": "pdno",
+          "code": "shtn_pdno",
           "type": "A0001",
           "order": "005.003"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "005.004"
         },
         {
-          "code": "shtn_pdno",
+          "code": "sll_buy_dvsn_name",
           "type": "A0001",
           "order": "005.005"
         },
         {
-          "code": "prdt_name",
+          "code": "cblc_qty1",
           "type": "A0001",
           "order": "005.006"
         },
         {
-          "code": "sll_buy_dvsn_name",
+          "code": "excc_unpr",
           "type": "A0001",
           "order": "005.007"
         },
         {
-          "code": "cblc_qty1",
+          "code": "ccld_avg_unpr1",
           "type": "A0001",
           "order": "005.008"
         },
         {
-          "code": "excc_unpr",
+          "code": "idx_clpr",
           "type": "A0001",
           "order": "005.009"
         },
         {
-          "code": "ccld_avg_unpr1",
+          "code": "pchs_amt",
           "type": "A0001",
           "order": "005.010"
         },
         {
-          "code": "idx_clpr",
+          "code": "evlu_amt",
           "type": "A0001",
           "order": "005.011"
         },
         {
-          "code": "pchs_amt",
+          "code": "evlu_pfls_amt",
           "type": "A0001",
           "order": "005.012"
         },
         {
-          "code": "evlu_amt",
+          "code": "trad_pfls_amt",
           "type": "A0001",
           "order": "005.013"
         },
         {
-          "code": "evlu_pfls_amt",
-          "type": "A0001",
-          "order": "005.014"
-        },
-        {
-          "code": "trad_pfls_amt",
-          "type": "A0001",
-          "order": "005.015"
-        },
-        {
           "code": "lqd_psbl_qty",
           "type": "A0001",
-          "order": "005.016"
+          "order": "005.014"
         }
       ]
     },
@@ -5133,134 +5113,119 @@
           "order": "006.001"
         },
         {
-          "code": "cano",
+          "code": "ord_dt",
           "type": "A0001",
           "order": "006.002"
         },
         {
-          "code": "csac_name",
+          "code": "odno",
           "type": "A0001",
           "order": "006.003"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "orgn_odno",
           "type": "A0001",
           "order": "006.004"
         },
         {
-          "code": "ord_dt",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "006.005"
         },
         {
-          "code": "odno",
+          "code": "trad_dvsn_name",
           "type": "A0001",
           "order": "006.006"
         },
         {
-          "code": "orgn_odno",
+          "code": "nmpr_type_cd",
           "type": "A0001",
           "order": "006.007"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "nmpr_type_name",
           "type": "A0001",
           "order": "006.008"
         },
         {
-          "code": "trad_dvsn_name",
+          "code": "pdno",
           "type": "A0001",
           "order": "006.009"
         },
         {
-          "code": "nmpr_type_cd",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "006.010"
         },
         {
-          "code": "nmpr_type_name",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "006.011"
         },
         {
-          "code": "pdno",
+          "code": "ord_qty",
           "type": "A0001",
           "order": "006.012"
         },
         {
-          "code": "prdt_name",
+          "code": "ord_idx",
           "type": "A0001",
           "order": "006.013"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "qty",
           "type": "A0001",
           "order": "006.014"
         },
         {
-          "code": "ord_qty",
+          "code": "ord_tmd",
           "type": "A0001",
           "order": "006.015"
         },
         {
-          "code": "ord_idx",
+          "code": "tot_ccld_qty",
           "type": "A0001",
           "order": "006.016"
         },
         {
-          "code": "qty",
+          "code": "avg_idx",
           "type": "A0001",
           "order": "006.017"
         },
         {
-          "code": "ord_tmd",
+          "code": "tot_ccld_amt",
           "type": "A0001",
           "order": "006.018"
         },
         {
-          "code": "tot_ccld_qty",
+          "code": "rjct_qty",
           "type": "A0001",
           "order": "006.019"
         },
         {
-          "code": "avg_idx",
+          "code": "ingr_trad_rjct_rson_cd",
           "type": "A0001",
           "order": "006.020"
         },
         {
-          "code": "tot_ccld_amt",
+          "code": "ingr_trad_rjct_rson_name",
           "type": "A0001",
           "order": "006.021"
         },
         {
-          "code": "rjct_qty",
+          "code": "ord_stfno",
           "type": "A0001",
           "order": "006.022"
         },
         {
-          "code": "ingr_trad_rjct_rson_cd",
+          "code": "sprd_item_yn",
           "type": "A0001",
           "order": "006.023"
         },
         {
-          "code": "ingr_trad_rjct_rson_name",
-          "type": "A0001",
-          "order": "006.024"
-        },
-        {
-          "code": "ord_stfno",
-          "type": "A0001",
-          "order": "006.025"
-        },
-        {
-          "code": "sprd_item_yn",
-          "type": "A0001",
-          "order": "006.026"
-        },
-        {
           "code": "ord_ip_addr",
           "type": "A0001",
-          "order": "006.027"
+          "order": "006.024"
         },
         {
           "code": "output2",
@@ -6123,94 +6088,84 @@
           "order": "005"
         },
         {
-          "code": "cano",
+          "code": "pdno",
           "type": "A0001",
           "order": "005.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "005.002"
         },
         {
-          "code": "pdno",
+          "code": "shtn_pdno",
           "type": "A0001",
           "order": "005.003"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "005.004"
         },
         {
-          "code": "shtn_pdno",
+          "code": "sll_buy_dvsn_name",
           "type": "A0001",
           "order": "005.005"
         },
         {
-          "code": "prdt_name",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "005.006"
         },
         {
-          "code": "sll_buy_dvsn_name",
+          "code": "trad_dvsn_name",
           "type": "A0001",
           "order": "005.007"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "cblc_qty",
           "type": "A0001",
           "order": "005.008"
         },
         {
-          "code": "trad_dvsn_name",
+          "code": "excc_unpr",
           "type": "A0001",
           "order": "005.009"
         },
         {
-          "code": "cblc_qty",
+          "code": "ccld_avg_unpr1",
           "type": "A0001",
           "order": "005.010"
         },
         {
-          "code": "excc_unpr",
+          "code": "idx_clpr",
           "type": "A0001",
           "order": "005.011"
         },
         {
-          "code": "ccld_avg_unpr1",
+          "code": "pchs_amt",
           "type": "A0001",
           "order": "005.012"
         },
         {
-          "code": "idx_clpr",
+          "code": "evlu_amt",
           "type": "A0001",
           "order": "005.013"
         },
         {
-          "code": "pchs_amt",
+          "code": "evlu_pfls_amt",
           "type": "A0001",
           "order": "005.014"
         },
         {
-          "code": "evlu_amt",
+          "code": "trad_pfls_amt",
           "type": "A0001",
           "order": "005.015"
         },
         {
-          "code": "evlu_pfls_amt",
-          "type": "A0001",
-          "order": "005.016"
-        },
-        {
-          "code": "trad_pfls_amt",
-          "type": "A0001",
-          "order": "005.017"
-        },
-        {
           "code": "lqd_psbl_qty",
           "type": "A0001",
-          "order": "005.018"
+          "order": "005.016"
         }
       ]
     },
@@ -6374,129 +6329,114 @@
           "order": "005.001"
         },
         {
-          "code": "cano",
+          "code": "ord_dt",
           "type": "A0001",
           "order": "005.002"
         },
         {
-          "code": "csac_name",
+          "code": "odno",
           "type": "A0001",
           "order": "005.003"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "orgn_odno",
           "type": "A0001",
           "order": "005.004"
         },
         {
-          "code": "ord_dt",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "005.005"
         },
         {
-          "code": "odno",
+          "code": "trad_dvsn_name",
           "type": "A0001",
           "order": "005.006"
         },
         {
-          "code": "orgn_odno",
+          "code": "nmpr_type_name",
           "type": "A0001",
           "order": "005.007"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "pdno",
           "type": "A0001",
           "order": "005.008"
         },
         {
-          "code": "trad_dvsn_name",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "005.009"
         },
         {
-          "code": "nmpr_type_name",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "005.010"
         },
         {
-          "code": "pdno",
+          "code": "ord_qty",
           "type": "A0001",
           "order": "005.011"
         },
         {
-          "code": "prdt_name",
+          "code": "ord_idx4",
           "type": "A0001",
           "order": "005.012"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "qty",
           "type": "A0001",
           "order": "005.013"
         },
         {
-          "code": "ord_qty",
+          "code": "ord_tmd",
           "type": "A0001",
           "order": "005.014"
         },
         {
-          "code": "ord_idx4",
+          "code": "tot_ccld_qty",
           "type": "A0001",
           "order": "005.015"
         },
         {
-          "code": "qty",
+          "code": "avg_idx",
           "type": "A0001",
           "order": "005.016"
         },
         {
-          "code": "ord_tmd",
+          "code": "tot_ccld_amt",
           "type": "A0001",
           "order": "005.017"
         },
         {
-          "code": "tot_ccld_qty",
+          "code": "rjct_qty",
           "type": "A0001",
           "order": "005.018"
         },
         {
-          "code": "avg_idx",
+          "code": "ingr_trad_rjct_rson_cd",
           "type": "A0001",
           "order": "005.019"
         },
         {
-          "code": "tot_ccld_amt",
+          "code": "ingr_trad_rjct_rson_name",
           "type": "A0001",
           "order": "005.020"
         },
         {
-          "code": "rjct_qty",
+          "code": "ord_stfno",
           "type": "A0001",
           "order": "005.021"
         },
         {
-          "code": "ingr_trad_rjct_rson_cd",
+          "code": "sprd_item_yn",
           "type": "A0001",
           "order": "005.022"
         },
         {
-          "code": "ingr_trad_rjct_rson_name",
-          "type": "A0001",
-          "order": "005.023"
-        },
-        {
-          "code": "ord_stfno",
-          "type": "A0001",
-          "order": "005.024"
-        },
-        {
-          "code": "sprd_item_yn",
-          "type": "A0001",
-          "order": "005.025"
-        },
-        {
           "code": "ord_ip_addr",
           "type": "A0001",
-          "order": "005.026"
+          "order": "005.023"
         }
       ]
     },
@@ -7424,626 +7364,6 @@
           "code": "ODNO",
           "type": "A0001",
           "order": "004.007"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/balance-sheet",
-      "method": "GET",
-      "real_trid": "FHKST66430100",
-      "virtual_trid": "",
-      "required_fields": [
-        "FID_DIV_CLS_CODE",
-        "fid_cond_mrkt_div_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "FID_DIV_CLS_CODE",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "003"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "cras",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "fxas",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "total_aset",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "flow_lblt",
-          "type": "A0001",
-          "order": "004.005"
-        },
-        {
-          "code": "fix_lblt",
-          "type": "A0001",
-          "order": "004.006"
-        },
-        {
-          "code": "total_lblt",
-          "type": "A0001",
-          "order": "004.007"
-        },
-        {
-          "code": "cpfn",
-          "type": "A0001",
-          "order": "004.008"
-        },
-        {
-          "code": "cfp_surp",
-          "type": "A0001",
-          "order": "004.009"
-        },
-        {
-          "code": "prfi_surp",
-          "type": "A0001",
-          "order": "004.010"
-        },
-        {
-          "code": "total_cptl",
-          "type": "A0001",
-          "order": "004.011"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/financial-ratio",
-      "method": "GET",
-      "real_trid": "FHKST66430300",
-      "virtual_trid": "",
-      "required_fields": [
-        "FID_DIV_CLS_CODE",
-        "fid_cond_mrkt_div_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "FID_DIV_CLS_CODE",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "003"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "grs",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "bsop_prfi_inrt",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "ntin_inrt",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "roe_val",
-          "type": "A0001",
-          "order": "004.005"
-        },
-        {
-          "code": "eps",
-          "type": "A0001",
-          "order": "004.006"
-        },
-        {
-          "code": "sps",
-          "type": "A0001",
-          "order": "004.007"
-        },
-        {
-          "code": "bps",
-          "type": "A0001",
-          "order": "004.008"
-        },
-        {
-          "code": "rsrv_rate",
-          "type": "A0001",
-          "order": "004.009"
-        },
-        {
-          "code": "lblt_rate",
-          "type": "A0001",
-          "order": "004.010"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/growth-ratio",
-      "method": "GET",
-      "real_trid": "FHKST66430800",
-      "virtual_trid": "",
-      "required_fields": [
-        "fid_cond_mrkt_div_code",
-        "fid_div_cls_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "fid_div_cls_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "001"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "grs",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "bsop_prfi_inrt",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "equt_inrt",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "totl_aset_inrt",
-          "type": "A0001",
-          "order": "004.005"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/income-statement",
-      "method": "GET",
-      "real_trid": "FHKST66430200",
-      "virtual_trid": "",
-      "required_fields": [
-        "FID_DIV_CLS_CODE",
-        "fid_cond_mrkt_div_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "FID_DIV_CLS_CODE",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "003"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "sale_account",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "sale_cost",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "sale_totl_prfi",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "depr_cost",
-          "type": "A0001",
-          "order": "004.005"
-        },
-        {
-          "code": "sell_mang",
-          "type": "A0001",
-          "order": "004.006"
-        },
-        {
-          "code": "bsop_prti",
-          "type": "A0001",
-          "order": "004.007"
-        },
-        {
-          "code": "bsop_non_ernn",
-          "type": "A0001",
-          "order": "004.008"
-        },
-        {
-          "code": "bsop_non_expn",
-          "type": "A0001",
-          "order": "004.009"
-        },
-        {
-          "code": "op_prfi",
-          "type": "A0001",
-          "order": "004.010"
-        },
-        {
-          "code": "spec_prfi",
-          "type": "A0001",
-          "order": "004.011"
-        },
-        {
-          "code": "spec_loss",
-          "type": "A0001",
-          "order": "004.012"
-        },
-        {
-          "code": "thtr_ntin",
-          "type": "A0001",
-          "order": "004.013"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/other-major-ratios",
-      "method": "GET",
-      "real_trid": "FHKST66430500",
-      "virtual_trid": "",
-      "required_fields": [
-        "fid_cond_mrkt_div_code",
-        "fid_div_cls_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "fid_div_cls_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "001"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "payout_rate",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "eva",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "ebitda",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "ev_ebitda",
-          "type": "A0001",
-          "order": "004.005"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/profit-ratio",
-      "method": "GET",
-      "real_trid": "FHKST66430400",
-      "virtual_trid": "",
-      "required_fields": [
-        "FID_DIV_CLS_CODE",
-        "fid_cond_mrkt_div_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "FID_DIV_CLS_CODE",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "001"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "cptl_ntin_rate",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "self_cptl_ntin_inrt",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "sale_ntin_rate",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "sale_totl_rate",
-          "type": "A0001",
-          "order": "004.005"
-        }
-      ]
-    },
-    {
-      "path": "/uapi/domestic-stock/v1/finance/stability-ratio",
-      "method": "GET",
-      "real_trid": "FHKST66430600",
-      "virtual_trid": "",
-      "required_fields": [
-        "fid_cond_mrkt_div_code",
-        "fid_div_cls_code",
-        "fid_input_iscd"
-      ],
-      "request_props": [
-        {
-          "code": "fid_cond_mrkt_div_code",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "fid_div_cls_code",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "fid_input_iscd",
-          "type": "A0001",
-          "order": "001"
-        }
-      ],
-      "response_props": [
-        {
-          "code": "rt_cd",
-          "type": "A0001",
-          "order": "001"
-        },
-        {
-          "code": "msg_cd",
-          "type": "A0001",
-          "order": "002"
-        },
-        {
-          "code": "msg1",
-          "type": "A0001",
-          "order": "003"
-        },
-        {
-          "code": "output",
-          "type": "A0005",
-          "order": "004"
-        },
-        {
-          "code": "stac_yymm",
-          "type": "A0001",
-          "order": "004.001"
-        },
-        {
-          "code": "lblt_rate",
-          "type": "A0001",
-          "order": "004.002"
-        },
-        {
-          "code": "bram_depn",
-          "type": "A0001",
-          "order": "004.003"
-        },
-        {
-          "code": "crnt_rate",
-          "type": "A0001",
-          "order": "004.004"
-        },
-        {
-          "code": "quck_rate",
-          "type": "A0001",
-          "order": "004.005"
         }
       ]
     },
@@ -10405,84 +9725,49 @@
           "order": "004.002"
         },
         {
-          "code": "arbt_smtm_seln_tr_pbmn_rate",
+          "code": "arbt_smtn_shnu_tr_pbmn",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "arbt_smtn_shnu_tr_pbmn",
+          "code": "nabt_smtn_seln_tr_pbmn",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "arbt_smtm_shun_tr_pbmn_rate",
+          "code": "nabt_smtn_shnu_tr_pbmn",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "nabt_smtn_seln_tr_pbmn",
+          "code": "arbt_smtn_ntby_tr_pbmn",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "nabt_smtm_seln_tr_pbmn_rate",
+          "code": "nabt_smtn_ntby_tr_pbmn",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "nabt_smtn_shnu_tr_pbmn",
+          "code": "whol_smtn_ntby_tr_pbmn",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "nabt_smtm_shun_tr_pbmn_rate",
+          "code": "bstp_nmix_prpr",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "arbt_smtn_ntby_tr_pbmn",
+          "code": "bstp_nmix_prdy_vrss",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "arbt_smtm_ntby_tr_pbmn_rate",
-          "type": "A0001",
-          "order": "004.011"
-        },
-        {
-          "code": "nabt_smtn_ntby_tr_pbmn",
-          "type": "A0001",
-          "order": "004.012"
-        },
-        {
-          "code": "nabt_smtm_ntby_tr_pbmn_rate",
-          "type": "A0001",
-          "order": "004.013"
-        },
-        {
-          "code": "whol_smtn_ntby_tr_pbmn",
-          "type": "A0001",
-          "order": "004.014"
-        },
-        {
-          "code": "whol_ntby_tr_pbmn_rate",
-          "type": "A0001",
-          "order": "004.015"
-        },
-        {
-          "code": "bstp_nmix_prpr",
-          "type": "A0001",
-          "order": "004.016"
-        },
-        {
-          "code": "bstp_nmix_prdy_vrss",
-          "type": "A0001",
-          "order": "004.017"
-        },
-        {
           "code": "prdy_vrss_sign",
           "type": "A0001",
-          "order": "004.018"
+          "order": "004.011"
         }
       ]
     },
@@ -17459,6 +16744,7 @@
       "virtual_trid": "",
       "required_fields": [
         "FID_COND_MRKT_DIV_CODE",
+        "FID_FAKE_TICK_INCU_YN",
         "FID_INPUT_DATE_1",
         "FID_INPUT_HOUR_1",
         "FID_INPUT_ISCD",
@@ -30386,149 +29672,144 @@
           "order": "004"
         },
         {
-          "code": "acno10",
+          "code": "rght_type_cd",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "rght_type_cd",
+          "code": "bass_dt",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "bass_dt",
+          "code": "rght_cblc_type_cd",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "rght_cblc_type_cd",
+          "code": "rptt_pdno",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "rptt_pdno",
+          "code": "pdno",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "pdno",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "shtn_pdno",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "shtn_pdno",
+          "code": "prdt_name",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "prdt_name",
+          "code": "cblc_qty",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "cblc_qty",
+          "code": "last_alct_qty",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "last_alct_qty",
+          "code": "excs_alct_qty",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "excs_alct_qty",
+          "code": "tot_alct_qty",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "tot_alct_qty",
+          "code": "last_ftsk_qty",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "last_ftsk_qty",
+          "code": "last_alct_amt",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "last_alct_amt",
+          "code": "last_ftsk_chgs",
           "type": "A0001",
           "order": "004.015"
         },
         {
-          "code": "last_ftsk_chgs",
+          "code": "rdpt_prca",
           "type": "A0001",
           "order": "004.016"
         },
         {
-          "code": "rdpt_prca",
+          "code": "dlay_int_amt",
           "type": "A0001",
           "order": "004.017"
         },
         {
-          "code": "dlay_int_amt",
+          "code": "lstg_dt",
           "type": "A0001",
           "order": "004.018"
         },
         {
-          "code": "lstg_dt",
+          "code": "sbsc_end_dt",
           "type": "A0001",
           "order": "004.019"
         },
         {
-          "code": "sbsc_end_dt",
+          "code": "cash_dfrm_dt",
           "type": "A0001",
           "order": "004.020"
         },
         {
-          "code": "cash_dfrm_dt",
+          "code": "rqst_qty",
           "type": "A0001",
           "order": "004.021"
         },
         {
-          "code": "rqst_qty",
+          "code": "rqst_amt",
           "type": "A0001",
           "order": "004.022"
         },
         {
-          "code": "rqst_amt",
+          "code": "rqst_dt",
           "type": "A0001",
           "order": "004.023"
         },
         {
-          "code": "rqst_dt",
+          "code": "rfnd_dt",
           "type": "A0001",
           "order": "004.024"
         },
         {
-          "code": "rfnd_dt",
+          "code": "rfnd_amt",
           "type": "A0001",
           "order": "004.025"
         },
         {
-          "code": "rfnd_amt",
+          "code": "lstg_stqt",
           "type": "A0001",
           "order": "004.026"
         },
         {
-          "code": "lstg_stqt",
+          "code": "tax_amt",
           "type": "A0001",
           "order": "004.027"
         },
         {
-          "code": "tax_amt",
-          "type": "A0001",
-          "order": "004.028"
-        },
-        {
           "code": "sbsc_unpr",
           "type": "A0001",
-          "order": "004.029"
+          "order": "004.028"
         }
       ]
     },
@@ -38755,159 +38036,149 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "ord_dt",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "odno",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "ord_dt",
+          "code": "orgn_ord_dt",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "odno",
+          "code": "orgn_odno",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "orgn_ord_dt",
+          "code": "ovrs_futr_fx_pdno",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "orgn_odno",
+          "code": "rcit_dvsn_cd",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "ovrs_futr_fx_pdno",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "rcit_dvsn_cd",
+          "code": "trad_stgy_dvsn_cd",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "bass_pric_type_cd",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "trad_stgy_dvsn_cd",
+          "code": "ord_stat_cd",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "bass_pric_type_cd",
+          "code": "fm_ord_qty",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "ord_stat_cd",
+          "code": "fm_ord_pric",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fm_ord_qty",
+          "code": "fm_stop_ord_pric",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "fm_ord_pric",
+          "code": "rsvn_dvsn",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "fm_stop_ord_pric",
+          "code": "fm_ccld_qty",
           "type": "A0001",
           "order": "004.015"
         },
         {
-          "code": "rsvn_dvsn",
+          "code": "fm_ccld_pric",
           "type": "A0001",
           "order": "004.016"
         },
         {
-          "code": "fm_ccld_qty",
+          "code": "fm_ord_rmn_qty",
           "type": "A0001",
           "order": "004.017"
         },
         {
-          "code": "fm_ccld_pric",
+          "code": "ord_grp_name",
           "type": "A0001",
           "order": "004.018"
         },
         {
-          "code": "fm_ord_rmn_qty",
+          "code": "erlm_dtl_dtime",
           "type": "A0001",
           "order": "004.019"
         },
         {
-          "code": "ord_grp_name",
+          "code": "ccld_dtl_dtime",
           "type": "A0001",
           "order": "004.020"
         },
         {
-          "code": "erlm_dtl_dtime",
+          "code": "ord_stfno",
           "type": "A0001",
           "order": "004.021"
         },
         {
-          "code": "ccld_dtl_dtime",
+          "code": "rmks1",
           "type": "A0001",
           "order": "004.022"
         },
         {
-          "code": "ord_stfno",
+          "code": "new_lqd_dvsn_cd",
           "type": "A0001",
           "order": "004.023"
         },
         {
-          "code": "rmks1",
+          "code": "fm_lqd_lmt_ord_pric",
           "type": "A0001",
           "order": "004.024"
         },
         {
-          "code": "new_lqd_dvsn_cd",
+          "code": "fm_lqd_stop_pric",
           "type": "A0001",
           "order": "004.025"
         },
         {
-          "code": "fm_lqd_lmt_ord_pric",
+          "code": "ccld_cndt_cd",
           "type": "A0001",
           "order": "004.026"
         },
         {
-          "code": "fm_lqd_stop_pric",
+          "code": "noti_vald_dt",
           "type": "A0001",
           "order": "004.027"
         },
         {
-          "code": "ccld_cndt_cd",
+          "code": "acnt_type_cd",
           "type": "A0001",
           "order": "004.028"
         },
         {
-          "code": "noti_vald_dt",
-          "type": "A0001",
-          "order": "004.029"
-        },
-        {
-          "code": "acnt_type_cd",
-          "type": "A0001",
-          "order": "004.030"
-        },
-        {
           "code": "fuop_dvsn",
           "type": "A0001",
-          "order": "004.031"
+          "order": "004.029"
         }
       ]
     },
@@ -39205,139 +38476,129 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "dt",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "ord_dt",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "dt",
+          "code": "odno",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "ord_dt",
+          "code": "orgn_ord_dt",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "odno",
+          "code": "orgn_odno",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "orgn_ord_dt",
+          "code": "ovrs_futr_fx_pdno",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "orgn_odno",
+          "code": "rvse_cncl_dvsn_cd",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "ovrs_futr_fx_pdno",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "rvse_cncl_dvsn_cd",
+          "code": "cplx_ord_dvsn_cd",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "pric_dvsn_cd",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "cplx_ord_dvsn_cd",
+          "code": "rcit_dvsn_cd",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "pric_dvsn_cd",
+          "code": "fm_ord_qty",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "rcit_dvsn_cd",
+          "code": "fm_ord_pric",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "fm_ord_qty",
+          "code": "fm_stop_ord_pric",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "fm_ord_pric",
+          "code": "ecis_rsvn_ord_yn",
           "type": "A0001",
           "order": "004.015"
         },
         {
-          "code": "fm_stop_ord_pric",
+          "code": "fm_ccld_qty",
           "type": "A0001",
           "order": "004.016"
         },
         {
-          "code": "ecis_rsvn_ord_yn",
+          "code": "fm_ccld_pric",
           "type": "A0001",
           "order": "004.017"
         },
         {
-          "code": "fm_ccld_qty",
+          "code": "fm_ord_rmn_qty",
           "type": "A0001",
           "order": "004.018"
         },
         {
-          "code": "fm_ccld_pric",
+          "code": "ord_grp_name",
           "type": "A0001",
           "order": "004.019"
         },
         {
-          "code": "fm_ord_rmn_qty",
+          "code": "rcit_dtl_dtime",
           "type": "A0001",
           "order": "004.020"
         },
         {
-          "code": "ord_grp_name",
+          "code": "ccld_dtl_dtime",
           "type": "A0001",
           "order": "004.021"
         },
         {
-          "code": "rcit_dtl_dtime",
+          "code": "ordr_emp_no",
           "type": "A0001",
           "order": "004.022"
         },
         {
-          "code": "ccld_dtl_dtime",
+          "code": "rjct_rson_name",
           "type": "A0001",
           "order": "004.023"
         },
         {
-          "code": "ordr_emp_no",
+          "code": "ccld_cndt_cd",
           "type": "A0001",
           "order": "004.024"
         },
         {
-          "code": "rjct_rson_name",
-          "type": "A0001",
-          "order": "004.025"
-        },
-        {
-          "code": "ccld_cndt_cd",
-          "type": "A0001",
-          "order": "004.026"
-        },
-        {
           "code": "trad_end_dt",
           "type": "A0001",
-          "order": "004.027"
+          "order": "004.025"
         }
       ]
     },
@@ -39406,119 +38667,109 @@
           "order": "004.002"
         },
         {
-          "code": "cano",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "resp_dt",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "crcy_cd",
+          "code": "fm_dnca_rmnd",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "resp_dt",
+          "code": "fm_lqd_pfls_amt",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "fm_dnca_rmnd",
+          "code": "fm_fee",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_lqd_pfls_amt",
+          "code": "fm_fuop_evlu_pfls_amt",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "fm_fee",
+          "code": "fm_rcvb_amt",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "fm_fuop_evlu_pfls_amt",
+          "code": "fm_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "fm_rcvb_amt",
+          "code": "fm_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "fm_brkg_mgn_amt",
+          "code": "fm_add_mgn_amt",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fm_mntn_mgn_amt",
+          "code": "fm_risk_rt",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "fm_add_mgn_amt",
+          "code": "fm_ord_psbl_amt",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "fm_risk_rt",
+          "code": "fm_drwg_psbl_amt",
           "type": "A0001",
           "order": "004.015"
         },
         {
-          "code": "fm_ord_psbl_amt",
+          "code": "fm_echm_rqrm_amt",
           "type": "A0001",
           "order": "004.016"
         },
         {
-          "code": "fm_drwg_psbl_amt",
+          "code": "fm_drwg_prar_amt",
           "type": "A0001",
           "order": "004.017"
         },
         {
-          "code": "fm_echm_rqrm_amt",
+          "code": "fm_opt_tr_chgs",
           "type": "A0001",
           "order": "004.018"
         },
         {
-          "code": "fm_drwg_prar_amt",
+          "code": "fm_opt_icld_asst_evlu_amt",
           "type": "A0001",
           "order": "004.019"
         },
         {
-          "code": "fm_opt_tr_chgs",
+          "code": "fm_opt_evlu_amt",
           "type": "A0001",
           "order": "004.020"
         },
         {
-          "code": "fm_opt_icld_asst_evlu_amt",
+          "code": "fm_crcy_sbst_amt",
           "type": "A0001",
           "order": "004.021"
         },
         {
-          "code": "fm_opt_evlu_amt",
+          "code": "fm_crcy_sbst_use_amt",
           "type": "A0001",
           "order": "004.022"
         },
         {
-          "code": "fm_crcy_sbst_amt",
-          "type": "A0001",
-          "order": "004.023"
-        },
-        {
-          "code": "fm_crcy_sbst_use_amt",
-          "type": "A0001",
-          "order": "004.024"
-        },
-        {
           "code": "fm_crcy_sbst_stup_amt",
           "type": "A0001",
-          "order": "004.025"
+          "order": "004.023"
         }
       ]
     },
@@ -39607,79 +38858,69 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "fm_buy_qty",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "crcy_cd",
+          "code": "fm_sll_qty",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "fm_buy_qty",
+          "code": "fm_lqd_pfls_amt",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "fm_sll_qty",
+          "code": "fm_fee",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "fm_lqd_pfls_amt",
+          "code": "fm_net_pfls_amt",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "fm_fee",
+          "code": "fm_ustl_buy_qty",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_net_pfls_amt",
+          "code": "fm_ustl_sll_qty",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "fm_ustl_buy_qty",
+          "code": "fm_ustl_evlu_pfls_amt",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "fm_ustl_sll_qty",
+          "code": "fm_ustl_evlu_pfls_amt2",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "fm_ustl_evlu_pfls_amt",
+          "code": "fm_ustl_evlu_pfls_icdc_amt",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "fm_ustl_evlu_pfls_amt2",
+          "code": "fm_ustl_agrm_amt",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fm_ustl_evlu_pfls_icdc_amt",
-          "type": "A0001",
-          "order": "004.013"
-        },
-        {
-          "code": "fm_ustl_agrm_amt",
-          "type": "A0001",
-          "order": "004.014"
-        },
-        {
           "code": "fm_opt_lqd_amt",
           "type": "A0001",
-          "order": "004.015"
+          "order": "004.013"
         },
         {
           "code": "output2",
@@ -39863,84 +39104,74 @@
           "order": "004.001"
         },
         {
-          "code": "cano",
+          "code": "fm_ldgr_inog_seq",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "acnt_tr_type_name",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "fm_ldgr_inog_seq",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "acnt_tr_type_name",
+          "code": "tr_itm_name",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "crcy_cd",
+          "code": "fm_iofw_amt",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "tr_itm_name",
+          "code": "fm_fee",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_iofw_amt",
+          "code": "fm_tax_amt",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "fm_fee",
+          "code": "fm_sttl_amt",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "fm_tax_amt",
+          "code": "fm_bf_dncl_amt",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "fm_sttl_amt",
+          "code": "fm_dncl_amt",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "fm_bf_dncl_amt",
+          "code": "fm_rcvb_occr_amt",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fm_dncl_amt",
+          "code": "fm_rcvb_pybk_amt",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "fm_rcvb_occr_amt",
+          "code": "ovdu_int_pybk_amt",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "fm_rcvb_pybk_amt",
-          "type": "A0001",
-          "order": "004.015"
-        },
-        {
-          "code": "ovdu_int_pybk_amt",
-          "type": "A0001",
-          "order": "004.016"
-        },
-        {
           "code": "rmks_text",
           "type": "A0001",
-          "order": "004.017"
+          "order": "004.015"
         }
       ]
     },
@@ -40011,54 +39242,44 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "ovrs_futr_fx_pdno",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "ovrs_futr_fx_pdno",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "crcy_cd",
+          "code": "fm_ustl_qty",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "fm_lqd_psbl_qty",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "fm_ustl_qty",
+          "code": "fm_new_ord_psbl_qty",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "fm_lqd_psbl_qty",
+          "code": "fm_tot_ord_psbl_qty",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_new_ord_psbl_qty",
-          "type": "A0001",
-          "order": "004.008"
-        },
-        {
-          "code": "fm_tot_ord_psbl_qty",
-          "type": "A0001",
-          "order": "004.009"
-        },
-        {
           "code": "fm_mkpr_tot_ord_psbl_qty",
           "type": "A0001",
-          "order": "004.010"
+          "order": "004.008"
         }
       ]
     },
@@ -40123,79 +39344,69 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "ovrs_futr_fx_pdno",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "prdt_type_cd",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "ovrs_futr_fx_pdno",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "prdt_type_cd",
+          "code": "sll_buy_dvsn_cd",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "crcy_cd",
+          "code": "fm_ustl_qty",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "sll_buy_dvsn_cd",
+          "code": "fm_ccld_avg_pric",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "fm_ustl_qty",
+          "code": "fm_now_pric",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_ccld_avg_pric",
+          "code": "fm_evlu_pfls_amt",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "fm_now_pric",
+          "code": "fm_opt_evlu_amt",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "fm_evlu_pfls_amt",
+          "code": "fm_otp_evlu_pfls_amt",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "fm_opt_evlu_amt",
+          "code": "fuop_dvsn",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "fm_otp_evlu_pfls_amt",
+          "code": "ecis_rsvn_ord_yn",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fuop_dvsn",
-          "type": "A0001",
-          "order": "004.013"
-        },
-        {
-          "code": "ecis_rsvn_ord_yn",
-          "type": "A0001",
-          "order": "004.014"
-        },
-        {
           "code": "fm_lqd_psbl_qty",
           "type": "A0001",
-          "order": "004.015"
+          "order": "004.013"
         }
       ]
     },
@@ -40254,249 +39465,239 @@
           "order": "004"
         },
         {
-          "code": "cano",
+          "code": "crcy_cd",
           "type": "A0001",
           "order": "004.001"
         },
         {
-          "code": "acnt_prdt_cd",
+          "code": "resp_dt",
           "type": "A0001",
           "order": "004.002"
         },
         {
-          "code": "crcy_cd",
+          "code": "acnt_net_risk_mgna_aply_yn",
           "type": "A0001",
           "order": "004.003"
         },
         {
-          "code": "resp_dt",
+          "code": "fm_ord_psbl_amt",
           "type": "A0001",
           "order": "004.004"
         },
         {
-          "code": "acnt_net_risk_mgna_aply_yn",
+          "code": "fm_add_mgn_amt",
           "type": "A0001",
           "order": "004.005"
         },
         {
-          "code": "fm_ord_psbl_amt",
+          "code": "fm_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.006"
         },
         {
-          "code": "fm_add_mgn_amt",
+          "code": "fm_excc_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.007"
         },
         {
-          "code": "fm_brkg_mgn_amt",
+          "code": "fm_ustl_mgn_amt",
           "type": "A0001",
           "order": "004.008"
         },
         {
-          "code": "fm_excc_brkg_mgn_amt",
+          "code": "fm_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.009"
         },
         {
-          "code": "fm_ustl_mgn_amt",
+          "code": "fm_ord_mgn_amt",
           "type": "A0001",
           "order": "004.010"
         },
         {
-          "code": "fm_mntn_mgn_amt",
+          "code": "fm_futr_ord_mgn_amt",
           "type": "A0001",
           "order": "004.011"
         },
         {
-          "code": "fm_ord_mgn_amt",
+          "code": "fm_opt_buy_ord_amt",
           "type": "A0001",
           "order": "004.012"
         },
         {
-          "code": "fm_futr_ord_mgn_amt",
+          "code": "fm_opt_sll_ord_mgn_amt",
           "type": "A0001",
           "order": "004.013"
         },
         {
-          "code": "fm_opt_buy_ord_amt",
+          "code": "fm_opt_buy_ord_mgn_amt",
           "type": "A0001",
           "order": "004.014"
         },
         {
-          "code": "fm_opt_sll_ord_mgn_amt",
+          "code": "fm_ecis_rsvn_mgn_amt",
           "type": "A0001",
           "order": "004.015"
         },
         {
-          "code": "fm_opt_buy_ord_mgn_amt",
+          "code": "fm_span_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.016"
         },
         {
-          "code": "fm_ecis_rsvn_mgn_amt",
+          "code": "fm_span_pric_altr_mgn_amt",
           "type": "A0001",
           "order": "004.017"
         },
         {
-          "code": "fm_span_brkg_mgn_amt",
+          "code": "fm_span_term_sprd_mgn_amt",
           "type": "A0001",
           "order": "004.018"
         },
         {
-          "code": "fm_span_pric_altr_mgn_amt",
+          "code": "fm_span_buy_opt_min_mgn_amt",
           "type": "A0001",
           "order": "004.019"
         },
         {
-          "code": "fm_span_term_sprd_mgn_amt",
+          "code": "fm_span_opt_min_mgn_amt",
           "type": "A0001",
           "order": "004.020"
         },
         {
-          "code": "fm_span_buy_opt_min_mgn_amt",
+          "code": "fm_span_tot_risk_mgn_amt",
           "type": "A0001",
           "order": "004.021"
         },
         {
-          "code": "fm_span_opt_min_mgn_amt",
+          "code": "fm_span_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.022"
         },
         {
-          "code": "fm_span_tot_risk_mgn_amt",
+          "code": "fm_span_mntn_pric_altr_mgn_amt",
           "type": "A0001",
           "order": "004.023"
         },
         {
-          "code": "fm_span_mntn_mgn_amt",
+          "code": "fm_span_mntn_term_sprd_mgn_amt",
           "type": "A0001",
           "order": "004.024"
         },
         {
-          "code": "fm_span_mntn_pric_altr_mgn_amt",
+          "code": "fm_span_mntn_opt_pric_mgn_amt",
           "type": "A0001",
           "order": "004.025"
         },
         {
-          "code": "fm_span_mntn_term_sprd_mgn_amt",
+          "code": "fm_span_mntn_opt_min_mgn_amt",
           "type": "A0001",
           "order": "004.026"
         },
         {
-          "code": "fm_span_mntn_opt_pric_mgn_amt",
+          "code": "fm_span_mntn_tot_risk_mgn_amt",
           "type": "A0001",
           "order": "004.027"
         },
         {
-          "code": "fm_span_mntn_opt_min_mgn_amt",
+          "code": "fm_eurx_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.028"
         },
         {
-          "code": "fm_span_mntn_tot_risk_mgn_amt",
+          "code": "fm_eurx_pric_altr_mgn_amt",
           "type": "A0001",
           "order": "004.029"
         },
         {
-          "code": "fm_eurx_brkg_mgn_amt",
+          "code": "fm_eurx_term_sprd_mgn_amt",
           "type": "A0001",
           "order": "004.030"
         },
         {
-          "code": "fm_eurx_pric_altr_mgn_amt",
+          "code": "fm_eurx_opt_pric_mgn_amt",
           "type": "A0001",
           "order": "004.031"
         },
         {
-          "code": "fm_eurx_term_sprd_mgn_amt",
+          "code": "fm_eurx_buy_opt_min_mgn_amt",
           "type": "A0001",
           "order": "004.032"
         },
         {
-          "code": "fm_eurx_opt_pric_mgn_amt",
+          "code": "fm_eurx_tot_risk_mgn_amt",
           "type": "A0001",
           "order": "004.033"
         },
         {
-          "code": "fm_eurx_buy_opt_min_mgn_amt",
+          "code": "fm_eurx_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.034"
         },
         {
-          "code": "fm_eurx_tot_risk_mgn_amt",
+          "code": "fm_eurx_mntn_pric_altr_mgn_amt",
           "type": "A0001",
           "order": "004.035"
         },
         {
-          "code": "fm_eurx_mntn_mgn_amt",
+          "code": "fm_eurx_mntn_term_sprd_mgn_amt",
           "type": "A0001",
           "order": "004.036"
         },
         {
-          "code": "fm_eurx_mntn_pric_altr_mgn_amt",
+          "code": "fm_eurx_mntn_opt_pric_mgn_amt",
           "type": "A0001",
           "order": "004.037"
         },
         {
-          "code": "fm_eurx_mntn_term_sprd_mgn_amt",
+          "code": "fm_eurx_mntn_tot_risk_mgn_amt",
           "type": "A0001",
           "order": "004.038"
         },
         {
-          "code": "fm_eurx_mntn_opt_pric_mgn_amt",
+          "code": "fm_gnrl_brkg_mgn_amt",
           "type": "A0001",
           "order": "004.039"
         },
         {
-          "code": "fm_eurx_mntn_tot_risk_mgn_amt",
+          "code": "fm_futr_ustl_mgn_amt",
           "type": "A0001",
           "order": "004.040"
         },
         {
-          "code": "fm_gnrl_brkg_mgn_amt",
+          "code": "fm_sll_opt_ustl_mgn_amt",
           "type": "A0001",
           "order": "004.041"
         },
         {
-          "code": "fm_futr_ustl_mgn_amt",
+          "code": "fm_buy_opt_ustl_mgn_amt",
           "type": "A0001",
           "order": "004.042"
         },
         {
-          "code": "fm_sll_opt_ustl_mgn_amt",
+          "code": "fm_sprd_ustl_mgn_amt",
           "type": "A0001",
           "order": "004.043"
         },
         {
-          "code": "fm_buy_opt_ustl_mgn_amt",
+          "code": "fm_avg_dsct_mgn_amt",
           "type": "A0001",
           "order": "004.044"
         },
         {
-          "code": "fm_sprd_ustl_mgn_amt",
+          "code": "fm_gnrl_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.045"
         },
         {
-          "code": "fm_avg_dsct_mgn_amt",
+          "code": "fm_futr_mntn_mgn_amt",
           "type": "A0001",
           "order": "004.046"
         },
         {
-          "code": "fm_gnrl_mntn_mgn_amt",
-          "type": "A0001",
-          "order": "004.047"
-        },
-        {
-          "code": "fm_futr_mntn_mgn_amt",
-          "type": "A0001",
-          "order": "004.048"
-        },
-        {
           "code": "fm_opt_mntn_mgn_amt",
           "type": "A0001",
-          "order": "004.049"
+          "order": "004.047"
         }
       ]
     },
@@ -44493,6 +43694,7 @@
       "virtual_trid": "",
       "required_fields": [
         "AUTH",
+        "CURR_GB",
         "EXCD",
         "KEYB",
         "VOL_RANG"
@@ -44502,6 +43704,11 @@
           "code": "AUTH",
           "type": "A0001",
           "order": "002"
+        },
+        {
+          "code": "CURR_GB",
+          "type": "A0001",
+          "order": "005"
         },
         {
           "code": "EXCD",

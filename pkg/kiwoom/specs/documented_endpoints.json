@@ -4241,6 +4241,10 @@
           "type": "String"
         },
         {
+          "code": "- acc_trde_qty",
+          "type": "String"
+        },
+        {
           "code": "- bank",
           "type": "String"
         },
@@ -4445,6 +4449,14 @@
           "type": "String"
         },
         {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
           "code": "last_tic_cnt",
           "type": "String"
         },
@@ -4490,6 +4502,10 @@
       ],
       "response_fields": [
         {
+          "code": "- acc_trde_qty",
+          "type": "String"
+        },
+        {
           "code": "- cntr_tm",
           "type": "String"
         },
@@ -4519,6 +4535,14 @@
         },
         {
           "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
           "type": "String"
         },
         {
@@ -4599,6 +4623,14 @@
           "type": "String"
         },
         {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
           "code": "stk_cd",
           "type": "String"
         },
@@ -4673,6 +4705,14 @@
         },
         {
           "code": "- trde_tern_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
           "type": "String"
         },
         {
@@ -4753,6 +4793,14 @@
           "type": "String"
         },
         {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
           "code": "stk_cd",
           "type": "String"
         },
@@ -4818,12 +4866,514 @@
           "type": "String"
         },
         {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
           "code": "stk_cd",
           "type": "String"
         },
         {
           "code": "stk_yr_pole_chart_qry",
           "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11079",
+      "method": "POST",
+      "required_fields": [
+        "stk_cd",
+        "tic_scope",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "tic_scope",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cntr_tm",
+          "type": "String"
+        },
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "last_tic_cnt",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11080",
+      "method": "POST",
+      "required_fields": [
+        "stk_cd",
+        "tic_scope",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "tic_scope",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- acc_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_tm",
+          "type": "String"
+        },
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11081",
+      "method": "POST",
+      "required_fields": [
+        "base_dt",
+        "stk_cd",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- dt",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tern_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11082",
+      "method": "POST",
+      "required_fields": [
+        "base_dt",
+        "stk_cd",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- dt",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tern_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11083",
+      "method": "POST",
+      "required_fields": [
+        "base_dt",
+        "stk_cd",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- dt",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tern_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/chart",
+      "api_id": "ka11094",
+      "method": "POST",
+      "required_fields": [
+        "base_dt",
+        "stk_cd",
+        "upd_stkpc_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "upd_stkpc_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- dt",
+          "type": "String"
+        },
+        {
+          "code": "- high_pric",
+          "type": "String"
+        },
+        {
+          "code": "- low_pric",
+          "type": "String"
+        },
+        {
+          "code": "- open_pric",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- upd_rt",
+          "type": "String"
+        },
+        {
+          "code": "- upd_stkpc_tp",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
         }
       ]
     },
@@ -7671,6 +8221,650 @@
         {
           "code": "etftisl_trnsn",
           "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "ka14640",
+      "method": "POST",
+      "required_fields": [
+        "mrkt_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "mrkt_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "- jm_sosuyn",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14401",
+      "method": "POST",
+      "required_fields": [
+        "ord_amt",
+        "stk_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_amt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_exct_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_rqst_no",
+          "type": "String"
+        },
+        {
+          "code": "ord_time_tp",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14402",
+      "method": "POST",
+      "required_fields": [
+        "ord_qty",
+        "stk_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_exct_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_rqst_no",
+          "type": "String"
+        },
+        {
+          "code": "ord_time_tp",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14403",
+      "method": "POST",
+      "required_fields": [
+        "ord_exct_dt",
+        "ord_rqst_no",
+        "stk_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_exct_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_rqst_no",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "filler",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14404",
+      "method": "POST",
+      "required_fields": [
+        "cncl_yn",
+        "cntr_yn",
+        "dcpn_proc_tp",
+        "fr_ord_dt",
+        "mrkt_deal_tp",
+        "slby_tp",
+        "to_ord_dt"
+      ],
+      "request_fields": [
+        {
+          "code": "cncl_yn",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "cntr_yn",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "dcpn_proc_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "fr_ord_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "mrkt_deal_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "slby_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "to_ord_dt",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cmsn",
+          "type": "String"
+        },
+        {
+          "code": "- cncl_yn",
+          "type": "String"
+        },
+        {
+          "code": "- cncl_yn_nm",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_amt",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_dt",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_qty",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_time",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_uv",
+          "type": "String"
+        },
+        {
+          "code": "- dcpn_proc_yn",
+          "type": "String"
+        },
+        {
+          "code": "- dcpn_proc_yn_nm",
+          "type": "String"
+        },
+        {
+          "code": "- ord_amt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_exct_time",
+          "type": "String"
+        },
+        {
+          "code": "- ord_no",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_time",
+          "type": "String"
+        },
+        {
+          "code": "- ord_time_tp",
+          "type": "String"
+        },
+        {
+          "code": "- proc_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- rqst_base_pric",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- tax",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14405",
+      "method": "POST",
+      "required_fields": [
+        "slby_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "slby_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- dcpn_proc_tp",
+          "type": "String"
+        },
+        {
+          "code": "- ord_amt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_exct_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_rqst_no",
+          "type": "String"
+        },
+        {
+          "code": "- ord_time",
+          "type": "String"
+        },
+        {
+          "code": "- ord_time_tp",
+          "type": "String"
+        },
+        {
+          "code": "- ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- proc_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- proc_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14406",
+      "method": "POST",
+      "required_fields": [
+        "slby_tp",
+        "stk_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "slby_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "buy_alowa",
+          "type": "String"
+        },
+        {
+          "code": "sell_alowq",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14407",
+      "method": "POST",
+      "required_fields": [
+        "qry_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "qry_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- avg_prc",
+          "type": "String"
+        },
+        {
+          "code": "- book_amt2",
+          "type": "String"
+        },
+        {
+          "code": "- cmsn",
+          "type": "String"
+        },
+        {
+          "code": "- cnvt_frcs_qty",
+          "type": "String"
+        },
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- est_amt",
+          "type": "String"
+        },
+        {
+          "code": "- est_lspft",
+          "type": "String"
+        },
+        {
+          "code": "- est_ratio",
+          "type": "String"
+        },
+        {
+          "code": "- pl_prch_prc",
+          "type": "String"
+        },
+        {
+          "code": "- pred_buyq",
+          "type": "String"
+        },
+        {
+          "code": "- pred_net_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- pred_sellq",
+          "type": "String"
+        },
+        {
+          "code": "- qty",
+          "type": "String"
+        },
+        {
+          "code": "- real_qty",
+          "type": "String"
+        },
+        {
+          "code": "- sell_alowq",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- tax",
+          "type": "String"
+        },
+        {
+          "code": "- tdy_buyq",
+          "type": "String"
+        },
+        {
+          "code": "- tdy_net_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- tdy_sellq",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        },
+        {
+          "code": "tot_book_amt2",
+          "type": "String"
+        },
+        {
+          "code": "tot_est_amt",
+          "type": "String"
+        },
+        {
+          "code": "tot_lspft",
+          "type": "String"
+        },
+        {
+          "code": "tot_lspft_ratio",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14430",
+      "method": "POST",
+      "required_fields": [
+        "qry_fr_dt",
+        "qry_to_dt",
+        "stat_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "qry_fr_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "qry_to_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stat_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- cnvt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- cnvt_rqst_qty",
+          "type": "String"
+        },
+        {
+          "code": "- cnvt_time",
+          "type": "String"
+        },
+        {
+          "code": "- rqst_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rqst_time",
+          "type": "String"
+        },
+        {
+          "code": "- seq",
+          "type": "String"
+        },
+        {
+          "code": "- stat_tp",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/frac",
+      "api_id": "kt14641",
+      "method": "POST",
+      "request_fields": [
+        {
+          "code": "stk_cd",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "dcpn_ord_alow_yn",
+          "type": "String"
         }
       ]
     },
@@ -10649,6 +11843,589 @@
     },
     {
       "path": "/api/dostk/ordr",
+      "api_id": "kt03311",
+      "method": "POST",
+      "required_fields": [
+        "dmst_stex_tp",
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "end_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "rgst_seq",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03312",
+      "method": "POST",
+      "required_fields": [
+        "dmst_stex_tp",
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "end_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "rgst_seq",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03313",
+      "method": "POST",
+      "required_fields": [
+        "ord_dt",
+        "rgst_dt",
+        "rgst_seq",
+        "rsrv_ord_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "ord_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rgst_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rgst_seq",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03315",
+      "method": "POST",
+      "required_fields": [
+        "crd_deal_tp",
+        "dmst_stex_tp",
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "crd_deal_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "crd_loan_dt",
+          "type": "String"
+        },
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "end_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "rgst_seq",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03316",
+      "method": "POST",
+      "required_fields": [
+        "crd_deal_tp",
+        "crd_loan_dt",
+        "dmst_stex_tp",
+        "ord_qty",
+        "rsrv_ord_tp",
+        "stk_cd",
+        "trde_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "crd_deal_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "crd_loan_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "end_dt",
+          "type": "String"
+        },
+        {
+          "code": "ord_qty",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "stk_cd",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "trde_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "rgst_seq",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03317",
+      "method": "POST",
+      "required_fields": [
+        "dmst_stex_tp",
+        "ord_dt",
+        "rsrv_ord_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "ord_dt",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- accm_cntr_qty",
+          "type": "String"
+        },
+        {
+          "code": "- auto_abnd_dt",
+          "type": "String"
+        },
+        {
+          "code": "- auto_abnd_yn",
+          "type": "String"
+        },
+        {
+          "code": "- crd_deal_tp",
+          "type": "String"
+        },
+        {
+          "code": "- crd_deal_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- crd_loan_dt",
+          "type": "String"
+        },
+        {
+          "code": "- dmst_stex_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- end_dt",
+          "type": "String"
+        },
+        {
+          "code": "- inpt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- inpt_time",
+          "type": "String"
+        },
+        {
+          "code": "- ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_no",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- orig_ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- proc_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- rgst_seq",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
+      "api_id": "kt03318",
+      "method": "POST",
+      "required_fields": [
+        "base_dt_tp",
+        "dmst_stex_tp",
+        "qry_tp",
+        "rsrv_ord_tp"
+      ],
+      "request_fields": [
+        {
+          "code": "base_dt",
+          "type": "String"
+        },
+        {
+          "code": "base_dt_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "dmst_stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "qry_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "rsrv_ord_tp",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- abnd_work_time",
+          "type": "String"
+        },
+        {
+          "code": "- accm_cntr_qty",
+          "type": "String"
+        },
+        {
+          "code": "- crd_deal_tp",
+          "type": "String"
+        },
+        {
+          "code": "- crd_deal_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- crd_loan_dt",
+          "type": "String"
+        },
+        {
+          "code": "- dmst_stex_tp",
+          "type": "String"
+        },
+        {
+          "code": "- end_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_dt",
+          "type": "String"
+        },
+        {
+          "code": "- ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- orig_ord_qty",
+          "type": "String"
+        },
+        {
+          "code": "- orig_ord_uv",
+          "type": "String"
+        },
+        {
+          "code": "- proc_cntn",
+          "type": "String"
+        },
+        {
+          "code": "- rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "- rgst_seq",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_ord_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- rsrv_rgst_dt",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp",
+          "type": "String"
+        },
+        {
+          "code": "- slby_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- strt_dt",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp",
+          "type": "String"
+        },
+        {
+          "code": "- trde_tp_nm",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/ordr",
       "api_id": "kt10000",
       "method": "POST",
       "required_fields": [
@@ -13437,6 +15214,272 @@
         },
         {
           "code": "opmr_invsr_trde_upper",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/rkinfo",
+      "api_id": "ka11310",
+      "method": "POST",
+      "request_fields": [
+        {
+          "code": "crd_tp",
+          "type": "String"
+        },
+        {
+          "code": "mac_cnd_max",
+          "type": "String"
+        },
+        {
+          "code": "mac_cnd_max_sign",
+          "type": "String"
+        },
+        {
+          "code": "mac_cnd_min",
+          "type": "String"
+        },
+        {
+          "code": "mac_cnd_min_sign",
+          "type": "String"
+        },
+        {
+          "code": "mac_cnd_usr",
+          "type": "String"
+        },
+        {
+          "code": "mac_tp",
+          "type": "String"
+        },
+        {
+          "code": "mrkt_tp",
+          "type": "String"
+        },
+        {
+          "code": "pric_cnd_usr",
+          "type": "String"
+        },
+        {
+          "code": "pric_tp",
+          "type": "String"
+        },
+        {
+          "code": "price_cnd_max",
+          "type": "String"
+        },
+        {
+          "code": "price_cnd_max_sign",
+          "type": "String"
+        },
+        {
+          "code": "price_cnd_min",
+          "type": "String"
+        },
+        {
+          "code": "price_cnd_min_sign",
+          "type": "String"
+        },
+        {
+          "code": "qry_tp",
+          "type": "String"
+        },
+        {
+          "code": "stex_tp",
+          "type": "String"
+        },
+        {
+          "code": "stk_tp",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_cnd_max",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_cnd_max_sign",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_cnd_min",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_cnd_min_sgin",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_cnd_usr",
+          "type": "String"
+        },
+        {
+          "code": "trde_prica_tp",
+          "type": "String"
+        },
+        {
+          "code": "trde_qty_tp",
+          "type": "String"
+        },
+        {
+          "code": "updown_incls",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- buy_req",
+          "type": "String"
+        },
+        {
+          "code": "- cntr_str",
+          "type": "String"
+        },
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- pred_rt",
+          "type": "String"
+        },
+        {
+          "code": "- rank",
+          "type": "String"
+        },
+        {
+          "code": "- sel_req",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/rkinfo",
+      "api_id": "ka11370",
+      "method": "POST",
+      "request_fields": [
+        {
+          "code": "dt",
+          "type": "String"
+        },
+        {
+          "code": "krx_after_tp",
+          "type": "String"
+        },
+        {
+          "code": "mrkt_tp",
+          "type": "String"
+        },
+        {
+          "code": "sort_tp_1",
+          "type": "String"
+        },
+        {
+          "code": "sort_tp_2",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- disp_gap",
+          "type": "String"
+        },
+        {
+          "code": "- disp_rt",
+          "type": "String"
+        },
+        {
+          "code": "- krx_cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- krx_flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "- krx_pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- krx_pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- krx_trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- krx_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_pred_pre_sig",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "- nxt_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- rank",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
           "type": "LIST"
         }
       ]
@@ -17656,6 +19699,141 @@
         {
           "code": "crd_alow_yn",
           "type": "String"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/thme",
+      "api_id": "ka06550",
+      "method": "POST",
+      "required_fields": [
+        "stex_tp",
+        "thema_grp_cd"
+      ],
+      "request_fields": [
+        {
+          "code": "date_tp",
+          "type": "String"
+        },
+        {
+          "code": "stex_tp",
+          "type": "String",
+          "required": true
+        },
+        {
+          "code": "thema_grp_cd",
+          "type": "String",
+          "required": true
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- acc_trde_qty",
+          "type": "String"
+        },
+        {
+          "code": "- buy_bid",
+          "type": "String"
+        },
+        {
+          "code": "- buy_req",
+          "type": "String"
+        },
+        {
+          "code": "- cur_prc",
+          "type": "String"
+        },
+        {
+          "code": "- dt_prft_rt_n",
+          "type": "String"
+        },
+        {
+          "code": "- flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "- flu_sig",
+          "type": "String"
+        },
+        {
+          "code": "- mac",
+          "type": "String"
+        },
+        {
+          "code": "- pred_pre",
+          "type": "String"
+        },
+        {
+          "code": "- sel_bid",
+          "type": "String"
+        },
+        {
+          "code": "- sel_req",
+          "type": "String"
+        },
+        {
+          "code": "- stk_cd",
+          "type": "String"
+        },
+        {
+          "code": "- stk_nm",
+          "type": "String"
+        },
+        {
+          "code": "- trde_prica",
+          "type": "String"
+        },
+        {
+          "code": "dt_prft_rt",
+          "type": "String"
+        },
+        {
+          "code": "flu_rt",
+          "type": "String"
+        },
+        {
+          "code": "result_list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/thme",
+      "api_id": "ka10106",
+      "method": "POST",
+      "response_fields": [
+        {
+          "code": "- code",
+          "type": "String"
+        },
+        {
+          "code": "- name",
+          "type": "String"
+        },
+        {
+          "code": "list",
+          "type": "LIST"
+        }
+      ]
+    },
+    {
+      "path": "/api/dostk/thme",
+      "api_id": "ka10107",
+      "method": "POST",
+      "request_fields": [
+        {
+          "code": "code",
+          "type": "String"
+        }
+      ],
+      "response_fields": [
+        {
+          "code": "- code",
+          "type": "String"
+        },
+        {
+          "code": "list",
+          "type": "LIST"
         }
       ]
     },

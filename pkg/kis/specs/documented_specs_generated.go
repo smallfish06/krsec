@@ -230,48 +230,6 @@ var DocumentedKISEndpointSpecs = map[string]KISEndpointSpec{
 		VirtualTRID:    "(주간 정정/취소) VTTO1103U (야간은 모의투자 미제공)",
 		RequiredFields: []string{"ACNT_PRDT_CD", "CANO", "KRX_NMPR_CNDT_CD", "NMPR_TYPE_CD", "ORD_DVSN_CD", "ORD_PRCS_DVSN_CD", "ORD_QTY", "ORGN_ODNO", "RMN_QTY_YN", "RVSE_CNCL_DVSN_CD", "UNIT_PRICE"},
 	},
-	"/uapi/domestic-stock/v1/finance/balance-sheet": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430100",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_DIV_CLS_CODE", "fid_cond_mrkt_div_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/financial-ratio": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430300",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_DIV_CLS_CODE", "fid_cond_mrkt_div_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/growth-ratio": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430800",
-		VirtualTRID:    "",
-		RequiredFields: []string{"fid_cond_mrkt_div_code", "fid_div_cls_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/income-statement": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430200",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_DIV_CLS_CODE", "fid_cond_mrkt_div_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/other-major-ratios": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430500",
-		VirtualTRID:    "",
-		RequiredFields: []string{"fid_cond_mrkt_div_code", "fid_div_cls_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/profit-ratio": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430400",
-		VirtualTRID:    "",
-		RequiredFields: []string{"FID_DIV_CLS_CODE", "fid_cond_mrkt_div_code", "fid_input_iscd"},
-	},
-	"/uapi/domestic-stock/v1/finance/stability-ratio": {
-		Method:         "GET",
-		RealTRID:       "FHKST66430600",
-		VirtualTRID:    "",
-		RequiredFields: []string{"fid_cond_mrkt_div_code", "fid_div_cls_code", "fid_input_iscd"},
-	},
 	"/uapi/domestic-stock/v1/ksdinfo/bonus-issue": {
 		Method:         "GET",
 		RealTRID:       "HHKDB669101C0",
@@ -588,7 +546,7 @@ var DocumentedKISEndpointSpecs = map[string]KISEndpointSpec{
 		Method:         "GET",
 		RealTRID:       "FHKST03010230",
 		VirtualTRID:    "",
-		RequiredFields: []string{"FID_COND_MRKT_DIV_CODE", "FID_INPUT_DATE_1", "FID_INPUT_HOUR_1", "FID_INPUT_ISCD", "FID_PW_DATA_INCU_YN"},
+		RequiredFields: []string{"FID_COND_MRKT_DIV_CODE", "FID_FAKE_TICK_INCU_YN", "FID_INPUT_DATE_1", "FID_INPUT_HOUR_1", "FID_INPUT_ISCD", "FID_PW_DATA_INCU_YN"},
 	},
 	"/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice": {
 		Method:         "GET",
@@ -1482,7 +1440,7 @@ var DocumentedKISEndpointSpecs = map[string]KISEndpointSpec{
 		Method:         "GET",
 		RealTRID:       "HHDFS76350100",
 		VirtualTRID:    "",
-		RequiredFields: []string{"AUTH", "EXCD", "KEYB", "VOL_RANG"},
+		RequiredFields: []string{"AUTH", "CURR_GB", "EXCD", "KEYB", "VOL_RANG"},
 	},
 	"/uapi/overseas-stock/v1/ranking/new-highlow": {
 		Method:         "GET",
