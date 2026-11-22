@@ -29,7 +29,7 @@ func TestLookupDocumentedEndpointSpec_KnownRESTAndWebSocketTRs(t *testing.T) {
 		t.Fatalf("unexpected g3101 protocol: %+v", overseas)
 	}
 
-	realtime, ok := LookupDocumentedEndpointSpec("/websocket/overseas-stock", "GSC")
+	realtime, ok := LookupDocumentedEndpointSpec("/websocket", "GSC")
 	if !ok {
 		t.Fatal("missing documented GSC spec")
 	}

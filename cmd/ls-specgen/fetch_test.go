@@ -137,7 +137,7 @@ func TestRefreshPreservesFilesOnDocumentCollectionFailure(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if err := runRefresh([]string{"--portal-url", srv.URL, "--snapshot", paths[0], "--spec-out", paths[1]}); err == nil {
+	if err := runRefresh([]string{"--guide-url", srv.URL, "--snapshot", paths[0], "--spec-out", paths[1]}); err == nil {
 		t.Fatal("refresh succeeded despite failed collection")
 	}
 	for _, path := range paths {
