@@ -1,0 +1,64 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "timezone": "Asia/Seoul",
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 5,
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "github-actions": {
+    "enabled": false
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "dependencies",
+      "renovate",
+      "security"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "Tag major updates for manual analysis and reporting",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "addLabels": [
+        "major"
+      ]
+    },
+    {
+      "description": "Group Go minor/patch updates",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "go non-major"
+    },
+    {
+      "description": "Group Docker minor/patch updates",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "docker non-major"
+    }
+  ]
+}
