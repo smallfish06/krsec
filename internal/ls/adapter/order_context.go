@@ -58,12 +58,17 @@ func (a *Adapter) orderContextPath() (string, error) {
 	return filepath.Join(dir, fmt.Sprintf("ls-%s-%x.json", env, sha256.Sum256([]byte(a.accountID)))), nil
 }
 
+// maxOrderContexts bounds the persisted contexts. Modify, cancel and status
+// calls need the context of every order placed today, so the cap sits well
+// above a busy day's order count.
+const maxOrderContexts = 5000
+
 func (a *Adapter) loadOrderContexts() error {
 	path, err := a.orderContextPath()
 	if err != nil {
 		return err
 	}
-	return orderctxstore.Load(path, a.orders, 300, func(meta orderContext) time.Time { return meta.PlacedAt })
+	return orderctxstore.Load(path, a.orders, maxOrderContexts, func(meta orderContext) time.Time { return meta.PlacedAt })
 }
 
 func (a *Adapter) orderContextReady() error {
@@ -88,7 +93,7 @@ func (a *Adapter) storeOrderContext(id string, meta orderContext) {
 		a.orders = make(map[string]orderContext)
 	}
 	a.orders[id] = meta
-	orderctxstore.Compact(a.orders, 300, func(meta orderContext) time.Time { return meta.PlacedAt })
+	orderctxstore.Compact(a.orders, maxOrderContexts, func(meta orderContext) time.Time { return meta.PlacedAt })
 	path, err := a.orderContextPath()
 	if err == nil {
 		err = orderctxstore.Persist(path, a.orders)

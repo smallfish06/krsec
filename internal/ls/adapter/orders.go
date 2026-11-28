@@ -134,10 +134,12 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 	switch {
 	case strings.Contains(rawStatus, "거부") || strings.Contains(rawStatus, "거절"):
 		status = broker.OrderStatusRejected
-	case remaining == 0 && strings.Contains(rawStatus, "취소"):
-		status = broker.OrderStatusCancelled
 	case quantity > 0 && filled >= quantity:
 		status = broker.OrderStatusFilled
+	case remaining == 0:
+		// Nothing left working and not fully filled: the remainder was
+		// cancelled or superseded by a modify, whatever the status text says.
+		status = broker.OrderStatusCancelled
 	}
 	timestamp := orderClock(meta.PlacedAt, anyString(row["ordtime"]))
 	if timestamp.IsZero() {

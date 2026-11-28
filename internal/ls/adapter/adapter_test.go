@@ -386,8 +386,8 @@ func TestAdapterGetOHLCV_MapsOverseasG3204Response(t *testing.T) {
 	if gotSymbol != "AAPL" {
 		t.Fatalf("request symbol = %q, want AAPL", gotSymbol)
 	}
-	if gotLimit != 5 {
-		t.Fatalf("request qrycnt = %v, want capped 5", gotLimit)
+	if gotLimit != 10 {
+		t.Fatalf("request qrycnt = %v, want the requested 10", gotLimit)
 	}
 	if gotEndDate != "" {
 		t.Fatalf("request edate = %q, want empty string", gotEndDate)

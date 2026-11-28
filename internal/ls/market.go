@@ -171,19 +171,21 @@ func (c *Client) InquireOverseasChart(ctx context.Context, symbol, exchange, int
 	if err != nil {
 		return nil, err
 	}
+	// g3204 returns up to 500 uncompressed rows per request, the same as the
+	// domestic t8410 (verified against the live API; the published field
+	// description is cut off after "비압축:5").
 	if limit <= 0 {
-		limit = 5
+		limit = 100
 	}
-	// LS documents g3204 non-compressed responses as max 5 rows. Keep the
-	// adapter on JSON row output until compressed chart payloads are mapped.
-	if limit > 5 {
-		limit = 5
+	if limit > 500 {
+		limit = 500
 	}
 	toDate := ""
 	if !to.IsZero() {
 		toDate = to.Format("20060102")
 	}
-	fromDate := time.Now().AddDate(0, -1, 0).Format("20060102")
+	// An empty start date lets qrycnt alone bound the response.
+	fromDate := ""
 	if !from.IsZero() {
 		fromDate = from.Format("20060102")
 	}
@@ -446,7 +448,7 @@ func chartGubun(interval string) (string, error) {
 	case "1mo", "mo", "month", "monthly":
 		return "4", nil
 	default:
-		return "", fmt.Errorf("unsupported interval for LS: %s", interval)
+		return "", fmt.Errorf("%w: LS candles support 1d, 1w and 1mo, not %q", broker.ErrNotSupported, interval)
 	}
 }
 

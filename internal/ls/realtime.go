@@ -74,7 +74,6 @@ func (r *RealtimeConn) Read(ctx context.Context) (*RealtimeMessage, error) {
 	return &msg, nil
 }
 
-// Close closes the realtime WebSocket connection.
 func (r *RealtimeConn) Close() error {
 	return r.conn.Close(websocket.StatusNormalClosure, "")
 }

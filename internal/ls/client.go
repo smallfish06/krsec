@@ -11,6 +11,7 @@ import (
 	"maps"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -70,7 +71,6 @@ func (c *Client) CallEndpointPage(ctx context.Context, method, path, trCD string
 	return c.callEndpointAttempt(ctx, method, path, trCD, request, callOptions{TRCont: cont, TRContKey: key}, true)
 }
 
-// NewClientWithTokenManager creates an LS OpenAPI client.
 func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	baseURL := BaseURLReal
 	wsURL := WebSocketURLReal
@@ -95,7 +95,6 @@ func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	}
 }
 
-// SetLogger sets the client logger.
 func (c *Client) SetLogger(l *slog.Logger) {
 	if l != nil {
 		c.logger = l
@@ -123,7 +122,6 @@ func (c *Client) SetMACAddress(macAddress string) {
 	c.mu.Unlock()
 }
 
-// Name returns the broker display name.
 func (c *Client) Name() string {
 	return broker.NameLS
 }
@@ -301,14 +299,14 @@ func (c *Client) callEndpointAttempt(
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if err != nil {
 		return nil, fmt.Errorf("read LS response: %w", err)
 	}
 	if resp.StatusCode >= 400 {
 		err := mapHTTPError(resp.StatusCode, bodyBytes)
 		if retryUnauthorized && errors.Is(err, broker.ErrUnauthorized) {
-			if refreshErr := c.invalidateAndRefresh(ctx); refreshErr != nil {
+			if refreshErr := c.invalidateAndRefresh(ctx, token); refreshErr != nil {
 				return nil, fmt.Errorf("token refresh after LS unauthorized response failed: %w", refreshErr)
 			}
 			return c.callEndpointAttempt(ctx, method, path, trCD, request, opts, false)
@@ -330,21 +328,19 @@ func (c *Client) callEndpointAttempt(
 	if isEmptyLSResponse(out) {
 		return nil, fmt.Errorf("%w: LS empty response for tr_cd %s", broker.ErrServerError, trCD)
 	}
-	if code := strings.TrimSpace(asString(out["rsp_cd"])); code != "" && code != "00000" {
+	if code := strings.TrimSpace(asString(out["rsp_cd"])); code != "" && !isSuccessCode(code) {
 		err := mapLSStatus(code, asString(out["rsp_msg"]))
-		if retryUnauthorized && errors.Is(err, broker.ErrUnauthorized) {
-			if refreshErr := c.invalidateAndRefresh(ctx); refreshErr != nil {
+		// A status in the body means LS processed the request, so an order
+		// TR is never sent a second time from here.
+		if retryUnauthorized && errors.Is(err, broker.ErrUnauthorized) && !isOrderTR(trCD) {
+			if refreshErr := c.invalidateAndRefresh(ctx, token); refreshErr != nil {
 				return nil, fmt.Errorf("token refresh after LS unauthorized response failed: %w", refreshErr)
 			}
 			return c.callEndpointAttempt(ctx, method, path, trCD, request, opts, false)
 		}
 		return nil, err
 	}
-	continuation := Continuation{TRCont: strings.ToUpper(strings.TrimSpace(resp.Header.Get("tr_cont"))), TRContKey: strings.TrimSpace(resp.Header.Get("tr_cont_key"))}
-	if continuation.TRCont != "" && continuation.TRCont != "Y" && continuation.TRCont != "N" {
-		return nil, fmt.Errorf("%w: invalid LS response continuation flag", broker.ErrServerError)
-	}
-	return &EndpointPage{Data: out, Continuation: continuation}, nil
+	return &EndpointPage{Data: out, Continuation: responseContinuation(resp.Header)}, nil
 }
 
 func (c *Client) trLimiter(trCD string) *ratelimit.Limiter {
@@ -373,6 +369,8 @@ func lsTRRateLimit(trCD string) (float64, int, bool) {
 		return 1, 1, true
 	case TROverseasStockQuote, "g3102", TROverseasStockInstrument, "g3106", TROverseasStockMaster:
 		return 10, 1, true
+	case TRStockMaster:
+		return 2, 1, true
 	default:
 		return 0, 0, false
 	}
@@ -387,18 +385,67 @@ func (c *Client) refreshToken(ctx context.Context) error {
 	return err
 }
 
-func (c *Client) invalidateAndRefresh(ctx context.Context) error {
+// invalidateAndRefresh drops the token LS just rejected and authenticates
+// again. A token another request has already replaced is left alone.
+func (c *Client) invalidateAndRefresh(ctx context.Context, rejected string) error {
 	appKey, _ := c.getCredentials()
-	c.setToken("", time.Time{})
+	if current, _ := c.getToken(); current == rejected {
+		c.setToken("", time.Time{})
+	}
 
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
 	if appKey != "" {
-		_ = tm.DeleteToken(appKey)
+		_ = tokencache.InvalidateRejected(tm, appKey, rejected)
 	}
 	return c.refreshToken(ctx)
+}
+
+// responseContinuation reads the paging headers of an LS response. Only "Y"
+// means another page exists. LS does not confine itself to Y and N: t0424
+// answers tr_cont "0" on a complete response, and other TRs leave it empty,
+// so every other value is read as "no more pages" instead of rejected.
+func responseContinuation(h http.Header) Continuation {
+	flag := strings.ToUpper(strings.TrimSpace(h.Get("tr_cont")))
+	switch flag {
+	case "Y":
+		return Continuation{TRCont: "Y", TRContKey: strings.TrimSpace(h.Get("tr_cont_key"))}
+	case "":
+		return Continuation{}
+	default:
+		return Continuation{TRCont: "N"}
+	}
+}
+
+// maxResponseBytes caps a response body held in memory. The largest LS
+// payloads (symbol masters) are a few megabytes.
+const maxResponseBytes = 64 << 20
+
+// isSuccessCode reports whether rsp_cd is one of LS's "normal" message codes.
+// LS numbers its messages 00000-00999 for success, 01000-07999 for business
+// errors and 08000 up for system errors, so success is a range, not 00000
+// alone. Observed on the live API: CSPAQ12200 answers 00136 ("조회가
+// 완료되었습니다") and an empty CSPAQ13700 answers 00200 ("조회내역이
+// 없습니다"). Accepted orders are reported to answer 00040 (buy) and 00039
+// (sell); those two were not exercised.
+func isSuccessCode(code string) bool {
+	if len(code) != 5 {
+		return false
+	}
+	n, err := strconv.Atoi(code)
+	return err == nil && n >= 0 && n < 1000
+}
+
+// isOrderTR reports whether trCD places, modifies or cancels an order.
+func isOrderTR(trCD string) bool {
+	switch strings.ToUpper(strings.TrimSpace(trCD)) {
+	case "CSPAT00601", "CSPAT00701", "CSPAT00801":
+		return true
+	default:
+		return false
+	}
 }
 
 func normalizePath(path string) string {
@@ -483,6 +530,8 @@ func isEmptyLSResponse(out map[string]any) bool {
 	return true
 }
 
+// mapLSStatus classifies a non-success rsp_cd. Gateway codes (IGW…) are
+// credential or token problems; numeric codes follow LS's message ranges.
 func mapLSStatus(code, msg string) error {
 	code = strings.TrimSpace(code)
 	msg = strings.TrimSpace(msg)
@@ -492,17 +541,18 @@ func mapLSStatus(code, msg string) error {
 	if msg == "" {
 		msg = "LS API error"
 	}
-	if isUnauthorizedMessage(code, msg) {
-		return fmt.Errorf("%w: LS %s %s", broker.ErrUnauthorized, code, msg)
-	}
 	switch {
 	case strings.HasPrefix(code, "IGW"):
 		return fmt.Errorf("%w: LS %s %s", broker.ErrUnauthorized, code, msg)
 	case strings.HasPrefix(code, "Q"):
 		return fmt.Errorf("%w: LS %s %s", broker.ErrUpstreamBadRequest, code, msg)
-	default:
-		return fmt.Errorf("%w: LS %s %s", broker.ErrServerError, code, msg)
 	}
+	if n, err := strconv.Atoi(code); err == nil && n >= 1000 && n < 8000 {
+		// A business rejection (bad order, insufficient funds, closed
+		// market): the caller's request, not a gateway fault.
+		return fmt.Errorf("%w: LS %s %s", broker.ErrUpstreamBadRequest, code, msg)
+	}
+	return fmt.Errorf("%w: LS %s %s", broker.ErrServerError, code, msg)
 }
 
 func isUnauthorizedMessage(code, msg string) bool {

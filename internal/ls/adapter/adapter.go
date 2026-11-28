@@ -28,7 +28,6 @@ type Adapter struct {
 	now          func() time.Time
 }
 
-// NewAdapterWithOptions creates an LS adapter with injectable internals.
 func NewAdapterWithOptions(
 	sandbox bool,
 	accountID string,
@@ -66,12 +65,10 @@ func (a *Adapter) Client() *ls.Client {
 	return a.client
 }
 
-// Name returns broker name.
 func (a *Adapter) Name() string {
 	return broker.NameLS
 }
 
-// Authenticate authenticates with LS.
 func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
 	a.actionMu.Lock()
 	defer a.actionMu.Unlock()
@@ -119,9 +116,11 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 		return nil, err
 	}
 	price := anyFloat(row["price"])
+	// t1102 reports the change as a magnitude with the direction in sign.
+	change := lsSignedDiff(anyFloat(row["change"]), anyString(row["sign"]))
 	prevClose := anyFloat(row["recprice"])
 	if prevClose == 0 && price != 0 {
-		prevClose = price - anyFloat(row["change"])
+		prevClose = price - change
 	}
 	symbolOut := normalizeSymbol(anyString(row["shcode"]))
 	if symbolOut == "" {
@@ -136,8 +135,8 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 		Low:        anyFloat(row["low"]),
 		Close:      price,
 		PrevClose:  prevClose,
-		Change:     anyFloat(row["change"]),
-		ChangeRate: anyFloat(row["diff"]),
+		Change:     change,
+		ChangeRate: lsSignedDiff(anyFloat(row["diff"]), anyString(row["sign"])),
 		Volume:     anyInt64(row["volume"]),
 		Turnover:   anyFloat(row["value"]),
 		UpperLimit: anyFloat(row["uplmtprice"]),
@@ -187,8 +186,13 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 		return a.getOverseasOHLCV(ctx, symbol, exchange, opts)
 	}
 
-	if lsExchangeCode(market) == "" {
+	switch lsExchangeCode(market) {
+	case "":
 		return nil, broker.ErrInvalidMarket
+	case "K":
+	default:
+		// t8410 has no exchange field and always answers with KRX candles.
+		return nil, fmt.Errorf("%w: LS candles are available for KRX only", broker.ErrNotSupported)
 	}
 	rows, err := a.client.InquireChart(ctx, symbol, opts.Interval, opts.From, opts.To, opts.Limit)
 	if err != nil {
@@ -255,7 +259,6 @@ func (a *Adapter) getOverseasOHLCV(ctx context.Context, symbol, exchange string,
 	return out, nil
 }
 
-// GetBalance retrieves LS stock account balance summary.
 func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Balance, error) {
 	if strings.TrimSpace(accountID) == "" {
 		accountID = a.accountID
@@ -274,7 +277,6 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	}, nil
 }
 
-// GetPositions retrieves LS account positions.
 func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position, error) {
 	_, rows, err := a.client.InquireBalance(ctx)
 	if err != nil {
@@ -378,7 +380,6 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 	}, nil
 }
 
-// GetInstrument returns stock master metadata.
 func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*broker.Instrument, error) {
 	if exchange, ok := lsOverseasExchangeCode(market); ok {
 		return a.getOverseasInstrument(ctx, market, symbol, exchange)
