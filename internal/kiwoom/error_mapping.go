@@ -55,10 +55,9 @@ func mapKiwoomError(code int, msg string) error {
 		strings.Contains(m, "만료"):
 		return broker.ErrUnauthorized
 	case strings.Contains(m, "insufficient"),
-		strings.Contains(m, "잔고부족"),
-		strings.Contains(m, "예수금 부족"),
-		strings.Contains(m, "주문가능수량 부족"),
-		strings.Contains(m, "주문가능금액 부족"):
+		// "주문가능금액이 부족합니다", "예수금 부족" and similar: the particle
+		// between the noun and 부족 varies.
+		strings.Contains(m, "부족") && containsAny(m, "잔고", "예수금", "주문가능", "증거금"):
 		return broker.ErrInsufficientBalance
 	case strings.Contains(m, "주문번호") && (strings.Contains(m, "없") || strings.Contains(m, "not found") || strings.Contains(m, "존재")),
 		strings.Contains(m, "원주문번호") && (strings.Contains(m, "없") || strings.Contains(m, "not found") || strings.Contains(m, "존재")):
@@ -67,7 +66,8 @@ func mapKiwoomError(code int, msg string) error {
 		return broker.ErrInvalidSymbol
 	case strings.Contains(m, "symbol") && (strings.Contains(m, "invalid") || strings.Contains(m, "not found")):
 		return broker.ErrInvalidSymbol
-	case strings.Contains(m, "시장"),
+	// 시장가 ("market price") is an order type, not a market.
+	case strings.Contains(strings.ReplaceAll(m, "시장가", ""), "시장"),
 		strings.Contains(m, "거래소"),
 		strings.Contains(m, "market"):
 		return broker.ErrInvalidMarket
@@ -92,6 +92,15 @@ func mapKiwoomError(code int, msg string) error {
 		return broker.ErrServerError
 	}
 	return nil
+}
+
+func containsAny(s string, subs ...string) bool {
+	for _, sub := range subs {
+		if strings.Contains(s, sub) {
+			return true
+		}
+	}
+	return false
 }
 
 func parseErrorPayload(body []byte) (int, string, bool) {

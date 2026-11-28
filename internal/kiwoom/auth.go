@@ -12,6 +12,7 @@ import (
 
 	"golang.org/x/sync/singleflight"
 
+	"github.com/smallfish06/krsec/internal/krtime"
 	"github.com/smallfish06/krsec/pkg/broker"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
@@ -21,11 +22,10 @@ import (
 // of queueing one-per-minute on the auth rate limiter.
 var authFlight singleflight.Group
 
-// issueTimeout bounds a detached token issuance: up to one auth-limiter
-// window (60s) plus the HTTP round trip.
+// issueTimeout bounds the HTTP round trip of a detached token issuance. The
+// wait on the issuance limiter (up to 60s) happens before it starts.
 const issueTimeout = 90 * time.Second
 
-// TokenResponse is Kiwoom OAuth token response.
 type TokenResponse struct {
 	ExpiresDT  string `json:"expires_dt"`
 	TokenType  string `json:"token_type"`
@@ -108,7 +108,7 @@ func (c *Client) issueToken(tm tokencache.Manager, appKey, appSecret string) (*b
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if err != nil {
 		return nil, fmt.Errorf("read auth response: %w", err)
 	}
@@ -152,13 +152,15 @@ func (c *Client) issueToken(tm tokencache.Manager, appKey, appSecret string) (*b
 	}, nil
 }
 
+// parseExpiry reads expires_dt, which Kiwoom reports as KST wall-clock time.
 func parseExpiry(expiresDT string) time.Time {
 	expiresDT = strings.TrimSpace(expiresDT)
 	if expiresDT != "" {
-		if t, err := time.ParseInLocation("20060102150405", expiresDT, time.Local); err == nil {
+		if t, err := time.ParseInLocation("20060102150405", expiresDT, krtime.KST); err == nil {
 			return t
 		}
 	}
-	// Fallback when docs/sample omits/changes expiry format.
+	// Kiwoom tokens last 24 hours; assume slightly less when the field is
+	// missing or in an unexpected format.
 	return time.Now().Add(23 * time.Hour)
 }

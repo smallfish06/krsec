@@ -2,11 +2,10 @@ package adapter
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"math"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,6 +15,8 @@ import (
 	"github.com/samber/lo"
 
 	"github.com/smallfish06/krsec/internal/kiwoom"
+	"github.com/smallfish06/krsec/internal/krtime"
+	"github.com/smallfish06/krsec/internal/ordercheck"
 	"github.com/smallfish06/krsec/pkg/broker"
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
@@ -46,7 +47,6 @@ type orderContext struct {
 	UpdatedAt    time.Time          `json:"updated_at"`
 }
 
-// NewAdapterWithOptions creates a Kiwoom adapter with injectable internals.
 func NewAdapterWithOptions(
 	sandbox bool,
 	accountID string,
@@ -74,12 +74,10 @@ func NewAdapterWithOptions(
 	return a
 }
 
-// Name returns broker name.
 func (a *Adapter) Name() string {
 	return broker.NameKiwoom
 }
 
-// Authenticate authenticates with Kiwoom.
 func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
 	return a.client.Authenticate(ctx, creds)
 }
@@ -138,7 +136,7 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 		interval = "1d"
 	}
 
-	baseDate := time.Now().Format("20060102")
+	baseDate := krtime.Today()
 	if !opts.To.IsZero() {
 		baseDate = opts.To.Format("20060102")
 	}
@@ -194,7 +192,6 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 	return out, nil
 }
 
-// GetBalance retrieves account balance summary.
 func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Balance, error) {
 	if strings.TrimSpace(accountID) == "" {
 		accountID = a.accountID
@@ -230,7 +227,6 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	return balance, nil
 }
 
-// GetPositions retrieves account stock positions.
 func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position, error) {
 	rows, err := a.collectEndpointRows(ctx, kiwoom.PathAccount, "kt00018", map[string]any{
 		"qry_tp": "1", "dmst_stex_tp": "KRX",
@@ -280,11 +276,16 @@ func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position
 	return positions, nil
 }
 
-// PlaceOrder places buy/sell stock orders.
 func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*broker.OrderResult, error) {
 	symbol := normalizeSymbol(req.Symbol)
 	if symbol == "" || req.Quantity <= 0 {
 		return nil, broker.ErrInvalidOrderRequest
+	}
+	if err := ordercheck.Side(req.Side); err != nil {
+		return nil, err
+	}
+	if err := ordercheck.WholeShareDayOrder(broker.NameKiwoom, req); err != nil {
+		return nil, err
 	}
 	exchange, err := toKiwoomExchange(req.Market)
 	if err != nil {
@@ -339,18 +340,14 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 	}, nil
 }
 
-// CancelOrder cancels a pending order.
 func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
 		return err
 	}
-	cancelQty := meta.RemainingQty
-	if cancelQty <= 0 {
-		cancelQty = meta.Quantity
-	}
-	if cancelQty <= 0 {
-		cancelQty = 1
+	cancelQty, err := a.openQuantity(ctx, meta)
+	if err != nil {
+		return err
 	}
 
 	ack, err := a.client.CancelStockOrder(ctx, kiwoomspecs.KiwoomApiDostkOrdrKt10003Request{
@@ -376,7 +373,8 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	return nil
 }
 
-// ModifyOrder modifies an existing order.
+// ModifyOrder changes price and quantity. Kiwoom gives the modified order a
+// new order number, which the result carries.
 func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.ModifyOrderRequest) (*broker.OrderResult, error) {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
@@ -418,10 +416,9 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 	meta.Price = newPrice
 	meta.Status = broker.OrderStatusPending
 	meta.UpdatedAt = time.Now()
+	// Kiwoom gives the modified order a new number. The original keeps its
+	// own context so a later call on the old ID still addresses that order.
 	a.storeOrderContext(newOrderID, meta)
-	if newOrderID != orderID {
-		a.storeOrderContext(orderID, meta)
-	}
 
 	return &broker.OrderResult{
 		OrderID:      newOrderID,
@@ -432,7 +429,6 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 	}, nil
 }
 
-// GetOrder returns order status by order id.
 func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderResult, error) {
 	if strings.TrimSpace(orderID) == "" {
 		return nil, broker.ErrInvalidOrderRequest
@@ -440,56 +436,62 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 
 	meta, _ := a.getOrderContext(orderID)
 	unsettled, err := a.fetchUnsettled(ctx, meta.Symbol)
-	if err == nil {
-		for _, row := range unsettled {
-			if strings.TrimSpace(asAnyString(row["ord_no"])) != strings.TrimSpace(orderID) {
-				continue
-			}
-			ordQty := asAnyInt(row["ord_qty"])
-			remaining := asAnyInt(row["oso_qty"])
-			filled := max(ordQty-remaining, 0)
-			status := mapOrderStatus(asAnyString(row["ord_stt"]), remaining)
-			result := &broker.OrderResult{
-				OrderID:        orderID,
-				Status:         status,
-				FilledQuantity: filled,
-				RemainingQty:   remaining,
-				AvgFilledPrice: normalizedPrice(asAnyFloat(row["cntr_pric"])),
-				Message:        asAnyString(row["ord_stt"]),
-				Timestamp:      time.Now(),
-			}
-			meta.OrderID = orderID
-			meta.Symbol = normalizeSymbol(asAnyString(row["stk_cd"]))
-			meta.Exchange = exchangeFromUnsettledRow(row)
-			meta.Quantity = ordQty
-			meta.RemainingQty = remaining
-			meta.Price = normalizedPrice(asAnyFloat(row["ord_pric"]))
-			meta.Side = sideFromKiwoomOrderText(asAnyString(row["io_tp_nm"]))
-			meta.Status = status
-			meta.UpdatedAt = time.Now()
-			a.storeOrderContext(orderID, meta)
-			return result, nil
+	if err != nil {
+		return nil, err
+	}
+	for _, row := range unsettled {
+		if strings.TrimSpace(asAnyString(row["ord_no"])) != strings.TrimSpace(orderID) {
+			continue
 		}
+		ordQty := asAnyInt(row["ord_qty"])
+		remaining := asAnyInt(row["oso_qty"])
+		filled := max(ordQty-remaining, 0)
+		status := mapOrderStatus(asAnyString(row["ord_stt"]), remaining)
+		result := &broker.OrderResult{
+			OrderID:        orderID,
+			Status:         status,
+			FilledQuantity: filled,
+			RemainingQty:   remaining,
+			AvgFilledPrice: normalizedPrice(asAnyFloat(row["cntr_pric"])),
+			Message:        asAnyString(row["ord_stt"]),
+			Timestamp:      time.Now(),
+		}
+		meta.OrderID = orderID
+		meta.Symbol = normalizeSymbol(asAnyString(row["stk_cd"]))
+		meta.Exchange = exchangeFromUnsettledRow(row)
+		meta.Quantity = ordQty
+		meta.RemainingQty = remaining
+		meta.Price = normalizedPrice(asAnyFloat(row["ord_pric"]))
+		meta.Side = sideFromKiwoomOrderText(asAnyString(row["io_tp_nm"]))
+		meta.Status = status
+		meta.UpdatedAt = time.Now()
+		a.storeOrderContext(orderID, meta)
+		return result, nil
 	}
 
-	fills, fillErr := a.GetOrderFills(ctx, orderID)
-	if fillErr == nil && len(fills) > 0 {
+	// The order is not open any more. Its fills say whether it completed.
+	fills, err := a.GetOrderFills(ctx, orderID)
+	if err != nil && !errors.Is(err, broker.ErrOrderNotFound) {
+		return nil, err
+	}
+	if len(fills) > 0 {
 		var qty int64
 		var amount float64
 		for _, f := range fills {
 			qty += f.Quantity
 			amount += float64(f.Quantity) * f.Price
 		}
-		avg := 0.0
-		if qty > 0 {
-			avg = amount / float64(qty)
+		status := broker.OrderStatusFilled
+		if meta.Quantity > 0 && qty < meta.Quantity {
+			// Closed with less than the ordered quantity filled: the rest
+			// was cancelled.
+			status = broker.OrderStatusCancelled
 		}
 		return &broker.OrderResult{
 			OrderID:        orderID,
-			Status:         broker.OrderStatusFilled,
+			Status:         status,
 			FilledQuantity: qty,
-			RemainingQty:   0,
-			AvgFilledPrice: avg,
+			AvgFilledPrice: amount / float64(qty),
 			Timestamp:      time.Now(),
 		}, nil
 	}
@@ -505,18 +507,17 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 	return nil, broker.ErrOrderNotFound
 }
 
-// GetOrderFills returns fills for the order.
 func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.OrderFill, error) {
 	if strings.TrimSpace(orderID) == "" {
 		return nil, broker.ErrInvalidOrderRequest
 	}
 	meta, hasContext := a.getOrderContext(orderID)
 
-	executionResp, err := a.client.InquireOrderExecutions(ctx, meta.Symbol)
+	executions, err := a.collectEndpointRows(ctx, kiwoom.PathAccount, "ka10076",
+		map[string]any{"stk_cd": meta.Symbol}, "cntr", maxAccountChartPages)
 	if err != nil {
 		return nil, err
 	}
-	executions := decodeObjectArray(executionResp.Cntr)
 	if len(executions) == 0 {
 		if hasContext {
 			return []broker.OrderFill{}, nil
@@ -560,7 +561,6 @@ func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.O
 	return fills, nil
 }
 
-// GetInstrument retrieves normalized instrument metadata.
 func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*broker.Instrument, error) {
 	symbol = normalizeSymbol(symbol)
 	if symbol == "" {
@@ -597,12 +597,35 @@ func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*br
 	}, nil
 }
 
+// fetchUnsettled lists open orders, following continuation pages so an order
+// beyond the first page is not mistaken for a closed one.
 func (a *Adapter) fetchUnsettled(ctx context.Context, symbol string) ([]map[string]any, error) {
-	resp, err := a.client.InquireUnsettledOrders(ctx, symbol)
-	if err != nil {
-		return nil, err
+	return a.collectEndpointRows(ctx, kiwoom.PathAccount, "ka10075",
+		map[string]any{"stk_cd": symbol}, "oso", maxAccountChartPages)
+}
+
+// openQuantity returns how many shares of an order are still working. It asks
+// the broker first: the cached figure goes stale as soon as the order
+// partially fills, and a cancel for more than the open quantity is rejected.
+func (a *Adapter) openQuantity(ctx context.Context, meta orderContext) (int64, error) {
+	if rows, err := a.fetchUnsettled(ctx, meta.Symbol); err == nil {
+		for _, row := range rows {
+			if strings.TrimSpace(asAnyString(row["ord_no"])) != meta.OrderID {
+				continue
+			}
+			if qty := asAnyInt(row["oso_qty"]); qty > 0 {
+				return qty, nil
+			}
+		}
 	}
-	return decodeObjectArray(resp.Oso), nil
+	switch {
+	case meta.RemainingQty > 0:
+		return meta.RemainingQty, nil
+	case meta.Quantity > 0:
+		return meta.Quantity, nil
+	default:
+		return 0, fmt.Errorf("%w: open quantity of order %s is unknown", broker.ErrInvalidOrderRequest, meta.OrderID)
+	}
 }
 
 func (a *Adapter) storeOrderContext(orderID string, meta orderContext) {
@@ -618,7 +641,9 @@ func (a *Adapter) storeOrderContext(orderID string, meta orderContext) {
 	a.orders[orderID] = meta
 	a.compactOrderContextsLocked(maxPersistedOrderContexts)
 	a.mu.Unlock()
-	_ = a.persistOrderContexts()
+	if err := a.persistOrderContexts(); err != nil {
+		a.logger.Warn("failed to persist kiwoom order contexts", "error", err)
+	}
 }
 
 func (a *Adapter) getOrderContext(orderID string) (orderContext, bool) {
@@ -831,80 +856,14 @@ func parseDateYYYYMMDDString(value string) (time.Time, bool) {
 	return t, true
 }
 
-func decodeObjectArray(raw any) []map[string]any {
-	switch t := raw.(type) {
-	case nil:
-		return nil
-	case json.RawMessage:
-		return decodeObjectArrayFromJSON(t)
-	case []byte:
-		return decodeObjectArrayFromJSON(t)
-	case []map[string]any:
-		return t
-	}
-
-	rv := reflect.ValueOf(raw)
-	if !rv.IsValid() {
-		return nil
-	}
-	if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
-		return nil
-	}
-
-	out := make([]map[string]any, 0, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		item := rv.Index(i).Interface()
-		switch row := item.(type) {
-		case map[string]any:
-			out = append(out, row)
-		default:
-			encoded, err := json.Marshal(item)
-			if err != nil || len(encoded) == 0 {
-				continue
-			}
-			m := make(map[string]any)
-			if err := json.Unmarshal(encoded, &m); err != nil {
-				continue
-			}
-			out = append(out, m)
-		}
-	}
-	return out
-}
-
-func decodeObjectArrayFromJSON(raw []byte) []map[string]any {
-	if len(raw) == 0 {
-		return nil
-	}
-	items := make([]map[string]any, 0)
-	if err := json.Unmarshal(raw, &items); err == nil {
-		return items
-	}
-	generic := make([]any, 0)
-	if err := json.Unmarshal(raw, &generic); err != nil {
-		return nil
-	}
-	out := make([]map[string]any, 0, len(generic))
-	for _, item := range generic {
-		row, ok := item.(map[string]any)
-		if !ok {
-			continue
-		}
-		out = append(out, row)
-	}
-	return out
-}
-
+// parseOrderTime places an HHMMSS order time on today's KST date. Kiwoom's
+// same-day order lists carry no date.
 func parseOrderTime(v string) time.Time {
-	v = strings.TrimSpace(v)
-	if len(v) == 6 {
-		now := time.Now()
-		parsed, err := time.ParseInLocation("150405", v, now.Location())
-		if err == nil {
-			return time.Date(now.Year(), now.Month(), now.Day(), parsed.Hour(), parsed.Minute(), parsed.Second(), 0, now.Location())
-		}
+	now := krtime.Now()
+	if parsed, err := time.Parse("150405", strings.TrimSpace(v)); err == nil {
+		return time.Date(now.Year(), now.Month(), now.Day(), parsed.Hour(), parsed.Minute(), parsed.Second(), 0, krtime.KST)
 	}
-	return time.Now()
+	return now
 }
 
 func normalizeOutputMarket(market string) string {

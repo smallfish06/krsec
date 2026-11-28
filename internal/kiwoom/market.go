@@ -2,7 +2,7 @@ package kiwoom
 
 import (
 	"context"
-	"time"
+	"github.com/smallfish06/krsec/internal/krtime"
 
 	"github.com/smallfish06/krsec/pkg/broker"
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
@@ -59,7 +59,7 @@ func (c *Client) InquireInvestorByStock(
 	if req.StkCd == "" {
 		return nil, broker.ErrInvalidSymbol
 	}
-	setDefaultString(&req.Dt, time.Now().Format("20060102"))
+	setDefaultString(&req.Dt, krtime.Today())
 	setDefaultString(&req.TrdeTp, "0")
 	setDefaultString(&req.AmtQtyTp, "1")
 	setDefaultString(&req.UnitTp, "1")

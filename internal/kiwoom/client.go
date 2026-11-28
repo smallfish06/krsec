@@ -60,7 +60,6 @@ func cloneBody(body map[string]any) map[string]any {
 	return maps.Clone(body)
 }
 
-// NewClientWithTokenManager creates a client with injected token manager.
 func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	baseURL := BaseURLReal
 	if sandbox {
@@ -80,19 +79,16 @@ func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	}
 }
 
-// SetLogger sets the logger for the client.
 func (c *Client) SetLogger(l *slog.Logger) {
 	if l != nil {
 		c.logger = l
 	}
 }
 
-// Name returns broker name.
 func (c *Client) Name() string {
 	return broker.NameKiwoom
 }
 
-// SetCredentials sets app credentials on this client.
 func (c *Client) SetCredentials(appKey, appSecret string) {
 	c.mu.Lock()
 	c.appKey = strings.TrimSpace(appKey)
@@ -343,11 +339,18 @@ func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if err != nil {
 		return nil, fmt.Errorf("read response: %w", err)
 	}
 
+	if resp.StatusCode == http.StatusUnauthorized || isRejectedTokenBody(bodyBytes) {
+		c.dropRejectedToken(token)
+	}
+	if resp.StatusCode == http.StatusTooManyRequests {
+		_, msg, _ := parseErrorPayload(bodyBytes)
+		return nil, fmt.Errorf("%w: kiwoom api %s: %s", broker.ErrRateLimitExceeded, apiID, msg)
+	}
 	if resp.StatusCode >= 400 {
 		if code, msg, ok := parseErrorPayload(bodyBytes); ok {
 			if code == 0 {
@@ -381,6 +384,28 @@ func (c *Client) doRequest(ctx context.Context, method, apiID, path string, body
 		*opts.Response = continuation
 	}
 	return bodyBytes, nil
+}
+
+// maxResponseBytes caps a response body held in memory. Kiwoom's largest
+// pages (charts, rankings) are a few megabytes.
+const maxResponseBytes = 32 << 20
+
+// isRejectedTokenBody reports whether Kiwoom refused the access token itself,
+// which it signals in the body of an HTTP 200 as error 8005.
+func isRejectedTokenBody(body []byte) bool {
+	_, msg, ok := parseErrorPayload(body)
+	return ok && strings.Contains(msg, "8005")
+}
+
+// dropRejectedToken forgets a token Kiwoom no longer accepts so the next
+// request issues a new one, instead of failing until the cached expiry.
+func (c *Client) dropRejectedToken(rejected string) {
+	if current, _ := c.getToken(); current == rejected {
+		c.setToken("", time.Time{})
+	}
+	if appKey, _ := c.getCredentials(); appKey != "" && c.tokenManager != nil {
+		_ = tokencache.InvalidateRejected(c.tokenManager, appKey, rejected)
+	}
 }
 
 func (c *Client) newHTTPRequest(ctx context.Context, method string, requestURL string, body any) (*http.Request, error) {

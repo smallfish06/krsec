@@ -2,8 +2,8 @@ package kiwoom
 
 import (
 	"context"
+	"github.com/smallfish06/krsec/internal/krtime"
 	"strings"
-	"time"
 
 	"github.com/smallfish06/krsec/pkg/broker"
 	kiwoomspecs "github.com/smallfish06/krsec/pkg/kiwoom/specs"
@@ -20,7 +20,7 @@ func (c *Client) InquireDailyPriceByRequest(
 	}
 	req.BaseDt = strings.TrimSpace(req.BaseDt)
 	if req.BaseDt == "" {
-		req.BaseDt = time.Now().Format("20060102")
+		req.BaseDt = krtime.Today()
 	}
 	setDefaultString(&req.UpdStkpcTp, "1")
 
@@ -57,7 +57,7 @@ func (c *Client) InquireWeeklyPriceByRequest(
 	}
 	req.BaseDt = strings.TrimSpace(req.BaseDt)
 	if req.BaseDt == "" {
-		req.BaseDt = time.Now().Format("20060102")
+		req.BaseDt = krtime.Today()
 	}
 	setDefaultString(&req.UpdStkpcTp, "1")
 
@@ -94,7 +94,7 @@ func (c *Client) InquireMonthlyPriceByRequest(
 	}
 	req.BaseDt = strings.TrimSpace(req.BaseDt)
 	if req.BaseDt == "" {
-		req.BaseDt = time.Now().Format("20060102")
+		req.BaseDt = krtime.Today()
 	}
 	setDefaultString(&req.UpdStkpcTp, "1")
 
@@ -154,7 +154,7 @@ func (c *Client) InquireTickChart(
 	}
 	baseDate = strings.TrimSpace(baseDate)
 	if baseDate == "" {
-		baseDate = time.Now().Format("20060102")
+		baseDate = krtime.Today()
 	}
 	req := struct {
 		kiwoomspecs.KiwoomApiDostkChartKa10079Request
@@ -185,7 +185,7 @@ func (c *Client) InquireInvestorByStockChart(
 	if req.StkCd == "" {
 		return nil, broker.ErrInvalidSymbol
 	}
-	setDefaultString(&req.Dt, time.Now().Format("20060102"))
+	setDefaultString(&req.Dt, krtime.Today())
 	setDefaultString(&req.TrdeTp, "0")
 	setDefaultString(&req.AmtQtyTp, "1")
 	setDefaultString(&req.UnitTp, "1")
