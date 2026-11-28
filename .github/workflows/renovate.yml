@@ -27,9 +27,13 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
+  actions: read
+  checks: read
   contents: write
-  pull-requests: write
   issues: write
+  pull-requests: write
+  security-events: read
+  statuses: read
 
 jobs:
   renovate:
