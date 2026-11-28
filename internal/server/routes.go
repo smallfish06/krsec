@@ -4,7 +4,6 @@ import (
 	"github.com/go-fuego/fuego"
 )
 
-// routes sets up HTTP routes
 func (s *Server) routes() {
 	fuego.Get(s.router, "/health", s.handleHealth,
 		fuego.OptionTags("System"),
@@ -15,7 +14,7 @@ func (s *Server) routes() {
 	fuego.Post(s.router, "/auth/token", s.handleAuthToken,
 		fuego.OptionTags("Auth"),
 		fuego.OptionSummary("Issue broker auth token"),
-		fuego.OptionDescription("Authenticate with a broker and receive an access token."),
+		fuego.OptionDescription("Returns the access token of a configured account. Credentials in the body are optional; when sent they must match the configured ones."),
 	)
 
 	// KIS static endpoint routes (documented KIS paths exposed as static OpenAPI operations)
@@ -63,11 +62,11 @@ func (s *Server) routes() {
 	fuego.Get(s.router, "/quotes/{market}/{symbol}/ohlcv", s.handleGetOHLCV,
 		fuego.OptionTags("Quotes"),
 		fuego.OptionSummary("Get OHLCV candles"),
-		fuego.OptionDescription("Returns daily/weekly/monthly candlestick data."),
+		fuego.OptionDescription("Returns candlestick data. Supported intervals differ per broker."),
 		fuego.OptionPath("market", "Exchange market code", fuego.ParamExample("KRX", "KRX")),
 		fuego.OptionPath("symbol", "Ticker symbol", fuego.ParamExample("Samsung", "005930")),
 		fuego.OptionQuery("account_id", "Use a specific account's broker (optional)", fuego.ParamExample("KIS account", "12345678-01")),
-		fuego.OptionQuery("interval", "Candle interval: 1d, 1w, 1mo", fuego.ParamDefault("1d"), fuego.ParamExample("daily", "1d"), fuego.ParamExample("weekly", "1w")),
+		fuego.OptionQuery("interval", "Candle interval: 1m, 1d, 1w, 1mo", fuego.ParamDefault("1d"), fuego.ParamExample("daily", "1d"), fuego.ParamExample("weekly", "1w")),
 		fuego.OptionQuery("from", "Start date (YYYY-MM-DD)", fuego.ParamExample("Jan 2026", "2026-01-01")),
 		fuego.OptionQuery("to", "End date (YYYY-MM-DD)", fuego.ParamExample("Feb 2026", "2026-02-28")),
 		fuego.OptionQuery("limit", "Max number of candles (default 100, max 2000)", fuego.ParamDefault("100")),
@@ -105,6 +104,7 @@ func (s *Server) routes() {
 		fuego.OptionTags("Accounts"),
 		fuego.OptionSummary("Get account positions"),
 		fuego.OptionPath("account_id", "Account ID", fuego.ParamExample("KIS", "12345678-01")),
+		fuego.OptionQuery("group", "Set to true to merge rows that share a symbol and asset type."),
 	)
 
 	// Orders (account-scoped)

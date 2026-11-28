@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/go-fuego/fuego"
 
@@ -18,7 +19,6 @@ type orderFillsGetter interface {
 	GetOrderFills(ctx context.Context, orderID string) ([]broker.OrderFill, error)
 }
 
-// handleGetOrder handles GET /accounts/{account_id}/orders/{order_id}
 func (s *Server) handleGetOrder(c fuego.ContextNoBody) (Response, error) {
 	accountID := c.PathParam("account_id")
 	orderID := c.PathParam("order_id")
@@ -56,7 +56,6 @@ func (s *Server) handleGetOrder(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// handleGetOrderFills handles GET /accounts/{account_id}/orders/{order_id}/fills
 func (s *Server) handleGetOrderFills(c fuego.ContextNoBody) (Response, error) {
 	accountID := c.PathParam("account_id")
 	orderID := c.PathParam("order_id")
@@ -94,7 +93,6 @@ func (s *Server) handleGetOrderFills(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// handlePlaceOrder handles POST /accounts/{account_id}/orders
 func (s *Server) handlePlaceOrder(c fuego.ContextWithBody[broker.OrderRequest]) (Response, error) {
 	accountID := c.PathParam("account_id")
 
@@ -118,6 +116,9 @@ func (s *Server) handlePlaceOrder(c fuego.ContextWithBody[broker.OrderRequest]) 
 		})
 	}
 	req.AccountID = accountID
+	if err := normalizeOrderRequest(&req); err != nil {
+		return respond(c, http.StatusBadRequest, Response{Error: err.Error()})
+	}
 
 	result, err := brk.PlaceOrder(c.Context(), req)
 	if err != nil {
@@ -135,7 +136,6 @@ func (s *Server) handlePlaceOrder(c fuego.ContextWithBody[broker.OrderRequest]) 
 	})
 }
 
-// handleCancelOrder handles DELETE /accounts/{account_id}/orders/{order_id}
 func (s *Server) handleCancelOrder(c fuego.ContextNoBody) (Response, error) {
 	accountID := c.PathParam("account_id")
 	orderID := c.PathParam("order_id")
@@ -165,7 +165,6 @@ func (s *Server) handleCancelOrder(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// handleModifyOrder handles PUT /accounts/{account_id}/orders/{order_id}
 func (s *Server) handleModifyOrder(c fuego.ContextWithBody[broker.ModifyOrderRequest]) (Response, error) {
 	accountID := c.PathParam("account_id")
 	orderID := c.PathParam("order_id")
@@ -180,6 +179,11 @@ func (s *Server) handleModifyOrder(c fuego.ContextWithBody[broker.ModifyOrderReq
 			OK:    false,
 			Error: "invalid request body",
 		})
+	}
+
+	req.Type = broker.OrderType(strings.ToLower(strings.TrimSpace(string(req.Type))))
+	if req.Type != "" && req.Type != broker.OrderTypeLimit && req.Type != broker.OrderTypeMarket {
+		return respond(c, http.StatusBadRequest, Response{Error: "type must be limit or market"})
 	}
 
 	result, err := brk.ModifyOrder(c.Context(), orderID, req)
@@ -204,24 +208,21 @@ func (s *Server) handleModifyOrder(c fuego.ContextWithBody[broker.ModifyOrderReq
 	})
 }
 
-func (s *Server) orderBrokerCandidates(accountID string) []broker.Broker {
-	out := make([]broker.Broker, 0, len(s.brokers)+1)
-	seen := make(map[broker.Broker]struct{})
-
-	if accountID != "" {
-		if brk, status, _ := s.resolveBrokerByAccountID(accountID); status == 0 {
-			out = append(out, brk)
-			seen[brk] = struct{}{}
-		}
+// normalizeOrderRequest canonicalizes side and type ("BUY" and " buy " are the
+// same order) and rejects values no broker understands. The check lives at the
+// HTTP edge because the brokers' own APIs cannot be relied on to refuse them.
+func normalizeOrderRequest(req *broker.OrderRequest) error {
+	req.Side = broker.OrderSide(strings.ToLower(strings.TrimSpace(string(req.Side))))
+	if req.Side != broker.OrderSideBuy && req.Side != broker.OrderSideSell {
+		return errors.New("side must be buy or sell")
 	}
-
-	for _, brk := range s.brokers {
-		if _, ok := seen[brk]; ok {
-			continue
-		}
-		out = append(out, brk)
-		seen[brk] = struct{}{}
+	req.Type = broker.OrderType(strings.ToLower(strings.TrimSpace(string(req.Type))))
+	if req.Type != broker.OrderTypeLimit && req.Type != broker.OrderTypeMarket {
+		return errors.New("type must be limit or market")
 	}
-
-	return out
+	req.Symbol = strings.TrimSpace(req.Symbol)
+	if req.Symbol == "" {
+		return errors.New("symbol is required")
+	}
+	return nil
 }

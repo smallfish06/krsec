@@ -38,7 +38,6 @@ type kiwoomPageCaller interface {
 	CallEndpointPage(context.Context, string, string, string, any, kiwoomspecs.Continuation) (*kiwoomspecs.EndpointPage, error)
 }
 
-// handleKiwoomProxy handles POST /kiwoom/{path...}
 func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) (Response, error) {
 	rawPath := normalizeKiwoomProxyPath(c.PathParam("path"))
 	if rawPath == "" {
@@ -51,6 +50,11 @@ func (s *Server) handleKiwoomProxy(c fuego.ContextWithBody[kiwoomProxyRequest]) 
 	}
 	if err := validateKiwoomProxyRequest(&req); err != nil {
 		s.logger.Warn("Kiwoom proxy validation failed", "path", rawPath, "account_id", req.AccountID, "error", err)
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+	}
+
+	req.AccountID, err = proxyAccountSelector(req.AccountID, c.QueryParam("account_id"))
+	if err != nil {
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
 

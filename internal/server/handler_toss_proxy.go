@@ -25,7 +25,6 @@ type tossEndpointCaller interface {
 	CallEndpoint(ctx context.Context, method, path string, query map[string]any, body any) (any, error)
 }
 
-// handleTossProxy handles POST /toss/{path...}.
 func (s *Server) handleTossProxy(c fuego.ContextWithBody[tossProxyRequest]) (Response, error) {
 	rawPath := normalizeTossProxyPath(c.PathParam("path"))
 	if rawPath == "" {
@@ -41,6 +40,11 @@ func (s *Server) handleTossProxy(c fuego.ContextWithBody[tossProxyRequest]) (Res
 	}
 	if err := validateTossProxyRequest(&req); err != nil {
 		s.logger.Warn("Toss proxy validation failed", "path", rawPath, "account_id", req.AccountID, "error", err)
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+	}
+
+	req.AccountID, err = proxyAccountSelector(req.AccountID, c.QueryParam("account_id"))
+	if err != nil {
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
 

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -19,6 +20,10 @@ const (
 	kisProxyCacheCurrentPriceTTL   = 5 * time.Minute
 	kisProxyCacheDailyTTL          = time.Hour
 	kisProxyCacheReferenceTTL      = 6 * time.Hour
+
+	// kisProxyFlightTimeout bounds a deduplicated upstream call once it is
+	// detached from the request that started it.
+	kisProxyFlightTimeout = 30 * time.Second
 )
 
 // KISProxyCacheRequest describes a normalized KIS proxy request for cache policy
@@ -74,7 +79,7 @@ func newKISProxyCache(opts KISProxyCacheOptions) *kisProxyCache {
 	// drops items on capacity pressure or on a subsequent Get of the same key,
 	// so cached responses (large chart/daily payloads) linger for their full
 	// ttl+staleRetention lifetime and memory never returns to baseline. Start
-	// blocks until Stop, so it runs for the process lifetime in a goroutine.
+	// blocks until stop, which Server.Close calls.
 	go c.items.Start()
 	return c
 }
@@ -120,14 +125,32 @@ func (c *kisProxyCache) set(key string, value any, ttl time.Duration) {
 	}, ttl+c.staleRetention)
 }
 
-func (c *kisProxyCache) do(key string, fn func() (any, error)) (any, error, bool) {
+// do runs fn once per key for all concurrent callers. The shared call is
+// detached from the caller that started it, so one client disconnecting does
+// not fail every other request waiting on the same key; each caller still
+// stops waiting when its own context ends.
+func (c *kisProxyCache) do(ctx context.Context, key string, fn func(context.Context) (any, error)) (any, error) {
 	if c == nil || key == "" {
-		value, err := fn()
-		return value, err, false
+		return fn(ctx)
 	}
 
-	value, err, shared := c.group.Do(key, fn)
-	return value, err, shared
+	ch := c.group.DoChan(key, func() (any, error) {
+		flightCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), kisProxyFlightTimeout)
+		defer cancel()
+		return fn(flightCtx)
+	})
+	select {
+	case res := <-ch:
+		return res.Val, res.Err
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+}
+
+func (c *kisProxyCache) stop() {
+	if c != nil {
+		c.items.Stop()
+	}
 }
 
 // DefaultKISProxyCachePolicy caches public KIS quotation/reference endpoints

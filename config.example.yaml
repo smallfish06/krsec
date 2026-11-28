@@ -1,6 +1,10 @@
 server:
-  host: "0.0.0.0"
-  port: 9090
+  host: "0.0.0.0"   # 생략하면 localhost
+  port: 9090        # 생략하면 8080
+  # localhost 밖에서 접근 가능하게 띄울 때는 게이트웨이 키를 설정하세요.
+  # 설정하면 /health 와 Swagger UI 를 제외한 모든 요청이
+  # "Authorization: Bearer <key>" 또는 "X-API-Key: <key>" 를 요구합니다.
+  # api_key_env: "KRSEC_API_KEY"
 
 storage:
   # Optional (빈 값이면 기본 경로 사용)

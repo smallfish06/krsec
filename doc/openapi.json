@@ -70230,6 +70230,14 @@
 						}
 					},
 					{
+						"description": "Set to true to merge rows that share a symbol and asset type.",
+						"in": "query",
+						"name": "group",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"in": "header",
 						"name": "Accept",
 						"schema": {
@@ -70292,7 +70300,7 @@
 		},
 		"/auth/token": {
 			"post": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleAuthToken`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nAuthenticate with a broker and receive an access token.",
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleAuthToken`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nReturns the access token of a configured account. Credentials in the body are optional; when sent they must match the configured ones.",
 				"operationId": "POST_/auth/token",
 				"parameters": [
 					{
@@ -124678,7 +124686,7 @@
 		},
 		"/quotes/{market}/{symbol}/ohlcv": {
 			"get": {
-				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleGetOHLCV`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nReturns daily/weekly/monthly candlestick data.",
+				"description": "#### Controller: \n\n`github.com/smallfish06/krsec/internal/server.(*Server).handleGetOHLCV`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\nReturns candlestick data. Supported intervals differ per broker.",
 				"operationId": "GET_/quotes/:market/:symbol/ohlcv",
 				"parameters": [
 					{
@@ -124723,7 +124731,7 @@
 						}
 					},
 					{
-						"description": "Candle interval: 1d, 1w, 1mo",
+						"description": "Candle interval: 1m, 1d, 1w, 1mo",
 						"examples": {
 							"daily": {
 								"value": "1d"

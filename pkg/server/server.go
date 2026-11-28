@@ -63,11 +63,14 @@ type KISProxyRateLimitOverrideOptions struct {
 // Options configures the public API server.
 // External users can provide their own broker implementations through Brokers.
 type Options struct {
-	Host              string
-	Port              int
-	Accounts          []Account
-	Brokers           map[string]broker.Broker // account_id -> broker implementation
-	Logger            *slog.Logger             // optional structured logger; nil uses slog.Default()
+	Host     string
+	Port     int
+	Accounts []Account
+	Brokers  map[string]broker.Broker // account_id -> broker implementation
+	Logger   *slog.Logger             // optional structured logger; nil uses slog.Default()
+	// APIKey, when set, must accompany every request except /health and the
+	// Swagger UI, as "Authorization: Bearer <key>" or "X-API-Key: <key>".
+	APIKey            string
 	KISProxyCache     KISProxyCacheOptions
 	KISProxyRateLimit KISProxyRateLimitOptions
 }
@@ -89,7 +92,7 @@ func New(opts Options) *Server {
 	return &Server{inner: inner}
 }
 
-// Run starts the HTTP server.
+// Run serves until SIGTERM/SIGINT, then drains in-flight requests and returns.
 func (s *Server) Run() error {
 	return s.inner.Run()
 }
@@ -97,6 +100,12 @@ func (s *Server) Run() error {
 // App returns the underlying Fuego server for embedding or custom route composition.
 func (s *Server) App() *fuego.Server {
 	return s.inner.App()
+}
+
+// Close stops the server's background work. Run calls it on return; call it
+// directly when serving through App instead of Run.
+func (s *Server) Close() {
+	s.inner.Close()
 }
 
 // DefaultKISProxyCachePolicy caches public KIS quotation/reference endpoints
@@ -123,6 +132,7 @@ func toInternalOptions(opts Options) internalserver.ServerOptions {
 	}
 	return internalserver.ServerOptions{
 		Logger: opts.Logger,
+		APIKey: opts.APIKey,
 		KISProxyCache: internalserver.KISProxyCacheOptions{
 			Policy:         policy,
 			MaxEntries:     opts.KISProxyCache.MaxEntries,

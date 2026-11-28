@@ -14,7 +14,13 @@ import (
 	"github.com/smallfish06/krsec/pkg/broker"
 )
 
-// Config represents the application configuration
+// Listen address used when server.host or server.port is omitted.
+const (
+	DefaultHost = "localhost"
+	DefaultPort = 8080
+)
+
+// Config is the root of config.yaml.
 type Config struct {
 	Server   ServerConfig    `yaml:"server"`
 	Storage  StorageConfig   `yaml:"storage,omitempty"`
@@ -22,10 +28,16 @@ type Config struct {
 	Accounts []AccountConfig `yaml:"accounts,omitempty"`
 }
 
-// ServerConfig represents server configuration
+// ServerConfig is the HTTP listen address and the optional gateway API key.
+//
+// When APIKey is set, every request except /health and the Swagger UI must
+// send it as "Authorization: Bearer <key>" or "X-API-Key: <key>". APIKeyEnv
+// names an environment variable to read the key from instead.
 type ServerConfig struct {
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
+	Host      string `yaml:"host"`
+	Port      int    `yaml:"port"`
+	APIKey    string `yaml:"api_key,omitempty"`
+	APIKeyEnv string `yaml:"api_key_env,omitempty"`
 }
 
 // StorageConfig represents local persistence paths.
@@ -56,10 +68,11 @@ type KISProxyRateLimitOverrideConfig struct {
 	Burst             int     `yaml:"burst,omitempty"`
 }
 
-// AccountConfig represents a broker account configuration
+// AccountConfig binds one broker account. AppKeyEnv and AppSecretEnv name
+// environment variables that take precedence over the inline values.
 type AccountConfig struct {
 	Name         string `yaml:"name"`
-	Broker       string `yaml:"broker"` // currently supported: broker.CodeKIS, broker.CodeKiwoom, broker.CodeLS, broker.CodeToss
+	Broker       string `yaml:"broker"` // broker.CodeKIS, CodeKiwoom, CodeLS or CodeToss
 	Sandbox      bool   `yaml:"sandbox"`
 	AppKey       string `yaml:"app_key"`
 	AppSecret    string `yaml:"app_secret"`
@@ -73,15 +86,27 @@ type AccountConfig struct {
 var accountIDPattern = regexp.MustCompile(`^\d{8}(-\d{2})?$`)
 var kiwoomAccountIDPattern = regexp.MustCompile(`^\d{10}$`)
 
-// Validate validates and normalizes configuration values.
+// Validate normalizes the config in place (trimming, defaults, environment
+// lookups) and reports the first invalid value.
 func (c *Config) Validate() error {
 	c.Server.Host = strings.TrimSpace(c.Server.Host)
 	if c.Server.Host == "" {
-		return fmt.Errorf("server.host is required")
+		c.Server.Host = DefaultHost
 	}
-	if c.Server.Port <= 0 || c.Server.Port > 65535 {
+	if c.Server.Port == 0 {
+		c.Server.Port = DefaultPort
+	}
+	if c.Server.Port < 0 || c.Server.Port > 65535 {
 		return fmt.Errorf("server.port must be between 1 and 65535")
 	}
+	c.Server.APIKeyEnv = strings.TrimSpace(c.Server.APIKeyEnv)
+	if c.Server.APIKeyEnv != "" {
+		c.Server.APIKey = os.Getenv(c.Server.APIKeyEnv)
+		if strings.TrimSpace(c.Server.APIKey) == "" {
+			return fmt.Errorf("server.api_key_env %q is set but the environment variable is empty", c.Server.APIKeyEnv)
+		}
+	}
+	c.Server.APIKey = strings.TrimSpace(c.Server.APIKey)
 
 	c.Storage.TokenDir = strings.TrimSpace(c.Storage.TokenDir)
 	c.Storage.OrderContextDir = strings.TrimSpace(c.Storage.OrderContextDir)
@@ -139,11 +164,11 @@ func (c *Config) Validate() error {
 
 		acc.AppKey = strings.TrimSpace(acc.AppKey)
 		if acc.AppKey == "" {
-			return fmt.Errorf("accounts[%d].app_key is required", i)
+			return fmt.Errorf("accounts[%d].app_key is required%s", i, emptyEnvHint(acc.AppKeyEnv))
 		}
 		acc.AppSecret = strings.TrimSpace(acc.AppSecret)
 		if acc.AppSecret == "" {
-			return fmt.Errorf("accounts[%d].app_secret is required", i)
+			return fmt.Errorf("accounts[%d].app_secret is required%s", i, emptyEnvHint(acc.AppSecretEnv))
 		}
 
 		accountID := strings.TrimSpace(acc.AccountID)
@@ -190,7 +215,16 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-// Load loads configuration from a YAML file
+// emptyEnvHint explains a missing credential that was supposed to come from an
+// environment variable.
+func emptyEnvHint(envName string) string {
+	if envName == "" {
+		return ""
+	}
+	return fmt.Sprintf(" (environment variable %q is empty)", envName)
+}
+
+// Load reads and validates a YAML config file.
 func Load(filename string) (*Config, error) {
 	data, err := os.ReadFile(filename) //nolint:gosec // G304: the config path is caller-provided by design
 	if err != nil {

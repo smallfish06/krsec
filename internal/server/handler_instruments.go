@@ -14,7 +14,6 @@ type instrumentGetter interface {
 	GetInstrument(ctx context.Context, market, symbol string) (*broker.Instrument, error)
 }
 
-// handleGetInstrument handles GET /instruments/{market}/{symbol}
 func (s *Server) handleGetInstrument(c fuego.ContextNoBody) (Response, error) {
 	market := c.PathParam("market")
 	symbol := c.PathParam("symbol")
@@ -28,7 +27,7 @@ func (s *Server) handleGetInstrument(c fuego.ContextNoBody) (Response, error) {
 		}
 		candidates = []broker.Broker{brk}
 	} else {
-		candidates = s.orderBrokerCandidates("")
+		candidates = s.orderedBrokers()
 	}
 
 	if len(candidates) == 0 {

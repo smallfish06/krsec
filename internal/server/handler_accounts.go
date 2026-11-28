@@ -1,14 +1,15 @@
 package server
 
 import (
+	"math/big"
 	"net/http"
+	"strings"
 
 	"github.com/go-fuego/fuego"
 
 	"github.com/smallfish06/krsec/pkg/broker"
 )
 
-// handleGetBalance handles GET /accounts/{account_id}/balance
 func (s *Server) handleGetBalance(c fuego.ContextNoBody) (Response, error) {
 	accountID := c.PathParam("account_id")
 
@@ -35,7 +36,6 @@ func (s *Server) handleGetBalance(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// handleGetPositions handles GET /accounts/{account_id}/positions
 func (s *Server) handleGetPositions(c fuego.ContextNoBody) (Response, error) {
 	accountID := c.PathParam("account_id")
 
@@ -55,7 +55,6 @@ func (s *Server) handleGetPositions(c fuego.ContextNoBody) (Response, error) {
 		})
 	}
 
-	// Check if grouping is requested
 	if c.QueryParam("group") == "true" {
 		positions = groupPositions(positions)
 	}
@@ -67,28 +66,93 @@ func (s *Server) handleGetPositions(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// groupPositions groups positions by symbol and asset type
+// groupPositions merges rows that share a symbol and asset type, such as the
+// cash and margin lots of one stock, keeping the order rows first appeared in.
 func groupPositions(positions []broker.Position) []broker.Position {
-	grouped := make(map[string]*broker.Position)
-	totalAmt := make(map[string]float64) // 매입금액 합계 추적
+	type group struct {
+		pos  broker.Position
+		cost float64
+	}
+	groups := make([]*group, 0, len(positions))
+	byKey := make(map[string]*group, len(positions))
 
 	for _, p := range positions {
 		key := p.Symbol + "|" + string(p.AssetType)
-		if existing, ok := grouped[key]; ok {
-			totalAmt[key] += p.AvgPrice * float64(p.Quantity)
-			existing.Quantity += p.Quantity
-			existing.AvgPrice = totalAmt[key] / float64(existing.Quantity)
-			existing.ProfitLoss += p.ProfitLoss
-		} else {
-			copy := p
-			grouped[key] = &copy
-			totalAmt[key] = p.AvgPrice * float64(p.Quantity)
+		g, ok := byKey[key]
+		if !ok {
+			g = &group{pos: p, cost: positionCost(p)}
+			byKey[key] = g
+			groups = append(groups, g)
+			continue
+		}
+
+		g.cost += positionCost(p)
+		g.pos.QuantityDecimal = addDecimalQuantity(g.pos.QuantityDecimal, g.pos.Quantity, p.QuantityDecimal, p.Quantity)
+		g.pos.OrderableQtyDecimal = addDecimalQuantity(g.pos.OrderableQtyDecimal, g.pos.OrderableQty, p.OrderableQtyDecimal, p.OrderableQty)
+		g.pos.Quantity += p.Quantity
+		g.pos.OrderableQty += p.OrderableQty
+		g.pos.UnsettledQty += p.UnsettledQty
+		g.pos.TodayBuyQty += p.TodayBuyQty
+		g.pos.TodaySellQty += p.TodaySellQty
+		g.pos.PurchaseValue += p.PurchaseValue
+		g.pos.MarketValue += p.MarketValue
+		g.pos.ProfitLoss += p.ProfitLoss
+		g.pos.WeightPct += p.WeightPct
+		if g.pos.MarketCode != p.MarketCode {
+			g.pos.MarketCode = ""
+		}
+		if g.pos.LoanDate != p.LoanDate {
+			g.pos.LoanDate = ""
 		}
 	}
 
-	result := make([]broker.Position, 0, len(grouped))
-	for _, p := range grouped {
-		result = append(result, *p)
+	result := make([]broker.Position, 0, len(groups))
+	for _, g := range groups {
+		// Leave the first row's figures in place when there is nothing to
+		// divide by: a zero quantity would otherwise yield NaN, which
+		// encoding/json refuses to marshal.
+		if qty := positionQuantity(g.pos); qty > 0 && g.cost > 0 {
+			g.pos.AvgPrice = g.cost / qty
+			g.pos.ProfitLossPct = g.pos.ProfitLoss / g.cost * 100
+		}
+		result = append(result, g.pos)
 	}
 	return result
+}
+
+// positionQuantity prefers the decimal quantity, which is authoritative for
+// fractional holdings whose integer field is truncated.
+func positionQuantity(p broker.Position) float64 {
+	if r, ok := new(big.Rat).SetString(strings.TrimSpace(p.QuantityDecimal)); ok {
+		qty, _ := r.Float64()
+		return qty
+	}
+	return float64(p.Quantity)
+}
+
+func positionCost(p broker.Position) float64 {
+	if p.PurchaseValue != 0 {
+		return p.PurchaseValue
+	}
+	return p.AvgPrice * positionQuantity(p)
+}
+
+// addDecimalQuantity sums two quantities exactly. It returns "" when neither
+// side carries a decimal string, leaving the integer field as the only value.
+func addDecimalQuantity(aDecimal string, aInt int64, bDecimal string, bInt int64) string {
+	aDecimal, bDecimal = strings.TrimSpace(aDecimal), strings.TrimSpace(bDecimal)
+	if aDecimal == "" && bDecimal == "" {
+		return ""
+	}
+	parse := func(decimal string, whole int64) *big.Rat {
+		if r, ok := new(big.Rat).SetString(decimal); ok {
+			return r
+		}
+		return new(big.Rat).SetInt64(whole)
+	}
+	sum := new(big.Rat).Add(parse(aDecimal, aInt), parse(bDecimal, bInt))
+	if sum.IsInt() {
+		return sum.Num().String()
+	}
+	return strings.TrimRight(sum.FloatString(12), "0")
 }

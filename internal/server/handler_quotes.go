@@ -12,31 +12,13 @@ import (
 	"github.com/smallfish06/krsec/pkg/broker"
 )
 
-// handleGetQuote handles GET /quotes/{market}/{symbol}
 func (s *Server) handleGetQuote(c fuego.ContextNoBody) (Response, error) {
 	market := c.PathParam("market")
 	symbol := c.PathParam("symbol")
-	accountID := strings.TrimSpace(c.QueryParam("account_id"))
 
-	var brk broker.Broker
-	if accountID != "" {
-		var status int
-		var reason string
-		brk, status, reason = s.resolveBrokerByAccountID(accountID)
-		if brk == nil {
-			return respond(c, status, Response{
-				OK:    false,
-				Error: reason,
-			})
-		}
-	} else {
-		brk = s.getFirstBroker()
-	}
+	brk, status, reason := s.marketDataBroker(c.QueryParam("account_id"))
 	if brk == nil {
-		return respond(c, http.StatusInternalServerError, Response{
-			OK:    false,
-			Error: "no broker available",
-		})
+		return respond(c, status, Response{Error: reason})
 	}
 
 	quote, err := brk.GetQuote(c.Context(), market, symbol)
@@ -54,31 +36,13 @@ func (s *Server) handleGetQuote(c fuego.ContextNoBody) (Response, error) {
 	})
 }
 
-// handleGetOHLCV handles GET /quotes/{market}/{symbol}/ohlcv
 func (s *Server) handleGetOHLCV(c fuego.ContextNoBody) (Response, error) {
 	market := c.PathParam("market")
 	symbol := c.PathParam("symbol")
-	accountID := strings.TrimSpace(c.QueryParam("account_id"))
 
-	var brk broker.Broker
-	if accountID != "" {
-		var status int
-		var reason string
-		brk, status, reason = s.resolveBrokerByAccountID(accountID)
-		if brk == nil {
-			return respond(c, status, Response{
-				OK:    false,
-				Error: reason,
-			})
-		}
-	} else {
-		brk = s.getFirstBroker()
-	}
+	brk, status, reason := s.marketDataBroker(c.QueryParam("account_id"))
 	if brk == nil {
-		return respond(c, http.StatusInternalServerError, Response{
-			OK:    false,
-			Error: "no broker available",
-		})
+		return respond(c, status, Response{Error: reason})
 	}
 
 	opts, err := parseOHLCVOpts(c)

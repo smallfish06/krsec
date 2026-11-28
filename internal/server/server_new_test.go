@@ -23,7 +23,7 @@ func TestNew_WiresKiwoomBroker(t *testing.T) {
 	}
 
 	s := New(cfg)
-	brk := s.getBroker("1234567890")
+	brk, _ := s.getBrokerStrict("1234567890")
 	if brk == nil {
 		t.Fatal("expected kiwoom broker to be wired")
 	}
@@ -49,7 +49,7 @@ func TestNew_WiresLSBroker(t *testing.T) {
 	}
 
 	s := New(cfg)
-	brk := s.getBroker("ls-main")
+	brk, _ := s.getBrokerStrict("ls-main")
 	if brk == nil {
 		t.Fatal("expected LS broker to be wired")
 	}

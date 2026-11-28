@@ -5,11 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"sort"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -20,20 +21,31 @@ import (
 	"github.com/smallfish06/krsec/pkg/config"
 )
 
-// Server represents the HTTP server
+// Server is the krsec HTTP gateway: the routes, the broker adapter bound to
+// each account, and the KIS proxy cache and rate limiter.
 type Server struct {
-	config         *config.Config
 	router         *fuego.Server
 	brokers        map[string]broker.Broker // account_id -> broker adapter
 	accounts       []config.AccountConfig
 	logger         *slog.Logger
+	apiKey         string
 	kisCache       *kisProxyCache
 	kisCachePolicy KISProxyCachePolicy
 	kisRateLimiter *kisProxyRateLimiter
+
+	// lifecycle scopes background work (startup authentication, symbol
+	// reloads) to the server. Close cancels it.
+	lifecycle context.Context
+	stop      context.CancelFunc
+	closeOnce sync.Once
 }
 
+// ServerOptions customizes a Server beyond what the config file carries.
 type ServerOptions struct {
-	Logger            *slog.Logger
+	Logger *slog.Logger
+	// APIKey, when set, is required on every request except /health and the
+	// Swagger UI. It overrides server.api_key from the config.
+	APIKey            string
 	KISProxyCache     KISProxyCacheOptions
 	KISProxyRateLimit KISProxyRateLimitOptions
 }
@@ -45,16 +57,20 @@ func newBaseServer(cfg *config.Config) *Server {
 func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 	host := strings.TrimSpace(cfg.Server.Host)
 	if host == "" {
-		host = "localhost"
+		host = config.DefaultHost
 	}
 	port := cfg.Server.Port
 	if port <= 0 {
-		port = 8080
+		port = config.DefaultPort
 	}
-	addr := fmt.Sprintf("%s:%d", host, port)
 
-	r := fuego.NewServer(
-		fuego.WithAddr(addr),
+	apiKey := strings.TrimSpace(opts.APIKey)
+	if apiKey == "" {
+		apiKey = strings.TrimSpace(cfg.Server.APIKey)
+	}
+
+	serverOpts := []fuego.ServerOption{
+		fuego.WithAddr(net.JoinHostPort(host, fmt.Sprint(port))),
 		fuego.WithEngineOptions(
 			fuego.WithOpenAPIConfig(fuego.OpenAPIConfig{
 				PrettyFormatJSON: true,
@@ -68,33 +84,45 @@ func newBaseServerWithOptions(cfg *config.Config, opts ServerOptions) *Server {
 				},
 			}),
 		),
-	)
+	}
+	if apiKey != "" {
+		serverOpts = append(serverOpts, apiKeyServerOptions()...)
+	}
 
 	rateLimitOpts := opts.KISProxyRateLimit
 	if rateLimitOpts.isZero() {
 		rateLimitOpts = kisProxyRateLimitOptionsFromConfig(cfg.KISProxy.RateLimit)
 	}
 
+	logger := opts.Logger
+	if logger == nil {
+		logger = slog.Default()
+	}
+	cachePolicy := opts.KISProxyCache.Policy
+	if cachePolicy == nil {
+		cachePolicy = DefaultKISProxyCachePolicy
+	}
+	lifecycle, stop := context.WithCancel(context.Background())
+
 	s := &Server{
-		config:         cfg,
-		router:         r,
+		router:         fuego.NewServer(serverOpts...),
 		brokers:        make(map[string]broker.Broker),
 		accounts:       cfg.Accounts,
-		logger:         slog.Default(),
+		logger:         logger,
+		apiKey:         apiKey,
 		kisCache:       newKISProxyCache(opts.KISProxyCache),
-		kisCachePolicy: opts.KISProxyCache.Policy,
+		kisCachePolicy: cachePolicy,
 		kisRateLimiter: newKISProxyRateLimiter(rateLimitOpts),
-	}
-	if s.logger == nil {
-		s.logger = slog.Default()
-	}
-	if opts.Logger != nil {
-		s.logger = opts.Logger
-	}
-	if s.kisCachePolicy == nil {
-		s.kisCachePolicy = DefaultKISProxyCachePolicy
+		lifecycle:      lifecycle,
+		stop:           stop,
 	}
 
+	// Registered as a route middleware rather than a global one: fuego only
+	// installs global middlewares inside Run, which would leave the key
+	// unenforced for embedders that serve App().Mux themselves.
+	if apiKey != "" {
+		fuego.Use(s.router, requireAPIKey(apiKey))
+	}
 	s.routes()
 	return s
 }
@@ -118,6 +146,8 @@ func NewWithBrokers(host string, port int, accounts []config.AccountConfig, brok
 	return NewWithBrokersOptions(host, port, accounts, brokers, ServerOptions{})
 }
 
+// NewWithBrokersOptions is NewWithBrokers with a custom logger, API key and
+// KIS proxy cache/rate-limit settings.
 func NewWithBrokersOptions(
 	host string,
 	port int,
@@ -125,14 +155,6 @@ func NewWithBrokersOptions(
 	brokers map[string]broker.Broker,
 	opts ServerOptions,
 ) *Server {
-	host = strings.TrimSpace(host)
-	if host == "" {
-		host = "localhost"
-	}
-	if port <= 0 {
-		port = 8080
-	}
-
 	cfg := &config.Config{
 		Server: config.ServerConfig{
 			Host: host,
@@ -158,6 +180,12 @@ const shutdownDrainTimeout = 20 * time.Second
 // Run starts the HTTP server and shuts it down gracefully on SIGTERM/SIGINT,
 // draining in-flight requests instead of dropping them mid-rollout.
 func (s *Server) Run() error {
+	defer s.Close()
+
+	if s.apiKey == "" && !isLoopbackAddr(s.router.Addr) {
+		s.logger.Warn("gateway accepts unauthenticated requests on a non-loopback address; set server.api_key",
+			"addr", s.router.Addr)
+	}
 	s.logger.Info("server listening", "addr", s.router.Addr)
 
 	errCh := make(chan error, 1)
@@ -187,6 +215,16 @@ func (s *Server) Run() error {
 	}
 }
 
+// Close stops the server's background work: startup authentication, KIS
+// symbol reloads and the proxy cache janitor. Run calls it on return; callers
+// that serve through App instead of Run should call it themselves.
+func (s *Server) Close() {
+	s.closeOnce.Do(func() {
+		s.stop()
+		s.kisCache.stop()
+	})
+}
+
 // App returns the underlying Fuego server for embedding/customization.
 func (s *Server) App() *fuego.Server {
 	return s.router
@@ -198,7 +236,6 @@ type HealthResponse struct {
 	Accounts int    `json:"accounts"`
 }
 
-// handleHealth handles health check requests
 func (s *Server) handleHealth(c fuego.ContextNoBody) (HealthResponse, error) {
 	c.SetStatus(http.StatusOK)
 	return HealthResponse{
@@ -207,38 +244,7 @@ func (s *Server) handleHealth(c fuego.ContextNoBody) (HealthResponse, error) {
 	}, nil
 }
 
-// getBroker returns the broker for the given account ID
-func (s *Server) getBroker(accountID string) broker.Broker {
-	if brk, status, _ := s.resolveBrokerByAccountID(accountID); status == 0 {
-		return brk
-	}
-	return nil
-}
-
-// getFirstBroker returns the first available broker (for legacy endpoints)
-func (s *Server) getFirstBroker() broker.Broker {
-	if len(s.accounts) > 0 {
-		if brk := s.getBroker(s.accounts[0].AccountID); brk != nil {
-			return brk
-		}
-	}
-	if len(s.brokers) == 0 {
-		return nil
-	}
-	ids := make([]string, 0, len(s.brokers))
-	for accountID := range s.brokers {
-		ids = append(ids, accountID)
-	}
-	sort.Strings(ids)
-	for _, accountID := range ids {
-		if brk := s.brokers[accountID]; brk != nil {
-			return brk
-		}
-	}
-	return nil
-}
-
-// Response represents a standard API response
+// Response is the envelope every krsec endpoint returns.
 type Response struct {
 	OK     bool   `json:"ok"`
 	Data   any    `json:"data,omitempty"`

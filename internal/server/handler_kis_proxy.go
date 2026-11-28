@@ -16,6 +16,11 @@ import (
 	"github.com/smallfish06/krsec/pkg/broker"
 )
 
+// cacheStatusHeader tells a KIS proxy caller whether the payload came from
+// the upstream ("miss"), the cache ("hit"), or an expired entry served because
+// the upstream call failed ("stale").
+const cacheStatusHeader = "X-Krsec-Cache"
+
 type kisProxyRequest struct {
 	AccountID string         `json:"account_id,omitempty"`
 	Method    string         `json:"method,omitempty"`
@@ -80,6 +85,11 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
 	}
 
+	req.AccountID, err = proxyAccountSelector(req.AccountID, c.QueryParam("account_id"))
+	if err != nil {
+		return respond(c, http.StatusBadRequest, Response{OK: false, Error: err.Error()})
+	}
+
 	trID := req.TRID
 	method := req.Method
 
@@ -109,83 +119,91 @@ func (s *Server) handleKISProxyPath(c fuego.ContextWithBody[kisProxyRequest], ra
 	if cacheTTL <= 0 {
 		cacheable = false
 	}
-	cacheKey := ""
-	if cacheable {
-		cacheKey = buildKISProxyCacheKey(resolvedAccountID, method, rawPath, trID, request)
-		if cached, ok := s.kisCache.getFresh(cacheKey); ok {
-			s.logger.Debug("KIS proxy cache hit", "path", rawPath, "tr_id", trID, "account_id", resolvedAccountID)
-			return respond(c, http.StatusOK, Response{
-				OK:     true,
-				Data:   cached,
-				Broker: brk.Name(),
-			})
+	if !cacheable {
+		result, err := s.callKISEndpoint(c.Context(), impl, method, rawPath, trID, resolvedAccountID, request)
+		if err != nil {
+			return s.kisProxyError(c, brk, method, rawPath, trID, err)
 		}
+		return respond(c, http.StatusOK, Response{OK: true, Data: result, Broker: brk.Name()})
 	}
 
-	callEndpoint := func() (any, error) {
-		waited, err := s.kisRateLimiter.wait(c.Context(), rawPath, trID)
-		if err != nil {
-			return nil, fmt.Errorf("kis proxy rate limit wait: %w", err)
+	cacheKey := buildKISProxyCacheKey(resolvedAccountID, method, rawPath, trID, request)
+	if cached, ok := s.kisCache.getFresh(cacheKey); ok {
+		s.logger.Debug("KIS proxy cache hit", "path", rawPath, "tr_id", trID, "account_id", resolvedAccountID)
+		c.SetHeader(cacheStatusHeader, "hit")
+		return respond(c, http.StatusOK, Response{OK: true, Data: cached, Broker: brk.Name()})
+	}
+
+	// Storing inside the flight keeps the result even when the request that
+	// started it has gone away before the upstream answered.
+	result, err := s.kisCache.do(c.Context(), cacheKey, func(ctx context.Context) (any, error) {
+		value, err := s.callKISEndpoint(ctx, impl, method, rawPath, trID, resolvedAccountID, request)
+		if err == nil {
+			s.kisCache.set(cacheKey, value, cacheTTL)
 		}
-		if waited > 0 {
-			s.logger.Debug("KIS proxy rate limit wait",
+		return value, err
+	})
+	if err != nil {
+		if stale, ok := s.kisCache.getStale(cacheKey); ok {
+			s.logger.Warn("KIS proxy serving stale cache after endpoint error",
 				"path", rawPath,
+				"method", method,
 				"tr_id", trID,
 				"account_id", resolvedAccountID,
-				"wait_ms", waited.Milliseconds(),
+				"error", err,
 			)
+			c.SetHeader(cacheStatusHeader, "stale")
+			return respond(c, http.StatusOK, Response{OK: true, Data: stale, Broker: brk.Name()})
 		}
-		return impl.CallEndpoint(c.Context(), method, rawPath, trID, request)
+		return s.kisProxyError(c, brk, method, rawPath, trID, err)
 	}
 
-	var result any
-	var endpointErr error
-	if cacheable {
-		result, endpointErr, _ = s.kisCache.do(cacheKey, callEndpoint)
-	} else {
-		result, endpointErr = callEndpoint()
+	c.SetHeader(cacheStatusHeader, "miss")
+	return respond(c, http.StatusOK, Response{OK: true, Data: result, Broker: brk.Name()})
+}
+
+// callKISEndpoint waits for the outbound rate limit, then calls KIS.
+func (s *Server) callKISEndpoint(
+	ctx context.Context,
+	impl kisEndpointCaller,
+	method, rawPath, trID, accountID string,
+	request map[string]string,
+) (any, error) {
+	waited, err := s.kisRateLimiter.wait(ctx, rawPath, trID)
+	if err != nil {
+		return nil, fmt.Errorf("kis proxy rate limit wait: %w", err)
 	}
-	if endpointErr != nil {
-		if cacheable {
-			if stale, ok := s.kisCache.getStale(cacheKey); ok {
-				s.logger.Warn("KIS proxy serving stale cache after endpoint error",
-					"path", rawPath,
-					"method", method,
-					"tr_id", trID,
-					"account_id", resolvedAccountID,
-					"error", endpointErr,
-				)
-				return respond(c, http.StatusOK, Response{
-					OK:     true,
-					Data:   stale,
-					Broker: brk.Name(),
-				})
-			}
-		}
-		status := statusFromBrokerError(endpointErr, http.StatusInternalServerError)
-		slog.Error("KIS proxy endpoint error",
+	if waited > 0 {
+		s.logger.Debug("KIS proxy rate limit wait",
 			"path", rawPath,
-			"method", method,
 			"tr_id", trID,
-			"status", status,
-			"error", endpointErr,
+			"account_id", accountID,
+			"wait_ms", waited.Milliseconds(),
 		)
-		return respond(c, status, Response{
-			OK:     false,
-			Error:  endpointErr.Error(),
-			Broker: brk.Name(),
-		})
 	}
+	return impl.CallEndpoint(ctx, method, rawPath, trID, request)
+}
 
-	if cacheable {
-		s.kisCache.set(cacheKey, result, cacheTTL)
+func (s *Server) kisProxyError(
+	c interface{ SetStatus(int) },
+	brk broker.Broker,
+	method, rawPath, trID string,
+	err error,
+) (Response, error) {
+	status := statusFromBrokerError(err, http.StatusInternalServerError)
+	// A rejected request is the caller's problem, not an operational fault.
+	level := slog.LevelError
+	if status < http.StatusInternalServerError {
+		level = slog.LevelWarn
 	}
-
-	return respond(c, http.StatusOK, Response{
-		OK:     true,
-		Data:   result,
-		Broker: brk.Name(),
-	})
+	s.logger.Log(context.Background(), level, "KIS proxy endpoint error",
+		"path", rawPath,
+		"method", method,
+		"tr_id", trID,
+		"status", status,
+		"error", err,
+	)
+	return respond(c, status, Response{Error: err.Error(), Broker: brk.Name()})
 }
 
 func (s *Server) resolveKISProxyBroker(accountID string) (broker.Broker, string, int, string) {
