@@ -35,7 +35,7 @@ func TestResolveOverseasOrderTRID(t *testing.T) {
 		{exchange: "NASD", side: "buy", sandbox: false, want: "TTTT1002U"},
 		{exchange: "NASD", side: "sell", sandbox: false, want: "TTTT1006U"},
 		{exchange: "NYSE", side: "buy", sandbox: true, want: "VTTT1002U"},
-		{exchange: "AMEX", side: "sell", sandbox: true, want: "VTTT1006U"},
+		{exchange: "AMEX", side: "sell", sandbox: true, want: "VTTT1001U"},
 		{exchange: "SEHK", side: "buy", sandbox: false, want: "TTTS1002U"},
 		{exchange: "SEHK", side: "sell", sandbox: false, want: "TTTS1001U"},
 	}
@@ -72,6 +72,23 @@ func TestResolveOverseasRvseCnclTRID(t *testing.T) {
 		}
 		if got != tc.want {
 			t.Fatalf("ResolveOverseasRvseCnclTRID(%q,%v) = %q, want %q", tc.exchange, tc.sandbox, got, tc.want)
+		}
+	}
+}
+
+func TestSingleTRID(t *testing.T) {
+	t.Parallel()
+	for in, want := range map[string]string{
+		"TTTC8434R":                     "TTTC8434R",
+		" FHKST01010100 ":               "FHKST01010100",
+		"":                              "",
+		"모의투자 미지원":                      "",
+		"미지원":                           "",
+		"(매도) TTTC0011U (매수) TTTC0012U": "",
+		"(3개월이내) TTTC0081R (3개월이전) CTSC9215R": "",
+	} {
+		if got := singleTRID(in); got != want {
+			t.Errorf("singleTRID(%q) = %q, want %q", in, got, want)
 		}
 	}
 }

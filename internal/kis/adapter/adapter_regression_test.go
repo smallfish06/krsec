@@ -145,3 +145,111 @@ func TestDomesticOrderRejectsUnknownVenue(t *testing.T) {
 		t.Fatalf("unknown market should fail before dispatch: %v", err)
 	}
 }
+
+// KIS has no "side" field to reject: an unrecognized side used to be sent as
+// a buy, and an unrecognized type as a limit order.
+func TestPlaceOrderRejectsUnrecognizedSideAndType(t *testing.T) {
+	t.Parallel()
+	valid := broker.OrderRequest{Market: "KRX", Symbol: "005930", Side: broker.OrderSideSell, Type: broker.OrderTypeLimit, Quantity: 1, Price: 70000}
+	cases := map[string]func(*broker.OrderRequest){
+		"uppercase side": func(r *broker.OrderRequest) { r.Side = "SELL" },
+		"empty side":     func(r *broker.OrderRequest) { r.Side = "" },
+		"unknown type":   func(r *broker.OrderRequest) { r.Type = "stop" },
+		"empty type":     func(r *broker.OrderRequest) { r.Type = "" },
+		"zero quantity":  func(r *broker.OrderRequest) { r.Quantity = 0 },
+		"limit no price": func(r *broker.OrderRequest) { r.Price = 0 },
+	}
+	for name, mutate := range cases {
+		t.Run(name, func(t *testing.T) {
+			a := newStubAdapter(t)
+			a.dispatcher.routes[kis.PathDomesticStockTradingOrderCash] = newEndpointRoute([]string{http.MethodPost}, func(context.Context, string, string, map[string]string) (any, error) {
+				t.Fatal("invalid order reached KIS")
+				return nil, nil
+			})
+			req := valid
+			mutate(&req)
+			if _, err := a.PlaceOrder(context.Background(), req); !errors.Is(err, broker.ErrInvalidOrderRequest) {
+				t.Fatalf("err = %v, want ErrInvalidOrderRequest", err)
+			}
+		})
+	}
+}
+
+func TestFormatWonPriceRounds(t *testing.T) {
+	t.Parallel()
+	for price, want := range map[float64]string{70100: "70100", 70099.99999: "70100", 0: "0"} {
+		if got := formatWonPrice(price); got != want {
+			t.Errorf("formatWonPrice(%v) = %q, want %q", price, got, want)
+		}
+	}
+}
+
+// The documentation lists two TR IDs for the order-history path, so leaving
+// tr_id empty sent that whole sentence as the header and every lookup failed.
+func TestOrderHistoryLookupNamesItsTRID(t *testing.T) {
+	t.Parallel()
+	for sandbox, want := range map[bool]string{false: "TTTC0081R", true: "VTTC0081R"} {
+		a := newStubAdapter(t)
+		a.sandbox = sandbox
+		a.orders["1001"] = orderContext{OrderID: "1001", CANO: "12345678", AccountPrdt: "01", Symbol: "005930", OrderQty: 10, Status: broker.OrderStatusPending}
+		a.dispatcher.routes[kis.PathDomesticStockTradingInquireDailyCcld] = newEndpointRoute([]string{http.MethodGet}, func(_ context.Context, _, trID string, _ map[string]string) (any, error) {
+			if trID != want {
+				t.Fatalf("sandbox=%v: tr_id = %q, want %q", sandbox, trID, want)
+			}
+			return map[string]any{"output1": []any{map[string]string{"ODNO": "1001", "ORD_QTY": "10", "TOT_CCLD_QTY": "4", "RMN_QTY": "6"}}}, nil
+		})
+		got, err := a.GetOrder(context.Background(), "1001")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.Status != broker.OrderStatusPending || got.FilledQuantity != 4 || got.RemainingQty != 6 {
+			t.Fatalf("sandbox=%v: unexpected order state %+v", sandbox, got)
+		}
+	}
+}
+
+func TestGetOrderNeverInfersAFill(t *testing.T) {
+	t.Parallel()
+
+	t.Run("lookup failure is an error, not a status", func(t *testing.T) {
+		a := newStubAdapter(t)
+		a.orders["1001"] = orderContext{OrderID: "1001", OrderQty: 10, Status: broker.OrderStatusPending}
+		a.dispatcher.routes[kis.PathDomesticStockTradingInquireDailyCcld] = newEndpointRoute([]string{http.MethodGet}, func(context.Context, string, string, map[string]string) (any, error) {
+			return nil, broker.ErrServerError
+		})
+		if got, err := a.GetOrder(context.Background(), "1001"); !errors.Is(err, broker.ErrServerError) {
+			t.Fatalf("got %+v err=%v, want ErrServerError", got, err)
+		}
+	})
+
+	t.Run("order absent from the list keeps its recorded status", func(t *testing.T) {
+		a := newStubAdapter(t)
+		a.orders["1001"] = orderContext{OrderID: "1001", OrderQty: 10, Status: broker.OrderStatusPending}
+		a.dispatcher.routes[kis.PathDomesticStockTradingInquireDailyCcld] = newEndpointRoute([]string{http.MethodGet}, func(context.Context, string, string, map[string]string) (any, error) {
+			return map[string]any{"output1": []any{}}, nil
+		})
+		got, err := a.GetOrder(context.Background(), "1001")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.Status != broker.OrderStatusPending || got.FilledQuantity != 0 {
+			t.Fatalf("absent order reported as %+v", got)
+		}
+	})
+
+	// A cancel request that lands after a partial fill must still report the fill.
+	t.Run("cancelled order is reconciled with the broker", func(t *testing.T) {
+		a := newStubAdapter(t)
+		a.orders["1001"] = orderContext{OrderID: "1001", OrderQty: 100, Status: broker.OrderStatusCancelled}
+		a.dispatcher.routes[kis.PathDomesticStockTradingInquireDailyCcld] = newEndpointRoute([]string{http.MethodGet}, func(context.Context, string, string, map[string]string) (any, error) {
+			return map[string]any{"output1": []any{map[string]string{"ODNO": "1001", "ORD_QTY": "100", "TOT_CCLD_QTY": "40", "RMN_QTY": "0", "CNCL_YN": "Y"}}}, nil
+		})
+		got, err := a.GetOrder(context.Background(), "1001")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.Status != broker.OrderStatusCancelled || got.FilledQuantity != 40 {
+			t.Fatalf("partial fill before cancel lost: %+v", got)
+		}
+	})
+}

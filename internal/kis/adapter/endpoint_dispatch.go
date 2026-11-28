@@ -86,6 +86,10 @@ func (d *endpointDispatcher) dispatchDocumentedKISEndpoint(path string, spec kis
 		if effectiveTRID == "" {
 			effectiveTRID = d.adapter.client.ResolveTRID(spec.RealTRID, spec.VirtualTRID)
 		}
+		if effectiveTRID == "" {
+			return nil, fmt.Errorf("%w: tr_id is required for %s (documented: %q)",
+				broker.ErrInvalidOrderRequest, path, spec.RealTRID)
+		}
 
 		resp := kisspecs.NewDocumentedEndpointResponse(strings.TrimSpace(path))
 		if resp == nil {

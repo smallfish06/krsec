@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -16,7 +16,6 @@ import (
 	tokencache "github.com/smallfish06/krsec/pkg/token"
 )
 
-// TokenResponse represents the KIS token response
 type TokenResponse struct {
 	AccessToken           string `json:"access_token"`
 	AccessTokenExpired    string `json:"access_token_token_expired"`
@@ -30,11 +29,10 @@ type TokenResponse struct {
 // instead of queueing one-per-minute on the auth rate limiter.
 var authFlight singleflight.Group
 
-// issueTimeout bounds a detached token issuance: up to one auth-limiter
-// window (60s) plus the HTTP round trip.
+// issueTimeout bounds the HTTP round trip of a detached token issuance. The
+// wait on the issuance limiter (up to 60s) happens before it starts.
 const issueTimeout = 90 * time.Second
 
-// Authenticate authenticates with KIS and returns a token
 func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
 	appKey := strings.TrimSpace(creds.AppKey)
 	appSecret := strings.TrimSpace(creds.AppSecret)
@@ -124,8 +122,8 @@ func issueToken(tm tokencache.Manager, httpClient *http.Client, baseURL string, 
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("authentication failed: HTTP %d: %s", resp.StatusCode, string(bodyBytes))
+		bodyBytes, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorBodyBytes))
+		return nil, fmt.Errorf("%w: HTTP %d: %s", broker.ErrUnauthorized, resp.StatusCode, string(bodyBytes))
 	}
 
 	var tokenResp TokenResponse
@@ -133,13 +131,14 @@ func issueToken(tm tokencache.Manager, httpClient *http.Client, baseURL string, 
 		return nil, fmt.Errorf("decode response: %w", err)
 	}
 
-	// Calculate expiration time
+	if strings.TrimSpace(tokenResp.AccessToken) == "" || tokenResp.ExpiresIn <= 0 {
+		return nil, fmt.Errorf("%w: KIS token response carried no usable token", broker.ErrUnauthorized)
+	}
 	expiresAt := time.Now().Add(time.Duration(tokenResp.ExpiresIn) * time.Second)
 
-	// Store token in manager (shared cache + optional persistence)
 	if err := tm.SetToken(creds.AppKey, tokenResp.AccessToken, expiresAt); err != nil {
-		// Log error but don't fail - we have the token in memory
-		fmt.Fprintf(os.Stderr, "Warning: failed to save token to disk: %v\n", err)
+		// The token is still returned and held in memory by the caller.
+		slog.Warn("failed to persist KIS token", "error", err)
 	}
 
 	return &broker.Token{

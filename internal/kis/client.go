@@ -27,7 +27,6 @@ const (
 	BaseURLSandbox = "https://openapivts.koreainvestment.com:29443"
 )
 
-// Client is the KIS HTTP client
 type Client struct {
 	baseURL    string
 	httpClient *http.Client
@@ -76,14 +75,12 @@ const (
 	kisBurst             = 3
 )
 
-// SetLogger sets the logger for the client.
 func (c *Client) SetLogger(l *slog.Logger) {
 	if l != nil {
 		c.logger = l
 	}
 }
 
-// Name returns the broker name
 func (c *Client) Name() string {
 	return broker.NameKIS
 }
@@ -102,7 +99,6 @@ func (c *Client) SetCredentials(appKey, appSecret string) {
 	}
 }
 
-// SetToken sets the access token
 func (c *Client) setToken(token string, expiresAt time.Time) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -110,15 +106,14 @@ func (c *Client) setToken(token string, expiresAt time.Time) {
 	c.expiresAt = expiresAt
 }
 
-// GetToken returns the current access token
 func (c *Client) getToken() (string, time.Time) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	return c.accessToken, c.expiresAt
 }
 
-// IsTokenValid checks if the current token is valid.
-// It checks the injected token manager first, then falls back to local token.
+// isTokenValid consults the shared token manager first, so a token another
+// client refreshed is picked up, and falls back to this client's own copy.
 func (c *Client) isTokenValid() bool {
 	c.mu.RLock()
 	appKey := c.appKey
@@ -146,6 +141,10 @@ func (c *Client) isTokenValid() bool {
 	return time.Now().Before(expiresAt.Add(-5 * time.Minute)) // 5분 여유
 }
 
+// maxErrorBodyBytes caps how much of an upstream error body is read into an
+// error message.
+const maxErrorBodyBytes = 64 << 10
+
 // doRequest performs an HTTP request with authentication headers.
 // On 401 responses, it invalidates the cached token, re-authenticates, and retries once.
 func (c *Client) doRequest(ctx context.Context, method, path string, trID string, body any, result any) error {
@@ -162,7 +161,8 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 		c.logger.Warn("KIS returned 401, refreshing token and retrying",
 			"method", method, "path", path)
 
-		if err := c.invalidateAndRefresh(ctx); err != nil {
+		rejected := strings.TrimPrefix(resp.Request.Header.Get("Authorization"), "Bearer ")
+		if err := c.invalidateAndRefresh(ctx, rejected); err != nil {
 			return fmt.Errorf("token refresh after 401 failed: %w", err)
 		}
 
@@ -174,7 +174,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, trID string
 	}
 
 	if resp.StatusCode >= 400 {
-		bodyBytes, _ := io.ReadAll(resp.Body)
+		bodyBytes, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorBodyBytes))
 		return mapUpstreamError(resp.StatusCode, bodyBytes)
 	}
 
@@ -251,22 +251,22 @@ func (c *Client) refreshToken(ctx context.Context) error {
 	return err
 }
 
-// invalidateAndRefresh clears the cached token and forces a fresh authentication.
-func (c *Client) invalidateAndRefresh(ctx context.Context) error {
+// invalidateAndRefresh drops the token KIS just rejected and authenticates
+// again. A token another request has already replaced is left alone.
+func (c *Client) invalidateAndRefresh(ctx context.Context, rejected string) error {
 	c.mu.RLock()
 	appKey := c.appKey
 	c.mu.RUnlock()
 
-	// Clear local token
-	c.setToken("", time.Time{})
-
-	// Clear token from shared manager
+	if current, _ := c.getToken(); current == rejected {
+		c.setToken("", time.Time{})
+	}
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
 	if appKey != "" {
-		_ = tm.DeleteToken(appKey)
+		_ = tokencache.InvalidateRejected(tm, appKey, rejected)
 	}
 
 	return c.refreshToken(ctx)
@@ -338,23 +338,14 @@ func (c *Client) CallDocumentedEndpointInto(
 	return checkEndpointResult(result)
 }
 
-// ResolveTRID picks the environment-appropriate TR_ID from documented real/virtual IDs.
-// It returns empty string when no usable TR_ID exists.
+// ResolveTRID picks the TR_ID for this client's environment from the real and
+// paper-trading IDs the documentation lists for an endpoint. It returns ""
+// when the documentation does not name exactly one, as for endpoints whose
+// TR_ID depends on the request ("(매도) TTTC0011U (매수) TTTC0012U") or that
+// paper trading does not support.
 func (c *Client) ResolveTRID(realTRID, virtualTRID string) string {
-	normalize := func(v string) string {
-		v = strings.TrimSpace(v)
-		if v == "" {
-			return ""
-		}
-		// KIS docs use this sentinel for endpoints that do not support paper trading.
-		if strings.Contains(v, "모의투자 미지원") {
-			return ""
-		}
-		return v
-	}
-
-	real := normalize(realTRID)
-	virtual := normalize(virtualTRID)
+	real := singleTRID(realTRID)
+	virtual := singleTRID(virtualTRID)
 
 	if c.baseURL == BaseURLSandbox {
 		if virtual != "" {
@@ -366,6 +357,19 @@ func (c *Client) ResolveTRID(realTRID, virtualTRID string) string {
 		return real
 	}
 	return virtual
+}
+
+// singleTRID returns v when it is one bare TR_ID and "" when it is empty or
+// documentation prose.
+func singleTRID(v string) string {
+	v = strings.TrimSpace(v)
+	for _, r := range v {
+		isAlnum := (r >= '0' && r <= '9') || (r >= 'A' && r <= 'Z') || (r >= 'a' && r <= 'z')
+		if !isAlnum && r != '_' {
+			return ""
+		}
+	}
+	return v
 }
 
 func checkEndpointResult(result any) error {

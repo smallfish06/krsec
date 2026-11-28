@@ -61,7 +61,12 @@ func overseasOrderTRID(exchangeCode, side string, sandbox bool) (string, error) 
 		return "", fmt.Errorf("unsupported order side: %s", side)
 	}
 
-	if sandbox && len(trID) > 0 {
+	if sandbox {
+		// Paper trading mirrors the real ID with a V prefix, except the US
+		// sell order, which KIS documents as VTTT1001U.
+		if trID == "TTTT1006U" {
+			return "VTTT1001U", nil
+		}
 		trID = "V" + trID[1:]
 	}
 	return trID, nil

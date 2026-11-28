@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"math"
 	"net/http"
 	"sort"
 	"strconv"
@@ -15,6 +16,8 @@ import (
 	"github.com/samber/lo"
 
 	"github.com/smallfish06/krsec/internal/kis"
+	"github.com/smallfish06/krsec/internal/krtime"
+	"github.com/smallfish06/krsec/internal/ordercheck"
 	"github.com/smallfish06/krsec/pkg/broker"
 	kisspecs "github.com/smallfish06/krsec/pkg/kis/specs"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
@@ -49,7 +52,6 @@ type orderContext struct {
 	UpdatedAt    time.Time
 }
 
-// NewAdapterWithOptions creates a new KIS adapter with injectable dependencies.
 func NewAdapterWithOptions(
 	sandbox bool,
 	accountID string,
@@ -89,12 +91,10 @@ func NewAdapterWithOptions(
 	return a
 }
 
-// Name returns the broker name
 func (a *Adapter) Name() string {
 	return broker.NameKIS
 }
 
-// Authenticate authenticates with the broker
 func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
 	return a.client.Authenticate(ctx, creds)
 }
@@ -128,15 +128,21 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 		return nil, err
 	}
 
-	// 응답 데이터가 output 또는 output1에 있을 수 있음
+	// KIS returns the row under either output or output1.
 	var output kisspecs.KISDomesticStockV1QuotationsInquirePriceOutputItem
-	if len(resp.Output) > 0 {
+	switch {
+	case len(resp.Output) > 0:
 		output = resp.Output[0]
-	} else if len(resp.Output1) > 0 {
+	case len(resp.Output1) > 0:
 		output = resp.Output1[0]
+	default:
+		return nil, fmt.Errorf("%w: KIS returned no quote for %s", broker.ErrInvalidSymbol, symbol)
 	}
 
-	price, _ := strconv.ParseFloat(output.StckPrpr, 64)
+	price, err := strconv.ParseFloat(strings.TrimSpace(output.StckPrpr), 64)
+	if err != nil {
+		return nil, fmt.Errorf("%w: KIS returned no price for %s", broker.ErrInvalidSymbol, symbol)
+	}
 	open, _ := strconv.ParseFloat(output.StckOprc, 64)
 	high, _ := strconv.ParseFloat(output.StckHgpr, 64)
 	low, _ := strconv.ParseFloat(output.StckLwpr, 64)
@@ -166,7 +172,8 @@ func (a *Adapter) GetQuote(ctx context.Context, market, symbol string) (*broker.
 	}, nil
 }
 
-// getOverseasQuote retrieves overseas stock quote via KIS API (HHDFS00000300)
+// getOverseasQuote reads the overseas price-detail endpoint (HHDFS76200200),
+// which carries the day range and previous close the plain price endpoint lacks.
 func (a *Adapter) getOverseasQuote(ctx context.Context, market, symbol, exchangeCode string) (*broker.Quote, error) {
 	resp, err := callEndpointDecoded[struct {
 		Output []kisspecs.KISOverseasPriceV1QuotationsPriceDetailOutputItem `json:"output"`
@@ -222,7 +229,6 @@ func (a *Adapter) getOverseasQuote(ctx context.Context, market, symbol, exchange
 	}, nil
 }
 
-// GetBalance retrieves account balance
 func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Balance, error) {
 	// accountID 파싱
 	cano, acntPrdtCD := a.parseAccountID(accountID)
@@ -302,7 +308,6 @@ func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.
 
 	positions := make([]broker.Position, 0)
 
-	// 1. 주식 잔고 조회
 	resp, err := callEndpointDecoded[struct {
 		Output1 []kisspecs.KISDomesticStockV1TradingInquireBalanceOutput1Item `json:"output1"`
 	}](
@@ -399,7 +404,6 @@ func (a *Adapter) GetPositions(ctx context.Context, accountID string) ([]broker.
 	return positions, nil
 }
 
-// GetInstrument retrieves normalized instrument metadata.
 func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*broker.Instrument, error) {
 	symbol = strings.ToUpper(strings.TrimSpace(symbol))
 	if symbol == "" {
@@ -587,16 +591,12 @@ func (a *Adapter) ReloadSymbols(ctx context.Context) (int, error) {
 	return a.client.ReloadMasterSymbols(ctx)
 }
 
-// PlaceOrder places a new order
+// PlaceOrder submits a cash order: domestic to KRX/NXT/SOR, overseas as a
+// limit order on the exchange the market maps to.
 func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*broker.OrderResult, error) {
-	orderDvsn := "00"
-	if req.Type == broker.OrderTypeMarket {
-		orderDvsn = "01"
-	}
-
-	side := "buy"
-	if req.Side == broker.OrderSideSell {
-		side = "sell"
+	side, orderDvsn, err := orderSideAndDivision(req)
+	if err != nil {
+		return nil, err
 	}
 
 	cano, acntPrdtCD := a.parseAccountID(req.AccountID)
@@ -678,7 +678,7 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 		Pdno:         req.Symbol,
 		OrdDvsn:      orderDvsn,
 		OrdQty:       strconv.Itoa(int(req.Quantity)),
-		OrdUnpr:      strconv.Itoa(int(req.Price)),
+		OrdUnpr:      formatWonPrice(req.Price),
 		ExcgIdDvsnCd: exchangeCode,
 	}
 	resp, err := callEndpointDecoded[kisspecs.KISDomesticStockV1TradingOrderCash](
@@ -721,7 +721,6 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 	}, nil
 }
 
-// CancelOrder cancels an order
 func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
@@ -768,7 +767,7 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 			OrdDvsn:         meta.OrderDvsn,
 			RvseCnclDvsnCd:  "02",
 			OrdQty:          strconv.Itoa(meta.OrderQty),
-			OrdUnpr:         strconv.Itoa(int(meta.OrderPrice)),
+			OrdUnpr:         formatWonPrice(meta.OrderPrice),
 			QtyAllOrdYn:     "Y",
 			ExcgIdDvsnCd:    exchangeCode,
 		}
@@ -794,7 +793,6 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	return nil
 }
 
-// ModifyOrder modifies an existing order
 func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.ModifyOrderRequest) (*broker.OrderResult, error) {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
@@ -868,7 +866,7 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 			OrdDvsn:         meta.OrderDvsn,
 			RvseCnclDvsnCd:  "01",
 			OrdQty:          strconv.Itoa(newQty),
-			OrdUnpr:         strconv.Itoa(int(newPrice)),
+			OrdUnpr:         formatWonPrice(newPrice),
 			QtyAllOrdYn:     "N",
 			ExcgIdDvsnCd:    exchangeCode,
 		}
@@ -922,7 +920,9 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 	}, nil
 }
 
-// GetOrder returns current order status based on cached/meta information.
+// GetOrder reports an order's status from the broker's daily order list. When
+// the broker does not list the order, the status this adapter last recorded is
+// returned unchanged: a missing order is never assumed to have filled.
 func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderResult, error) {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
@@ -938,32 +938,16 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 	var avgFilledPrice float64
 	var rejectReason string
 
-	if status != broker.OrderStatusCancelled {
-		snap, ok := a.resolveRemoteOrderSnapshot(ctx, meta)
-		if ok {
-			status = snap.Status
-			filledQty = snap.FilledQty
-			remainQty = snap.RemainingQty
-			avgFilledPrice = snap.AvgFilledPrice
-			rejectReason = snap.RejectedReason
-		} else if !meta.IsOverseas {
-			// Fallback: check current open-order list only when daily fill lookup is unavailable.
-			items, err := a.strictInquirePossibleRvseCncl(ctx, meta.CANO, meta.AccountPrdt)
-			if err == nil {
-				found := false
-				for _, item := range items {
-					if item.Odno == meta.OrderID || item.OrgnOdno == meta.OrderID {
-						found = true
-						break
-					}
-				}
-				if found {
-					status = broker.OrderStatusPending
-				} else if status == broker.OrderStatusPending {
-					status = broker.OrderStatusFilled
-				}
-			}
-		}
+	snap, found, err := a.resolveRemoteOrderSnapshot(ctx, meta)
+	if err != nil {
+		return nil, err
+	}
+	if found {
+		status = snap.Status
+		filledQty = snap.FilledQty
+		remainQty = snap.RemainingQty
+		avgFilledPrice = snap.AvgFilledPrice
+		rejectReason = snap.RejectedReason
 	}
 	if remainQty == 0 {
 		switch status {
@@ -1001,22 +985,13 @@ func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderRe
 	}, nil
 }
 
-// GetOrderFills returns normalized fill executions for an order.
 func (a *Adapter) GetOrderFills(ctx context.Context, orderID string) ([]broker.OrderFill, error) {
 	meta, err := a.resolveOrderContext(ctx, orderID)
 	if err != nil {
 		return nil, err
 	}
 
-	startDate := time.Now().AddDate(0, 0, -7)
-	if !meta.UpdatedAt.IsZero() {
-		startDate = meta.UpdatedAt.AddDate(0, 0, -2)
-	}
-	if startDate.After(time.Now()) {
-		startDate = time.Now().AddDate(0, 0, -1)
-	}
-	start := startDate.Format("20060102")
-	end := time.Now().Format("20060102")
+	start, end := orderLookupWindow(meta)
 
 	if meta.IsOverseas {
 		exchange := meta.ExchangeCode
@@ -1266,17 +1241,10 @@ type orderStatusSnapshot struct {
 	RejectedReason string
 }
 
-func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderContext) (orderStatusSnapshot, bool) {
-	startDate := time.Now().AddDate(0, 0, -7)
-	if !meta.UpdatedAt.IsZero() {
-		startDate = meta.UpdatedAt.AddDate(0, 0, -2)
-	}
-	if startDate.After(time.Now()) {
-		startDate = time.Now().AddDate(0, 0, -1)
-	}
-	endDate := time.Now()
-	start := startDate.Format("20060102")
-	end := endDate.Format("20060102")
+// resolveRemoteOrderSnapshot looks the order up in the broker's order list.
+// found is false when the lookup succeeded but does not contain the order.
+func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderContext) (snapshot orderStatusSnapshot, found bool, err error) {
+	start, end := orderLookupWindow(meta)
 
 	if meta.IsOverseas {
 		exchange := meta.ExchangeCode
@@ -1285,7 +1253,7 @@ func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderCont
 		}
 		items, err := a.strictInquireOverseasCcnl(ctx, meta.CANO, meta.AccountPrdt, start, end, exchange)
 		if err != nil {
-			return orderStatusSnapshot{}, false
+			return orderStatusSnapshot{}, false, err
 		}
 		for _, item := range items {
 			if item.Odno != meta.OrderID && item.OrgnOdno != meta.OrderID {
@@ -1306,20 +1274,20 @@ func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderCont
 			if strings.Contains(item.PrcsStatName, "거부") || strings.TrimSpace(item.RjctRson) != "" {
 				base.Status = broker.OrderStatusRejected
 				base.RejectedReason = firstNonEmpty(item.RjctRsonName, item.RjctRson, item.PrcsStatName)
-				return base, true
+				return base, true, nil
 			}
 			if remainQty == 0 && filledQty > 0 && (ordQty == 0 || filledQty >= ordQty) {
 				base.Status = broker.OrderStatusFilled
-				return base, true
+				return base, true, nil
 			}
 			if meta.Status == broker.OrderStatusCancelled {
 				base.Status = broker.OrderStatusCancelled
-				return base, true
+				return base, true, nil
 			}
 			base.Status = broker.OrderStatusPending
-			return base, true
+			return base, true, nil
 		}
-		return orderStatusSnapshot{}, false
+		return orderStatusSnapshot{}, false, nil
 	}
 
 	exchangeID := meta.ExchangeCode
@@ -1328,7 +1296,7 @@ func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderCont
 	}
 	items, err := a.strictInquireDailyCcld(ctx, meta.CANO, meta.AccountPrdt, start, end, meta.OrderOrgNo, meta.OrderID, exchangeID)
 	if err != nil {
-		return orderStatusSnapshot{}, false
+		return orderStatusSnapshot{}, false, err
 	}
 	for _, item := range items {
 		if item.Odno != meta.OrderID && item.OrgnOdno != meta.OrderID {
@@ -1352,21 +1320,31 @@ func (a *Adapter) resolveRemoteOrderSnapshot(ctx context.Context, meta orderCont
 		if rejectQty > 0 && filledQty == 0 {
 			base.Status = broker.OrderStatusRejected
 			base.RejectedReason = "rejected"
-			return base, true
+			return base, true, nil
 		}
 		if cancelled {
 			base.Status = broker.OrderStatusCancelled
-			return base, true
+			return base, true, nil
 		}
 		if filledQty > 0 && (remainQty == 0 || (ordQty > 0 && filledQty >= ordQty)) {
 			base.Status = broker.OrderStatusFilled
-			return base, true
+			return base, true, nil
 		}
 		base.Status = broker.OrderStatusPending
-		return base, true
+		return base, true, nil
 	}
 
-	return orderStatusSnapshot{}, false
+	return orderStatusSnapshot{}, false, nil
+}
+
+// dailyCcldTRID is the order-history TR for the last three months, the only
+// range this adapter queries. It must be named explicitly: the documentation
+// lists two IDs for this path, so there is no single default to resolve.
+func (a *Adapter) dailyCcldTRID() string {
+	if a.sandbox {
+		return "VTTC0081R"
+	}
+	return "TTTC0081R"
 }
 
 func callEndpointDecoded[T any](
@@ -1428,7 +1406,7 @@ func (a *Adapter) strictInquireDailyCcld(
 		accountProductCode = "01"
 	}
 	if startDate == "" || endDate == "" {
-		today := time.Now().Format("20060102")
+		today := krtime.Today()
 		if startDate == "" {
 			startDate = today
 		}
@@ -1447,7 +1425,7 @@ func (a *Adapter) strictInquireDailyCcld(
 		ctx,
 		http.MethodGet,
 		kis.PathDomesticStockTradingInquireDailyCcld,
-		"",
+		a.dailyCcldTRID(),
 		kisspecs.KISDomesticStockV1TradingInquireDailyCcldRequest{
 			Cano:         accountNo,
 			AcntPrdtCd:   accountProductCode,
@@ -1481,7 +1459,7 @@ func (a *Adapter) strictInquireOverseasCcnl(
 		accountProductCode = "01"
 	}
 	if startDate == "" || endDate == "" {
-		today := time.Now().Format("20060102")
+		today := krtime.Today()
 		if startDate == "" {
 			startDate = today
 		}
@@ -1580,6 +1558,8 @@ func parseFirstFloat(v ...string) float64 {
 	return 0
 }
 
+// parseOrderDateTime reads the KST wall-clock date and time KIS reports for
+// orders and fills.
 func parseOrderDateTime(date, t string) time.Time {
 	d := strings.TrimSpace(date)
 	if d == "" {
@@ -1587,14 +1567,66 @@ func parseOrderDateTime(date, t string) time.Time {
 	}
 	ts := strings.TrimSpace(t)
 	if len(ts) >= 6 {
-		if v, err := time.Parse("20060102150405", d+ts[:6]); err == nil {
+		if v, err := time.ParseInLocation("20060102150405", d+ts[:6], krtime.KST); err == nil {
 			return v
 		}
 	}
-	if v, err := time.Parse("20060102", d); err == nil {
+	if v, err := time.ParseInLocation("20060102", d, krtime.KST); err == nil {
 		return v
 	}
 	return time.Time{}
+}
+
+// orderLookupWindow returns the KST date range to search for an order: from
+// two days before it was last touched (a week back when that is unknown)
+// through today.
+func orderLookupWindow(meta orderContext) (start, end string) {
+	now := krtime.Now()
+	from := now.AddDate(0, 0, -7)
+	if !meta.UpdatedAt.IsZero() {
+		from = meta.UpdatedAt.In(krtime.KST).AddDate(0, 0, -2)
+	}
+	if from.After(now) {
+		from = now.AddDate(0, 0, -1)
+	}
+	return from.Format("20060102"), now.Format("20060102")
+}
+
+// orderSideAndDivision validates what KIS cannot reject for us: without this
+// an unrecognized side or type would be sent as a buy or a limit order.
+func orderSideAndDivision(req broker.OrderRequest) (side, orderDvsn string, err error) {
+	switch req.Side {
+	case broker.OrderSideBuy, broker.OrderSideSell:
+		side = string(req.Side)
+	default:
+		return "", "", fmt.Errorf("%w: side must be %q or %q, got %q",
+			broker.ErrInvalidOrderRequest, broker.OrderSideBuy, broker.OrderSideSell, req.Side)
+	}
+	switch req.Type {
+	case broker.OrderTypeLimit:
+		if req.Price <= 0 {
+			return "", "", fmt.Errorf("%w: limit order requires a price", broker.ErrInvalidOrderRequest)
+		}
+		orderDvsn = "00"
+	case broker.OrderTypeMarket:
+		orderDvsn = "01"
+	default:
+		return "", "", fmt.Errorf("%w: type must be %q or %q, got %q",
+			broker.ErrInvalidOrderRequest, broker.OrderTypeLimit, broker.OrderTypeMarket, req.Type)
+	}
+	if req.Quantity <= 0 {
+		return "", "", fmt.Errorf("%w: quantity must be positive", broker.ErrInvalidOrderRequest)
+	}
+	if err := ordercheck.WholeShareDayOrder(broker.NameKIS, req); err != nil {
+		return "", "", err
+	}
+	return side, orderDvsn, nil
+}
+
+// formatWonPrice renders a KRW price as the integer string KIS expects.
+// Rounding keeps a float such as 70099.99999 from being sent as 70099.
+func formatWonPrice(price float64) string {
+	return strconv.FormatInt(int64(math.Round(price)), 10)
 }
 
 func normalizeSideLabel(code string) string {

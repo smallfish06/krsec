@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/smallfish06/krsec/internal/kis"
+	"github.com/smallfish06/krsec/internal/krtime"
 	"github.com/smallfish06/krsec/pkg/broker"
 	kisspecs "github.com/smallfish06/krsec/pkg/kis/specs"
 )
@@ -51,7 +52,7 @@ func (a *Adapter) GetOHLCV(ctx context.Context, market, symbol string, opts brok
 	from := tradingDate(opts.From)
 	to := tradingDate(opts.To)
 	if to.IsZero() {
-		to = tradingDate(time.Now())
+		to = tradingDate(krtime.Now())
 	}
 	if !from.IsZero() && from.After(to) {
 		return nil, fmt.Errorf("OHLCV from date must not be after to date")
