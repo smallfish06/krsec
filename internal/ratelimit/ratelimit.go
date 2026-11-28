@@ -7,6 +7,8 @@ package ratelimit
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"sync"
 
@@ -70,7 +72,14 @@ func Shared(name string, rps float64, burst int, key string) *Limiter {
 	if l, ok := sharedLimiters[id]; ok {
 		return l
 	}
-	l := New(name+"["+key+"]", rps, burst)
+	// The key is usually a broker app key and the limiter name ends up in
+	// error messages returned to API callers, so only a fingerprint is used.
+	l := New(name+"["+fingerprint(key)+"]", rps, burst)
 	sharedLimiters[id] = l
 	return l
+}
+
+func fingerprint(key string) string {
+	sum := sha256.Sum256([]byte(key))
+	return hex.EncodeToString(sum[:4])
 }

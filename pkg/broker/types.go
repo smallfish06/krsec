@@ -2,20 +2,21 @@ package broker
 
 import "time"
 
-// Credentials holds broker authentication credentials
+// Credentials is the app key pair a broker issues for API access.
 type Credentials struct {
 	AppKey    string `json:"app_key"`
 	AppSecret string `json:"app_secret"`
 }
 
-// Token represents an authentication token
+// Token is a broker access token and when it stops being valid.
 type Token struct {
 	AccessToken string    `json:"access_token"`
 	TokenType   string    `json:"token_type"`
 	ExpiresAt   time.Time `json:"expires_at"`
 }
 
-// Quote represents a stock quote
+// Quote is the latest price of one symbol. Close repeats Price while the
+// session is open; optional fields are omitted when the broker has no value.
 type Quote struct {
 	Symbol      string    `json:"symbol"`
 	Market      string    `json:"market"`
@@ -39,15 +40,15 @@ type Quote struct {
 	Timestamp   time.Time `json:"timestamp"`
 }
 
-// OHLCVOpts options for OHLCV data
+// OHLCVOpts bounds a candle request. Zero From/To leave that side open.
 type OHLCVOpts struct {
-	Interval string // "1d", "1h", "5m" etc.
+	Interval string // "1m", "1d", "1w" or "1mo"; brokers support a subset
 	From     time.Time
 	To       time.Time
 	Limit    int
 }
 
-// OHLCV represents candlestick data
+// OHLCV is one candle. Timestamp marks the start of its period.
 type OHLCV struct {
 	Timestamp time.Time `json:"timestamp"`
 	Open      float64   `json:"open"`
@@ -57,7 +58,8 @@ type OHLCV struct {
 	Volume    int64     `json:"volume"`
 }
 
-// Balance represents account balance
+// Balance is an account's cash and valuation totals. The scalar fields are
+// in KRW; the ByCurrency maps break them down for multi-currency accounts.
 type Balance struct {
 	// UnavailableFields names JSON fields the provider could not supply. Their
 	// numeric zero values are placeholders, not observed zero balances.
@@ -84,7 +86,7 @@ type Balance struct {
 	PositionValueByCurrency map[string]float64 `json:"position_value_by_currency,omitempty"`
 }
 
-// AssetType represents the type of asset
+// AssetType classifies a holding or instrument.
 type AssetType string
 
 // Asset types reported in balances and positions.
@@ -96,7 +98,8 @@ const (
 	AssetOverseas AssetType = "overseas"
 )
 
-// Position represents a stock position
+// Position is one holding. The *Decimal quantity strings are authoritative
+// when present: fractional shares do not fit the integer fields.
 type Position struct {
 	Symbol              string    `json:"symbol"`
 	Name                string    `json:"name"`
@@ -143,7 +146,7 @@ type Instrument struct {
 	DelistingDate   string    `json:"delisting_date,omitempty"`
 }
 
-// AccountSummary represents aggregated balance across multiple accounts
+// AccountSummary totals the balances of every configured account.
 type AccountSummary struct {
 	TotalAssets     float64   `json:"total_assets"`
 	TotalCash       float64   `json:"total_cash"`
@@ -151,14 +154,14 @@ type AccountSummary struct {
 	Accounts        []Balance `json:"accounts"`
 }
 
-// AccountInfo represents basic account information
+// AccountInfo identifies a configured account without its credentials.
 type AccountInfo struct {
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Broker string `json:"broker"`
 }
 
-// OrderSide represents buy or sell
+// OrderSide is the direction of an order.
 type OrderSide string
 
 // Order sides.
@@ -167,7 +170,7 @@ const (
 	OrderSideSell OrderSide = "sell"
 )
 
-// OrderType represents order type
+// OrderType is how an order is priced.
 type OrderType string
 
 // Order types.
@@ -176,7 +179,8 @@ const (
 	OrderTypeMarket OrderType = "market"
 )
 
-// OrderStatus represents order status
+// OrderStatus is where an order is in its lifecycle. A partially filled
+// order stays pending until it completes or is cancelled.
 type OrderStatus string
 
 // Order lifecycle statuses.
@@ -187,7 +191,9 @@ const (
 	OrderStatusRejected  OrderStatus = "rejected"
 )
 
-// OrderRequest represents a new order request
+// OrderRequest describes a new order. Give a Quantity, or for brokers that
+// support them a QuantityDecimal or an order amount; Price is required for
+// limit orders. Adapters reject fields their broker cannot honor.
 type OrderRequest struct {
 	AccountID             string    `json:"account_id"`
 	ClientOrderID         string    `json:"client_order_id,omitempty"`
@@ -204,7 +210,7 @@ type OrderRequest struct {
 	ConfirmHighValueOrder bool      `json:"confirm_high_value_order,omitempty"`
 }
 
-// ModifyOrderRequest represents an order modification request
+// ModifyOrderRequest changes an open order. Zero fields keep their value.
 type ModifyOrderRequest struct {
 	Type                  OrderType `json:"type,omitempty"`
 	Quantity              int64     `json:"quantity,omitempty"`
@@ -213,23 +219,26 @@ type ModifyOrderRequest struct {
 	ConfirmHighValueOrder bool      `json:"confirm_high_value_order,omitempty"`
 }
 
-// OrderResult represents the result of an order operation
+// OrderResult is the state of an order after placing, modifying or querying it.
 type OrderResult struct {
 	// Decimal quantities are authoritative when present; integer fields remain
 	// available for clients that only support whole-share orders.
-	FilledQuantityDecimal string      `json:"filled_quantity_decimal,omitempty"`
-	RemainingQtyDecimal   string      `json:"remaining_quantity_decimal,omitempty"`
-	OrderID               string      `json:"order_id"`
-	Status                OrderStatus `json:"status"`
-	FilledQuantity        int64       `json:"filled_quantity,omitempty"`
-	RemainingQty          int64       `json:"remaining_quantity,omitempty"`
-	AvgFilledPrice        float64     `json:"avg_filled_price,omitempty"`
-	RejectedReason        string      `json:"rejected_reason,omitempty"`
-	Message               string      `json:"message,omitempty"`
-	Timestamp             time.Time   `json:"timestamp"`
+	FilledQuantityDecimal string `json:"filled_quantity_decimal,omitempty"`
+	RemainingQtyDecimal   string `json:"remaining_quantity_decimal,omitempty"`
+	OrderID               string `json:"order_id"`
+	// ClientOrderID is the idempotency key the order was placed with, when
+	// the broker supports one.
+	ClientOrderID  string      `json:"client_order_id,omitempty"`
+	Status         OrderStatus `json:"status"`
+	FilledQuantity int64       `json:"filled_quantity,omitempty"`
+	RemainingQty   int64       `json:"remaining_quantity,omitempty"`
+	AvgFilledPrice float64     `json:"avg_filled_price,omitempty"`
+	RejectedReason string      `json:"rejected_reason,omitempty"`
+	Message        string      `json:"message,omitempty"`
+	Timestamp      time.Time   `json:"timestamp"`
 }
 
-// OrderFill represents normalized fill execution data.
+// OrderFill is one execution of an order.
 type OrderFill struct {
 	// QuantityDecimal preserves fractional executions without rounding.
 	QuantityDecimal string    `json:"quantity_decimal,omitempty"`

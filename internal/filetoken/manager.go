@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/smallfish06/krsec/internal/fsutil"
 	"github.com/smallfish06/krsec/internal/ratelimit"
 )
 
@@ -48,7 +49,6 @@ type Manager struct {
 	requireAppKeyOnLoad bool
 }
 
-// New creates a configured file-backed token manager.
 func New(opts Options) *Manager {
 	m := &Manager{
 		tokens:              make(map[string]*Entry),
@@ -212,7 +212,7 @@ func (m *Manager) save(appKey string, entry *Entry) error {
 	if err != nil {
 		return fmt.Errorf("marshal token entry: %w", err)
 	}
-	if err := os.WriteFile(path, data, 0o600); err != nil {
+	if err := fsutil.WriteFileAtomic(path, data, 0o600); err != nil {
 		return fmt.Errorf("write token file: %w", err)
 	}
 	return nil

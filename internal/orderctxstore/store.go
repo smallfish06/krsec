@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"sort"
 	"time"
+
+	"github.com/smallfish06/krsec/internal/fsutil"
 )
 
 const stateVersion = 1
@@ -59,11 +61,7 @@ func Persist[T any](path string, src map[string]T) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return err
 	}
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o600); err != nil {
-		return err
-	}
-	return os.Rename(tmp, path)
+	return fsutil.WriteFileAtomic(path, data, 0o600)
 }
 
 // Compact keeps only the newest limit contexts according to updatedAt.
