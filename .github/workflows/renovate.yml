@@ -33,7 +33,7 @@ permissions:
   issues: write
   pull-requests: write
   security-events: read
-  statuses: read
+  statuses: write
 
 jobs:
   renovate:
