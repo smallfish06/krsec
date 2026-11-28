@@ -2,6 +2,8 @@ package adapter
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -26,7 +28,6 @@ type Adapter struct {
 	logger     *slog.Logger
 }
 
-// NewAdapterWithOptions creates a Toss adapter with injectable internals.
 func NewAdapterWithOptions(
 	sandbox bool,
 	accountID string,
@@ -53,12 +54,10 @@ func (a *Adapter) Client() *toss.Client {
 	return a.client
 }
 
-// Name returns broker name.
 func (a *Adapter) Name() string {
 	return broker.NameToss
 }
 
-// Authenticate authenticates with Toss.
 func (a *Adapter) Authenticate(ctx context.Context, creds broker.Credentials) (*broker.Token, error) {
 	return a.client.Authenticate(ctx, creds)
 }
@@ -208,7 +207,6 @@ func (a *Adapter) GetBalance(ctx context.Context, accountID string) (*broker.Bal
 	}, nil
 }
 
-// GetPositions retrieves Toss account positions.
 func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position, error) {
 	holdings, err := a.client.GetHoldings(ctx, a.accountSeq, "")
 	if err != nil {
@@ -238,7 +236,6 @@ func (a *Adapter) GetPositions(ctx context.Context, _ string) ([]broker.Position
 	return out, nil
 }
 
-// GetInstrument returns Toss stock metadata.
 func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*broker.Instrument, error) {
 	_ = market
 	symbol = strings.TrimSpace(symbol)
@@ -272,21 +269,29 @@ func (a *Adapter) GetInstrument(ctx context.Context, market, symbol string) (*br
 	}, nil
 }
 
-// PlaceOrder places a Toss stock order.
 func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*broker.OrderResult, error) {
 	body, err := buildCreateOrderBody(req)
 	if err != nil {
 		return nil, err
 	}
+	// Without a clientOrderId Toss treats every request as a new order, so a
+	// retry after a timeout would place a second one. Generating the key and
+	// naming it in the error lets the caller retry the same order safely.
+	clientOrderID, _ := body["clientOrderId"].(string)
+	if clientOrderID == "" {
+		clientOrderID = newClientOrderID()
+		body["clientOrderId"] = clientOrderID
+	}
 	resp, err := a.client.CreateOrder(ctx, a.accountSeq, body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w (client_order_id %s)", err, clientOrderID)
 	}
 	if strings.TrimSpace(resp.OrderID) == "" {
-		return nil, fmt.Errorf("%w: Toss order response missing orderId", broker.ErrServerError)
+		return nil, fmt.Errorf("%w: Toss order response missing orderId (client_order_id %s)", broker.ErrServerError, clientOrderID)
 	}
 	return &broker.OrderResult{
 		OrderID:             resp.OrderID,
+		ClientOrderID:       clientOrderID,
 		Status:              broker.OrderStatusPending,
 		RemainingQty:        requestQuantity(req),
 		RemainingQtyDecimal: requestQuantityDecimal(req),
@@ -294,7 +299,6 @@ func (a *Adapter) PlaceOrder(ctx context.Context, req broker.OrderRequest) (*bro
 	}, nil
 }
 
-// CancelOrder cancels a Toss order.
 func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	orderID = strings.TrimSpace(orderID)
 	if orderID == "" {
@@ -304,7 +308,8 @@ func (a *Adapter) CancelOrder(ctx context.Context, orderID string) error {
 	return err
 }
 
-// ModifyOrder modifies a Toss order.
+// ModifyOrder replaces the order. Toss gives the replacement a new order ID,
+// which the result carries; the original ID becomes REPLACED.
 func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.ModifyOrderRequest) (*broker.OrderResult, error) {
 	orderID = strings.TrimSpace(orderID)
 	if orderID == "" {
@@ -328,7 +333,6 @@ func (a *Adapter) ModifyOrder(ctx context.Context, orderID string, req broker.Mo
 	}, nil
 }
 
-// GetOrder returns a Toss order snapshot.
 func (a *Adapter) GetOrder(ctx context.Context, orderID string) (*broker.OrderResult, error) {
 	order, err := a.client.GetOrder(ctx, a.accountSeq, orderID)
 	if err != nil {
@@ -416,6 +420,9 @@ func buildCreateOrderBody(req broker.OrderRequest) (map[string]any, error) {
 		body["confirmHighValueOrder"] = true
 	}
 	if amount := firstNonEmpty(req.OrderAmountDecimal, decimalString(req.OrderAmount)); amount != "" {
+		if req.Quantity > 0 || strings.TrimSpace(req.QuantityDecimal) != "" {
+			return nil, fmt.Errorf("%w: give either a quantity or an order amount, not both", broker.ErrInvalidOrderRequest)
+		}
 		body["orderAmount"] = amount
 	} else {
 		qty := firstNonEmpty(req.QuantityDecimal, strconv.FormatInt(req.Quantity, 10))
@@ -437,11 +444,13 @@ func buildCreateOrderBody(req broker.OrderRequest) (map[string]any, error) {
 func buildModifyOrderBody(req broker.ModifyOrderRequest) (map[string]any, error) {
 	orderType := req.Type
 	if orderType == "" {
-		if req.Price > 0 {
-			orderType = broker.OrderTypeLimit
-		} else {
-			orderType = broker.OrderTypeMarket
+		// Toss requires orderType on a modify. A price implies a limit
+		// order; with neither, guessing "market" would turn a quantity-only
+		// change of a resting limit order into a market order.
+		if req.Price <= 0 {
+			return nil, fmt.Errorf("%w: modify requires a type or a price", broker.ErrInvalidOrderRequest)
 		}
+		orderType = broker.OrderTypeLimit
 	}
 	tossType, err := tossOrderType(orderType)
 	if err != nil {
@@ -503,7 +512,8 @@ func mapOrderStatus(status string) broker.OrderStatus {
 	switch strings.ToUpper(strings.TrimSpace(status)) {
 	case "FILLED":
 		return broker.OrderStatusFilled
-	case "CANCELED", "CANCELLED":
+	// REPLACED is terminal: a modify superseded this order with a new ID.
+	case "CANCELED", "CANCELLED", "REPLACED":
 		return broker.OrderStatusCancelled
 	case "REJECTED", "CANCEL_REJECTED", "REPLACE_REJECTED":
 		return broker.OrderStatusRejected
@@ -711,4 +721,12 @@ func stringPtrValue(v *string) string {
 		return ""
 	}
 	return strings.TrimSpace(*v)
+}
+
+// newClientOrderID returns an idempotency key in the form Toss accepts
+// (at most 36 characters of [A-Za-z0-9_-]).
+func newClientOrderID() string {
+	var raw [12]byte
+	_, _ = rand.Read(raw[:]) // crypto/rand.Read does not fail
+	return "krsec-" + hex.EncodeToString(raw[:])
 }

@@ -13,6 +13,8 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/sync/singleflight"
+
 	"github.com/smallfish06/krsec/internal/ratelimit"
 	"github.com/smallfish06/krsec/pkg/broker"
 	tokencache "github.com/smallfish06/krsec/pkg/token"
@@ -40,7 +42,6 @@ type TokenResponse struct {
 	ExpiresIn   int64  `json:"expires_in"`
 }
 
-// NewClientWithTokenManager creates a Toss Open API client.
 func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	if sandbox {
 		// Toss currently documents only one production Open API base URL.
@@ -59,7 +60,6 @@ func NewClientWithTokenManager(sandbox bool, tm tokencache.Manager) *Client {
 	}
 }
 
-// SetLogger sets the client logger.
 func (c *Client) SetLogger(l *slog.Logger) {
 	if l != nil {
 		c.logger = l
@@ -73,7 +73,6 @@ func (c *Client) SetBaseURL(baseURL string) {
 	c.mu.Unlock()
 }
 
-// Name returns broker name.
 func (c *Client) Name() string {
 	return broker.NameToss
 }
@@ -161,6 +160,43 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 		return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
 	}
 
+	// Toss keeps one valid token per client and revokes the previous one on
+	// every issuance, so concurrent requests must share a single issuance:
+	// each extra one would invalidate the token the others just received.
+	// The flight is detached from the caller so a cancelled request cannot
+	// fail everyone waiting on it.
+	ch := authFlight.DoChan(appKey, func() (any, error) {
+		if token, expiresAt, ok := tm.GetToken(appKey); ok {
+			return &broker.Token{AccessToken: token, TokenType: "Bearer", ExpiresAt: expiresAt}, nil
+		}
+		issueCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), issueTimeout)
+		defer cancel()
+		return c.issueToken(issueCtx, tm, appKey, appSecret)
+	})
+	select {
+	case res := <-ch:
+		if res.Err != nil {
+			return nil, res.Err
+		}
+		token := res.Val.(*broker.Token)
+		c.setToken(token.AccessToken, token.ExpiresAt)
+		return token, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+}
+
+// authFlight collapses concurrent token issuance per app key across clients.
+var authFlight singleflight.Group
+
+// issueTimeout covers one wait on the issuance limiter (up to 60s) plus the
+// HTTP round trip.
+const issueTimeout = 2 * time.Minute
+
+// maxResponseBytes caps a response body held in memory.
+const maxResponseBytes = 32 << 20
+
+func (c *Client) issueToken(ctx context.Context, tm tokencache.Manager, appKey, appSecret string) (*broker.Token, error) {
 	tm.WaitForAuth(appKey)
 	if err := c.waitForRateLimit(ctx, http.MethodPost, PathOAuthToken); err != nil {
 		return nil, err
@@ -183,7 +219,7 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if err != nil {
 		return nil, fmt.Errorf("read Toss auth response: %w", err)
 	}
@@ -216,15 +252,19 @@ func (c *Client) Authenticate(ctx context.Context, creds broker.Credentials) (*b
 	return &broker.Token{AccessToken: tokenResp.AccessToken, TokenType: tokenType, ExpiresAt: expiresAt}, nil
 }
 
-func (c *Client) invalidateAndRefresh(ctx context.Context) error {
+// invalidateAndRefresh drops the token Toss just rejected and authenticates
+// again. A token another request has already replaced is left alone.
+func (c *Client) invalidateAndRefresh(ctx context.Context, rejected string) error {
 	appKey, _ := c.getCredentials()
-	c.setToken("", time.Time{})
+	if current, _ := c.getToken(); current == rejected {
+		c.setToken("", time.Time{})
+	}
 	tm := c.tokenManager
 	if tm == nil {
 		tm = GetTokenManager()
 	}
 	if appKey != "" {
-		_ = tm.DeleteToken(appKey)
+		_ = tokencache.InvalidateRejected(tm, appKey, rejected)
 	}
 	return c.ensureToken(ctx)
 }
@@ -236,19 +276,25 @@ func (c *Client) callJSON(ctx context.Context, method, path, accountSeq string, 
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	if resp.StatusCode == http.StatusUnauthorized && !isOrderMutation(method, path) {
-		_ = resp.Body.Close()
-		if err := c.invalidateAndRefresh(ctx); err != nil {
-			return fmt.Errorf("token refresh after Toss 401 failed: %w", err)
+	if resp.StatusCode == http.StatusUnauthorized {
+		rejected := strings.TrimPrefix(resp.Request.Header.Get("Authorization"), "Bearer ")
+		refreshErr := c.invalidateAndRefresh(ctx, rejected)
+		// An order mutation is never sent twice; its caller sees the 401 and
+		// the next request already carries the fresh token.
+		if !isOrderMutation(method, path) {
+			_ = resp.Body.Close()
+			if refreshErr != nil {
+				return fmt.Errorf("token refresh after Toss 401 failed: %w", refreshErr)
+			}
+			resp, err = c.callOnce(ctx, method, path, accountSeq, query, body)
+			if err != nil {
+				return err
+			}
+			defer func() { _ = resp.Body.Close() }()
 		}
-		resp, err = c.callOnce(ctx, method, path, accountSeq, query, body)
-		if err != nil {
-			return err
-		}
-		defer func() { _ = resp.Body.Close() }()
 	}
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if err != nil {
 		return fmt.Errorf("read Toss response: %w", err)
 	}

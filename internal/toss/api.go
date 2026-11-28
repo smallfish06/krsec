@@ -3,6 +3,7 @@ package toss
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -89,19 +90,19 @@ func (c *Client) CreateOrder(ctx context.Context, accountSeq string, body map[st
 
 func (c *Client) ModifyOrder(ctx context.Context, accountSeq, orderID string, body map[string]any) (OrderOperationResponse, error) {
 	var env apiEnvelope[OrderOperationResponse]
-	err := c.callJSON(ctx, http.MethodPost, PathOrders+"/"+strings.TrimSpace(orderID)+"/modify", accountSeq, nil, body, &env)
+	err := c.callJSON(ctx, http.MethodPost, orderPath(orderID)+"/modify", accountSeq, nil, body, &env)
 	return env.Result, err
 }
 
 func (c *Client) CancelOrder(ctx context.Context, accountSeq, orderID string) (OrderOperationResponse, error) {
 	var env apiEnvelope[OrderOperationResponse]
-	err := c.callJSON(ctx, http.MethodPost, PathOrders+"/"+strings.TrimSpace(orderID)+"/cancel", accountSeq, nil, map[string]any{}, &env)
+	err := c.callJSON(ctx, http.MethodPost, orderPath(orderID)+"/cancel", accountSeq, nil, map[string]any{}, &env)
 	return env.Result, err
 }
 
 func (c *Client) GetOrder(ctx context.Context, accountSeq, orderID string) (Order, error) {
 	var env apiEnvelope[Order]
-	err := c.callJSON(ctx, http.MethodGet, PathOrders+"/"+strings.TrimSpace(orderID), accountSeq, nil, nil, &env)
+	err := c.callJSON(ctx, http.MethodGet, orderPath(orderID), accountSeq, nil, nil, &env)
 	return env.Result, err
 }
 
@@ -120,4 +121,10 @@ func cleanSymbols(symbols []string) []string {
 		}
 	}
 	return out
+}
+
+// orderPath escapes the order ID so a "?" or "/" in it cannot redirect the
+// request to another endpoint.
+func orderPath(orderID string) string {
+	return PathOrders + "/" + url.PathEscape(strings.TrimSpace(orderID))
 }

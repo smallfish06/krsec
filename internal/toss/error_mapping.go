@@ -50,14 +50,16 @@ func mapOAuthError(status int, body []byte) error {
 	return fmt.Errorf("%w: Toss auth HTTP %d: %s", sentinel, status, message)
 }
 
-func classifyUpstream(status int, code, message string) error {
+// classifyUpstream maps a Toss error onto a broker sentinel by HTTP status and
+// error code. The message is not consulted: it is free text, and matching on
+// words such as "token" misfiled unrelated rejections.
+func classifyUpstream(status int, code, _ string) error {
 	code = strings.ToLower(strings.TrimSpace(code))
-	msg := strings.ToLower(strings.TrimSpace(message))
 
 	switch {
 	case status == 429:
 		return broker.ErrRateLimitExceeded
-	case status == 401 || code == "invalid-token" || strings.Contains(msg, "token"):
+	case status == 401 || status == 403 || code == "invalid-token":
 		return broker.ErrUnauthorized
 	case code == "invalid_client":
 		return broker.ErrInvalidCredentials
