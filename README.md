@@ -23,7 +23,7 @@ go install github.com/smallfish06/krsec/cmd/krsec@latest
 
 바이너리: [Releases](https://github.com/smallfish06/krsec/releases)
 
-Docker (config의 `server.host`를 `0.0.0.0`으로 설정):
+Docker (config의 `server.host`를 `0.0.0.0`으로, `server.api_key_env`도 함께 설정):
 
 ```bash
 docker run -v $(pwd):/data -p 8080:8080 ghcr.io/smallfish06/krsec:latest
@@ -37,7 +37,8 @@ cp config.example.yaml config.yaml
 
 ```yaml
 server:
-  port: 8080
+  port: 8080            # host 기본값은 localhost
+  # api_key_env: KRSEC_API_KEY   # 설정하면 모든 요청에 키가 필요 (아래 "게이트웨이 인증")
 
 accounts:
   - name: "main"
@@ -70,6 +71,17 @@ accounts:
 krsec -config config.yaml
 ```
 
+### 게이트웨이 인증
+
+krsec은 주문까지 실행하는 게이트웨이입니다. `localhost` 밖에서 접근할 수 있게 띄운다면(`host: 0.0.0.0`, Docker, 쿠버네티스) `server.api_key` 또는 `server.api_key_env`를 설정하세요. 설정하면 `/health`와 Swagger UI를 제외한 모든 요청이 키를 요구합니다.
+
+```bash
+curl -H "Authorization: Bearer $KRSEC_API_KEY" http://localhost:8080/accounts
+curl -H "X-API-Key: $KRSEC_API_KEY" http://localhost:8080/accounts
+```
+
+키 없이 loopback이 아닌 주소에 바인딩하면 시작할 때 경고 로그를 남깁니다.
+
 ## API
 
 | Method | Path | 설명 |
@@ -90,6 +102,12 @@ krsec -config config.yaml
 | `PUT` | `/accounts/{account_id}/orders/{id}` | 주문 정정 |
 | `DELETE` | `/accounts/{account_id}/orders/{id}` | 주문 취소 |
 | `GET` | `/swagger/` | Swagger UI |
+
+`side`는 `buy`/`sell`, `type`은 `limit`/`market`만 받습니다(대소문자 무시). 그 외 값은 증권사로 보내지 않고 400으로 거절합니다. 증권사가 지원하지 않는 주문 옵션(예: KIS·키움의 소수점 수량, 금액 주문, IOC/FOK)도 무시하지 않고 거절합니다.
+
+`POST /auth/token`은 설정된 계좌의 증권사 access token을 돌려줍니다. 본문의 `credentials`는 생략할 수 있고, 보내면 설정된 app key/secret과 일치해야 합니다.
+
+KIS 원본 경로 응답은 조회성 엔드포인트에 한해 프로세스 안에서 캐시합니다. 응답 헤더 `X-Krsec-Cache`가 `miss`(증권사 호출), `hit`(캐시), `stale`(증권사 호출 실패로 만료된 캐시 반환)을 알려 줍니다.
 
 공통 응답의 수량 정밀도, 잔고 항목의 제공 여부, 연속조회 방법은 [공통 API 계약](doc/common-contract.md)을 참고하세요. 원본 REST 경로 지원과 공통 인터페이스의 지원 범위는 서로 다릅니다.
 
@@ -181,6 +199,7 @@ import (
 
 srv := apiserver.New(apiserver.Options{
     Port: 8080,
+    APIKey:   os.Getenv("KRSEC_API_KEY"), // 비우면 인증 없이 동작
     Accounts: []apiserver.Account{{ID: "acc-1", Name: "Main", Broker: "custom"}},
     Brokers:  map[string]broker.Broker{"acc-1": myBroker},
 })

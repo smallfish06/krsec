@@ -4,44 +4,34 @@ SPEC_BROKERS := kis kiwoom ls toss
 	openapi openapi-check spec-fetch-all spec-generate-all spec-refresh-all spec-check-all \
 	$(foreach b,$(SPEC_BROKERS),$(b)-spec-fetch $(b)-spec-generate $(b)-spec-refresh $(b)-spec-check $(b)-spec-all)
 
-# Build the application
 build:
 	go build -o bin/krsec ./cmd/krsec
 
-# Run the application
 run:
 	go run ./cmd/krsec -config config.yaml
 
-# Run tests
 test:
 	go test -v ./...
 
-# Generate mocks
 mock:
 	go run github.com/vektra/mockery/v3@v3.6.4 --config .mockery.yml
 
-# Clean build artifacts
 clean:
 	rm -rf bin/
 
-# Download dependencies
 deps:
 	go mod download
 	go mod tidy
 
-# Install development tools
 dev-tools:
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 
-# Lint code
 lint:
 	go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest run
 
-# Format code
 fmt:
 	go fmt ./...
 
-# Vet code
 vet:
 	go vet ./...
 
